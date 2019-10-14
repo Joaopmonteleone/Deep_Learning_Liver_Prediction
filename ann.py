@@ -33,7 +33,7 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0) #train 80%, test 20%
 
 '''
-# Feature Scaling
+# Feature Scaling but not needed since already scaled
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
@@ -140,7 +140,7 @@ y_pred = (y_pred > 0.5) # converting probabilities in the form True or False
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 '''
-    accuracy of 0.841: (1538 + 144)/2000 (2000 observations in the test set)
+    accuracy of 0.88: (253 + 1)/288 (288 observations in the test set)
     by changing variables maybe we can get a higher probability
 '''
 
@@ -153,7 +153,12 @@ cm = confusion_matrix(y_test, y_pred)
 
 # Part 4 - Making predictions
 
-new_prediction = classifier.predict(sc.transform(np.array([[0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])))
-# transform because we did feature scaling to the dataset
+new_prediction = classifier.predict(np.array([[50,0,31.56167151,0,0,0,0,1,0,0,0,0,0,1,0,0,165,11,15,0,0,0,1,0,0,0,0,56,1,37.109375,0,0,0,1,0,0,0,2,0,1,0.5,148,15,11,0.3,0,0,1,1,0,0,0,0,1,1]]))
 # np.array to make it an array
 new_prediction = (new_prediction > 0.5)
+//correct
+
+prediction_try2 = classifier.predict(np.array([[33,0,34.60207612,0,0,0,0,0,0,0,1,0,0,1,0,0,570,17,34,0,0,1,0,1,0,0,0,71,1,38.26530612,1,0,0,1,0,0,0,1,0,1,1,140,14,16,0.5,0,0,1,0,0,0,0,1,0,1]]))
+prediction_try2 = (prediction_try2 > 0.5)
+//incorrect
+
