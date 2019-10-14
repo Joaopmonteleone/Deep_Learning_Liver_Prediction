@@ -46,7 +46,7 @@ X_test = sc.transform(X_test)
 
 
 
-# Part 2 - Now let's make the ANN!
+# Part 2 - ANN building
 
 # Importing the Keras libraries and packages
 import keras
@@ -64,13 +64,13 @@ classifier = Sequential() #defining it as a sequence of layers
 # no arguments because we define the layers step by step afterwards
 '''Tip: choose the number of nodes in the hidden layer as the average of the number
 of nodes in the input layer and the number of nodes in the output layer.
-When the dependent variable (y) has a binary outcome (1/0) there is only one node in the 
+When the dependent variable (y) has a binary outcome (1/0) there is only one node in the
 output layer.'''
 # Adding the input layer AND the first hidden layer
 classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
 '''
     units / output_dim: the number of nodes in the hidden layer (inputLayeroOfNodes (55) + outputLayerNoOfNodes (1)) / 2 = 28, dimensionality of the output space
-    kernel_initializer: regulizer function applied 
+    kernel_initializer: regulizer function applied
     activation: activation function in hidden layer (rectifier) and Sigmoid function for the output layer
     input_dim: we have 11 variables, therefore 11 input nodes
 '''
@@ -79,7 +79,7 @@ classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'r
 classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
 '''
     no need of input_dim becuase the NN already knows from last layer
-    units: still applies 
+    units: still applies
     same uniform method: initialises the weights randomly and gives them a small number close to 0
     activation parameter: it is recommended to be rectifier for hidden layers
     FIRST 3 LAYERS DONE: input, first and second
@@ -88,39 +88,39 @@ classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'r
 # Adding the output layer
 classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
 '''
-    units (output_dim): output layer we only want one node because dependent variable is binary 
+    units (output_dim): output layer we only want one node because dependent variable is binary
         if there are 3 categories for the dependent variable, then input 3
     kernel_initializer: keep uniform initialization method that is still used to initialise the weights
         that come from the second hidden layer
     activation: output layer requires a probability outcome a.k.a sigmoid function
-        if there are 3 or more categories, change activation function to softmax: sigmoid function 
+        if there are 3 or more categories, change activation function to softmax: sigmoid function
         applied to a dependent variable that has more than 2 categories
 '''
 
 # Compiling the ANN
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 '''
-    compiling an ANN: applying stochastic gradient descent on the whole ANN 
+    compiling an ANN: applying stochastic gradient descent on the whole ANN
     optimizer: the algorithm you wanna use to find the optimal set of weights in the NN sicne
-        weights are only initialized, find weights that will make the NN the most powerful 
+        weights are only initialized, find weights that will make the NN the most powerful
         the stochastic gradient descent algorithm: 'adam'
     loss: the loss function within the stochastic gradient descent algorithm (the adam algorithm)
-        loss function is optimized to find optimal weights 
-        the sum of the squared errors 
+        loss function is optimized to find optimal weights
+        the sum of the squared errors
         if outcome is binary: binary_crossentropy
-        if more outcomes: categorical_crossentropy 
-    metics: criterion used to evaluate module (accuracy) used to improve model's performance 
+        if more outcomes: categorical_crossentropy
+    metics: criterion used to evaluate module (accuracy) used to improve model's performance
         until it reaches top accuracy
 '''
 
 # Fitting the ANN to the Training set
 classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
 '''
-    fit ANN to the training set 
-    batch_size: update weights after 10 observations 
-    epochs: when the whole training set has been passed through the ANN 
+    fit ANN to the training set
+    batch_size: update weights after 10 observations
+    epochs: when the whole training set has been passed through the ANN
     no rule of thumb for neither of these, experiment with them to see how many are optimal
-    
+
     this is where all of the processing happens
 '''
 
@@ -151,21 +151,8 @@ cm = confusion_matrix(y_test, y_pred)
 
 
 
-# Part 4 - Homework
+# Part 4 - Making predictions
 
-# Use model to predict an answer for a specific customer
-'''
- Geography: France
-Credit Score: 600
-Gender: Male
-Age: 40 years old
-Tenure: 3 years
-Balance: $60000
-Number of Products: 2
-Does this customer have a credit card ? Yes
-Is this customer an Active Member: Yes
-Estimated Salary: $50000
-'''
 new_prediction = classifier.predict(sc.transform(np.array([[0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])))
 # transform because we did feature scaling to the dataset
 # np.array to make it an array
