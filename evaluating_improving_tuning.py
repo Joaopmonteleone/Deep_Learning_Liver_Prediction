@@ -165,6 +165,7 @@ variance = accuracies.std() # find the variance of the accuracies (if < 1% = rat
     Dropout Regularization to reduce overfitting 
     PARAMETER TUNING - THE GRID SEARCH TECHNIQUE
     THIS TAKES SEVERAL HOURS LOLOLOLO
+    not really but it takes a while
 '''
 
 # Tuning the ANN
