@@ -1,13 +1,16 @@
-# Artificial Neural Network
+'''
+Artificial Neural Network to predict donor-recipient matching for liver transplant
+-------------WITH DROPOUT--------------
 
-# Installing Theano
-# pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
+Installing Theano
+$ pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
 
-# Installing Tensorflow
-# pip install tensorflow
+Installing Tensorflow
+$pip install tensorflow
 
-# Installing Keras
-# pip install --upgrade keras
+Installing Keras
+$ pip install --upgrade keras
+'''
 
 # Part 1 - Data Preprocessing
 
@@ -17,10 +20,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Importing the dataset
-dataset = pd.read_csv('Churn_Modelling.csv')
-X = dataset.iloc[:, 3:13].values
-y = dataset.iloc[:, 13].values
+dataset = pd.read_csv('honours_dataset_openrefine.csv')
+X = dataset.iloc[:, 1:56].values # all rows, columns index 1 to 55 (56 is excluded)
+y = dataset.iloc[:, 56].values # all rows, column index 56
 
+'''
 # Encoding categorical data
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 labelencoder_X_1 = LabelEncoder()
@@ -30,25 +34,27 @@ X[:, 2] = labelencoder_X_2.fit_transform(X[:, 2])
 onehotencoder = OneHotEncoder(categorical_features = [1])
 X = onehotencoder.fit_transform(X).toarray()
 X = X[:, 1:]
+'''
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
+'''
 # Feature Scaling
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
+'''
 
 
 
 
 
 
-
-# Part 2 - Now let's make the ANN! 
-'''WITH DROPOUT''' # Lecture 34
+# Part 2 - ANN building
+'''WITH DROPOUT''' 
 
 # Importing the Keras libraries and packages
 import keras
@@ -60,7 +66,7 @@ from keras.layers import Dropout # to prevent overfitting
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
 classifier.add(Dropout(p = 0.1)) 
 '''
     Dropout is used to prevent overfitting. At each iteration of the training, some neurons
@@ -71,7 +77,7 @@ classifier.add(Dropout(p = 0.1))
 '''
 
 # Adding the second hidden layer
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
 classifier.add(Dropout(p = 0.1))
 
 # Adding the output layer
@@ -92,28 +98,20 @@ classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
 
 # Part 3 - Making predictions and evaluating the model
 
-# Predicting the Test set results
 y_pred = classifier.predict(X_test)
-y_pred = (y_pred > 0.5)
+y_pred = (y_pred > 0.5) # converting probabilities in the form True or False
 
-# Predicting a single new observation
-"""Predict if the customer with the following informations will leave the bank:
-Geography: France
-Credit Score: 600
-Gender: Male
-Age: 40
-Tenure: 3
-Balance: 60000
-Number of Products: 2
-Has Credit Card: Yes
-Is Active Member: Yes
-Estimated Salary: 50000"""
-new_prediction = classifier.predict(sc.transform(np.array([[0.0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])))
+new_prediction = classifier.predict(np.array([[50,0,31.56167151,0,0,0,0,1,0,0,0,0,0,1,0,0,165,11,15,0,0,0,1,0,0,0,0,56,1,37.109375,0,0,0,1,0,0,0,2,0,1,0.5,148,15,11,0.3,0,0,1,1,0,0,0,0,1,1]]))
+# np.array to make it an array
 new_prediction = (new_prediction > 0.5)
+
+prediction_try2 = classifier.predict(np.array([[33,0,34.60207612,0,0,0,0,0,0,0,1,0,0,1,0,0,570,17,34,0,0,1,0,1,0,0,0,71,1,38.26530612,1,0,0,1,0,0,0,1,0,1,1,140,14,16,0.5,0,0,1,0,0,0,0,1,0,1]]))
+prediction_try2 = (prediction_try2 > 0.5)
 
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
+
 
 
 
@@ -131,8 +129,8 @@ from keras.layers import Dense
 
 def build_classifier():
     classifier = Sequential()
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
+    classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
@@ -141,7 +139,8 @@ def build_classifier():
     except for the fit part to the training set 
 '''
 classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 100)
-# the next line takes a while...
+
+# this line takes a while
 accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = 1)
 '''
     estimator: the object to use to fit the data (classifier)
@@ -160,20 +159,23 @@ variance = accuracies.std() # find the variance of the accuracies (if < 1% = rat
 
 
 
-# Improving the ANN
-# Dropout Regularization to reduce overfitting if needed
-'''PARAMETER TUNING - THE GRID SEARCH TECHNIQUE''' #Lecture 35
-'''THIS TAKES SEVERAL HOURS LOLOLOLO'''
+# Part 5 - Improving the ANN
+#
+'''
+    Dropout Regularization to reduce overfitting 
+    PARAMETER TUNING - THE GRID SEARCH TECHNIQUE
+    THIS TAKES SEVERAL HOURS LOLOLOLO
+'''
 
 # Tuning the ANN
 from keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.model_selection import GridSearchCV
 from keras.models import Sequential
 from keras.layers import Dense
-def build_classifier(optimizer):# optimizer is passed becuase it is tuned in the parameters
+def build_classifier(optimizer):# optimizer is passed because it is tuned in the parameters
     classifier = Sequential() # this is a local classifier
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-    classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
+    classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
@@ -182,13 +184,16 @@ classifier = KerasClassifier(build_fn = build_classifier) # the global classifie
 parameters = {'batch_size': [25, 32],
               'epochs': [100, 500],
               'optimizer': ['adam', 'rmsprop']} 
-#The parameters you want to study. When tuning the optimizer, you must pass it through the function.
+'''
+    The parameters to study
+    When tuning the optimizer, they must be passed through the function
+'''
 
 grid_search = GridSearchCV(estimator = classifier,
                            param_grid = parameters,
                            scoring = 'accuracy',
                            cv = 10)
-# fit the grid search to the data
-grid_search = grid_search.fit(X_train, y_train)
+
+grid_search = grid_search.fit(X_train, y_train) # fit the grid search to the data
 best_parameters = grid_search.best_params_ # find the attributes of the class
 best_accuracy = grid_search.best_score_ 
