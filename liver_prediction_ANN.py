@@ -1,12 +1,14 @@
 '''
 Artificial Neural Network to predict donor-recipient matching for liver transplant
--------------WITH DROPOUT--------------
+
+Installing Git
+$ conda isntall git
 
 Installing Theano
 $ pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
 
 Installing Tensorflow
-$pip install tensorflow
+$ pip install --user tensorflow
 
 Installing Keras
 $ pip install --upgrade keras
@@ -24,40 +26,24 @@ dataset = pd.read_csv('honours_dataset_openrefine.csv')
 X = dataset.iloc[:, 1:56].values # all rows, columns index 1 to 55 (56 is excluded)
 y = dataset.iloc[:, 56].values # all rows, column index 56
 
-'''
-# Encoding categorical data
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-labelencoder_X_1 = LabelEncoder()
-X[:, 1] = labelencoder_X_1.fit_transform(X[:, 1])
-labelencoder_X_2 = LabelEncoder()
-X[:, 2] = labelencoder_X_2.fit_transform(X[:, 2])
-onehotencoder = OneHotEncoder(categorical_features = [1])
-X = onehotencoder.fit_transform(X).toarray()
-X = X[:, 1:]
-'''
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
-'''
-# Feature Scaling
-from sklearn.preprocessing import StandardScaler
-sc = StandardScaler()
-X_train = sc.fit_transform(X_train)
-X_test = sc.transform(X_test)
-'''
-
-
-
 
 
 
 # Part 2 - ANN building
-'''WITH DROPOUT''' 
+'''
+    Dropout is used to prevent overfitting. At each iteration of the training, some neurons
+    are randomly disabled to prevent them from being too dependent on each other when they 
+    learn the correlations so the ANN finds several independent correlations and prevents
+    overfitting.
+    p: the fractions os the neurons that you want to drop, 0.1 = 10%
+'''
 
 # Importing the Keras libraries and packages
-import keras
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout # to prevent overfitting
@@ -67,18 +53,11 @@ classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
 classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
-classifier.add(Dropout(p = 0.1)) 
-'''
-    Dropout is used to prevent overfitting. At each iteration of the training, some neurons
-    are randomly disabled to prevent them from being too dependent on each other when they 
-    learn the correlations so the ANN finds several independent correlations and prevents
-    overfitting.
-    p: the fractions os the neurons that you want to drop, 0.1 = 10%
-'''
+classifier.add(Dropout(rate=0.1)) 
 
 # Adding the second hidden layer
 classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
-classifier.add(Dropout(p = 0.1))
+classifier.add(Dropout(rate=0.1))
 
 # Adding the output layer
 classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
@@ -120,6 +99,15 @@ cm = confusion_matrix(y_test, y_pred)
 
 
 # Part 4 - Evaluating, Improving and Tuning the ANN
+'''
+    the function builds the ANN classifier, just like in Part 2 above
+    except for the fit part to the training set 
+    estimator: the object to use to fit the data (classifier)
+    X = the data to fit (X_train)
+    y = to train a model, you need y's to understand correlations
+    cv: number of folds in k-fold cross validation, 10 is recommended
+    n_jobs: number of CPUs to use to do the computations, -1 means 'all CPUs'
+'''
 
 # Evaluating the ANN
 from keras.wrappers.scikit_learn import KerasClassifier 
@@ -134,21 +122,11 @@ def build_classifier():
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
-'''
-    the function builds the ANN classifier, just like in Part 2 above
-    except for the fit part to the training set 
-'''
+
 classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 100)
 
 # this line takes a while
 accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = 1)
-'''
-    estimator: the object to use to fit the data (classifier)
-    X = the data to fit (X_train)
-    y = to train a model, you need y's to understand correlations
-    cv: number of folds in k-fold cross validation, 10 is recommended
-    n_jobs: number of CPUs to use to do the computations, -1 means 'all CPUs'
-'''
 
 mean = accuracies.mean() # find the average of the accuracies
 variance = accuracies.std() # find the variance of the accuracies (if < 1% = rather low variance)
@@ -166,6 +144,9 @@ variance = accuracies.std() # find the variance of the accuracies (if < 1% = rat
     PARAMETER TUNING - THE GRID SEARCH TECHNIQUE
     THIS TAKES SEVERAL HOURS LOLOLOLO
     not really but it takes a while
+    
+    The parameters to study
+    When tuning the optimizer, they must be passed through the function
 '''
 
 # Tuning the ANN
@@ -185,10 +166,6 @@ classifier = KerasClassifier(build_fn = build_classifier) # the global classifie
 parameters = {'batch_size': [25, 32],
               'epochs': [100, 500],
               'optimizer': ['adam', 'rmsprop']} 
-'''
-    The parameters to study
-    When tuning the optimizer, they must be passed through the function
-'''
 
 grid_search = GridSearchCV(estimator = classifier,
                            param_grid = parameters,
