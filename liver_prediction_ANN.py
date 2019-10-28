@@ -93,8 +93,10 @@ def neuralNetwork():
     return classifier
 
 # calling the function
-classifier = KerasClassifier(build_fn = neuralNetwork)
+neuralNetwork()
 
+#classifier = KerasClassifier(build_fn = neuralNetwork)
+classifier = neuralNetwork()
 
 
 
@@ -200,64 +202,62 @@ best_accuracy = grid_search.best_score_
 
 # Part 6 - Experimenting
 
+# TODO: check with https://scikit-learn.org/stable/modules/classes.html#classification-metrics
+
 numFeatures = X.shape[1] # fin number of features (55)
 scaler = preprocessing.MinMaxScaler(feature_range=(0,1))
 
-j = 0
-avgTestMAE = 0     # average test mean absolute error
-avgTestMSE = 0     # average test mean squared error
-avgTestRMSE = 0    # average test root mean squared error
-avgTestVarianceScore = 0  # # average test variance score
-metricsList = [] 
-nTimes = 10
+times = 10
 
-for n in range(nTimes):
+for n in range(times):
     
     print("Test Number: " + str(n))
     ANN = neuralNetwork()
-    
     i = 0
-    v = 0
+    
+    a = 0 # accuracy score
+    aps = 0 # average precision score
+    
     mae = 0
     mse = 0
     rmse = 0
     
+    
     kf = RepeatedKFold(n_splits=5, n_repeats=1)
     
     for trainIndex, testIndex in kf.split(X):
-
-        print("TRAIN:", trainIndex, "TEST:", testIndex)
-
+        
         xTrain, xTest = X[trainIndex], X[testIndex]
         yTrain, yTest = y[trainIndex], y[testIndex]
-
         scaler.fit(xTrain)
-
         xTrain = scaler.transform(xTrain)
         xTest = scaler.transform(xTest) 
     
         earlyStop = keras.callbacks.EarlyStopping(monitor = 'loss', patience = 5)
         ANN.fit(xTrain, yTrain, epochs = 100, verbose = 0, callbacks = [earlyStop])
-
         predictions = ANN.predict(xTest).flatten()   
 
-        v = v + metrics.r2_score(yTest, predictions)
+        a = a + metrics.accuracy_score(yTest, predictions)
+        
         mae = mae + metrics.mean_absolute_error(yTest, predictions)
         mse = mse + metrics.mean_squared_error(yTest, predictions)
         rmse = rmse + np.sqrt(metrics.mean_squared_error(yTest, predictions))
-
+        
         i = i + 1
 
-    v = v / i
+    a = a / i
+    
     mae = mae / i
     rmse = rmse / i
     mse = mse / i
         
     print('VALIDATION RESULTS')
+    print("Average Accuracy Classification Score:", a)
+    
     print("Average Mean Absolute Error:", mae)
     print("Average Mean Squared Error:", mse)
     print("Average Root Mean Squared Error:", rmse)
-    print("Average Variance Score:", v)
+    
         
         
     
