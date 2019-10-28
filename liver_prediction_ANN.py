@@ -14,12 +14,33 @@ Installing Keras
 $ pip install --upgrade keras
 '''
 
-# Part 1 - Data Preprocessing
 
 # Importing the libraries
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
+
+# Keras libraries and packages
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import Dropout # to prevent overfitting
+
+# For evaluating
+from keras.wrappers.scikit_learn import KerasClassifier 
+from sklearn.model_selection import cross_val_score
+
+# For tuning
+from sklearn.model_selection import GridSearchCV
+
+from sklearn import metrics
+from sklearn import preprocessing
+from sklearn.model_selection import RepeatedKFold
+from tensorflow import keras
+from Utility import Metric, generateMetric, generateMeanPredictions, showMetrics
+
+
+
+
+# Part 1 - Data Preprocessing
 
 # Importing the dataset
 dataset = pd.read_csv('honours_dataset_openrefine.csv')
@@ -34,6 +55,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 
 
 
+
 # Part 2 - ANN building
 '''
     Dropout is used to prevent overfitting. At each iteration of the training, some neurons
@@ -42,11 +64,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
     overfitting.
     p: the fractions os the neurons that you want to drop, 0.1 = 10%
 '''
-
-# Importing the Keras libraries and packages
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout # to prevent overfitting
 
 # Initialising the ANN
 classifier = Sequential()
@@ -109,12 +126,6 @@ cm = confusion_matrix(y_test, y_pred)
     n_jobs: number of CPUs to use to do the computations, -1 means 'all CPUs'
 '''
 
-# Evaluating the ANN
-from keras.wrappers.scikit_learn import KerasClassifier 
-from sklearn.model_selection import cross_val_score
-from keras.models import Sequential
-from keras.layers import Dense
-
 def build_classifier():
     classifier = Sequential()
     classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
@@ -137,8 +148,7 @@ variance = accuracies.std() # find the variance of the accuracies (if < 1% = rat
 
 
 
-# Part 5 - Improving the ANN
-#
+# Part 5 - Improving and tuning the ANN
 '''
     Dropout Regularization to reduce overfitting 
     PARAMETER TUNING - THE GRID SEARCH TECHNIQUE
@@ -149,11 +159,6 @@ variance = accuracies.std() # find the variance of the accuracies (if < 1% = rat
     When tuning the optimizer, they must be passed through the function
 '''
 
-# Tuning the ANN
-from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.model_selection import GridSearchCV
-from keras.models import Sequential
-from keras.layers import Dense
 def build_classifier(optimizer):# optimizer is passed because it is tuned in the parameters
     classifier = Sequential() # this is a local classifier
     classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
