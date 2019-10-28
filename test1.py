@@ -6,16 +6,16 @@ import sklearn.svm as svm
 from tensorflow import keras
 from liver_prediction_ANN import liver_prediction_ANN
 
-import csv
 import pandas as pd
 import numpy as np
 
 from Utility import Metric, generateMetric, generateMeanPredictions, showMetrics
 
+# called from another file
 def experiment(trainingDataset, testingDataset, nTimes, learningRate = 0.001, numDenseLayers = 1, numDenseNodes = 10, activation = 'relu', numFeatures = 55, epochs = 100, optimizer = 'adam'):
 
     df = pd.read_csv(trainingDataset, header=0)
-    # attributes that are features to predict PV output
+    # attributes that are features to predict output
     # x = df[[ 'month', 'day', 'hour', 'IDN', 'I', 'oktas', 'visibility', 'hsd', 'temp']]
     df = df[['month','day','hour','IDN','I','oktas','visibility','hsd', 'temp','pv']]
 
@@ -135,3 +135,5 @@ def experiment(trainingDataset, testingDataset, nTimes, learningRate = 0.001, nu
     print("Average Mean Squared Error:", avgTestMSE)
     print("Average Root Mean Squared Error:", avgTestRMSE)
     print("Average Variance Score:", avgTestVarianceScore)
+    
+    
