@@ -2,14 +2,12 @@ from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import RepeatedKFold
 import sklearn.svm as svm
-
 from tensorflow import keras
 from liver_prediction_ANN import liver_prediction_ANN
-
 import pandas as pd
 import numpy as np
-
 from Utility import Metric, generateMetric, generateMeanPredictions, showMetrics
+
 
 # called from another file
 def experiment(trainingDataset, testingDataset, nTimes, learningRate = 0.001, numDenseLayers = 1, numDenseNodes = 10, activation = 'relu', numFeatures = 55, epochs = 100, optimizer = 'adam'):

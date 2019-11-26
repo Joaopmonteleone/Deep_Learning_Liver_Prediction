@@ -18,26 +18,20 @@ $ pip install --upgrade keras
 # Importing the libraries
 import numpy as np
 import pandas as pd
-
 from sklearn.model_selection import train_test_split
-
 # Keras libraries and packages
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout # to prevent overfitting
-
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout # to prevent overfitting
 # For evaluating
-from keras.wrappers.scikit_learn import KerasClassifier 
+from tensorflow.keras.wrappers.scikit_learn import KerasClassifier 
 from sklearn.model_selection import cross_val_score
-
 # For tuning
 from sklearn.model_selection import GridSearchCV
-
 from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import RepeatedKFold
 from tensorflow import keras
-
 # from Utility import Metric, generateMetric, generateMeanPredictions, showMetrics
 
 
@@ -48,7 +42,7 @@ from tensorflow import keras
 # Part 1 - Data Preprocessing
 
 # Importing the dataset
-dataset = pd.read_csv('training1.csv')
+dataset = pd.read_csv('datasets/training1.csv')
 X = dataset.iloc[:, 1:56].values # all rows, columns index 1 to 55 (56 is excluded)
 y = dataset.iloc[:, 56].values # all rows, column index 56
 
@@ -103,7 +97,10 @@ classifier = neuralNetwork()
 
 # Part 3 - Making predictions and evaluating the model
 
-y_pred = classifier.predict(X_test)
+def predict(x_test):
+    return classifier.predict(x_test)
+
+y_pred = predict(X_test)
 y_pred = (y_pred > 0.5) # converting probabilities in the form True or False
 
 new_prediction = classifier.predict(np.array([[50,0,31.56167151,0,0,0,0,1,0,0,0,0,0,1,0,0,165,11,15,0,0,0,1,0,0,0,0,56,1,37.109375,0,0,0,1,0,0,0,2,0,1,0.5,148,15,11,0.3,0,0,1,1,0,0,0,0,1,1]]))
@@ -204,8 +201,36 @@ best_accuracy = grid_search.best_score_
 
 # TODO: check with https://scikit-learn.org/stable/modules/classes.html#classification-metrics
 
-numFeatures = X.shape[1] # fin number of features (55)
-scaler = preprocessing.MinMaxScaler(feature_range=(0,1))
+dataset_test = pd.read_csv('datasets/test1.csv')
+X_test = dataset.iloc[:, 1:56].values # all rows, columns index 1 to 55 (56 is excluded)
+y_test = dataset.iloc[:, 56].values
+
+xTest_numFeatures = X_test.shape[1] # find number of features (55)
+# scaler = preprocessing.MinMaxScaler(feature_range=(0,1))
+predictions = predict(X_test)
+
+y_pred = (y_pred > 0.5)
+
+for p in predictions:
+    print(p)
+    if p > 0.5:
+        p = 1
+        print("-")
+        print (p)
+    else:
+        p = 0
+        print("+")
+        print (p)
+    
+
+metrics = precision_recall_curve(y_test, predictions)
+
+
+# scaler.fit(X_test)
+# X_test = scaler.transform(X_test)
+        
+        
+        
 
 times = 10
 
@@ -217,6 +242,9 @@ for n in range(times):
     
     a = 0 # accuracy score
     aps = 0 # average precision score
+    prc = 0 # precision_recall_curve (precision-recall pairs for different probability thresholds)
+    roc = 0 # roc_curve (Receiver operating characteristic)
+    bac = 0 # balanced_accuracy_score 
     
     mae = 0
     mse = 0

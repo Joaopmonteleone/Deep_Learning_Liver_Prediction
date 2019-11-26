@@ -3,14 +3,11 @@ from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import RepeatedKFold
 import sklearn.svm as svm
-
 from tensorflow import keras
 from liver_prediction_ANN import liver_prediction_ANN
-
 import csv
 import pandas as pd
 import numpy as np
-
 from Utility import Metric, generateMetric, generateMeanPredictions, showMetrics
 
 
@@ -58,12 +55,12 @@ def runNeuralNetworkExperiment(trainingDataset, testingDataset, nTimes, learning
             scaler.fit(xTrain)
 
             xTrain = scaler.transform(xTrain)
-            xTest = scaler.transform(xTest) 
-    
+            xTest = scaler.transform(xTest)
+
             earlyStop = keras.callbacks.EarlyStopping(monitor = 'loss', patience = 5)
             ANN.fit(xTrain, yTrain, epochs = epochs, verbose = 0, callbacks = [earlyStop])
 
-            predictions = ANN.predict(xTest).flatten()   
+            predictions = ANN.predict(xTest).flatten()
 
             v = v + metrics.r2_score(yTest, predictions)
             mae = mae + metrics.mean_absolute_error(yTest, predictions)
@@ -76,7 +73,7 @@ def runNeuralNetworkExperiment(trainingDataset, testingDataset, nTimes, learning
         mae = mae / i
         rmse = rmse / i
         mse = mse / i
-        
+
         print('VALIDATION RESULTS')
         print("Average Mean Absolute Error:", mae)
         print("Average Mean Squared Error:", mse)
@@ -85,7 +82,7 @@ def runNeuralNetworkExperiment(trainingDataset, testingDataset, nTimes, learning
 
         testDataset = pd.read_csv(testingDataset, header=0)
 
-        df = testDataset[['month','day','hour','IDN','I','oktas', 'hsd','temp','visibility','pv']]   
+        df = testDataset[['month','day','hour','IDN','I','oktas', 'hsd','temp','visibility','pv']]
 
         testX = df[['I', 'oktas', 'visibility', 'temp', 'hsd']].to_numpy()
         testY = df[['pv']].to_numpy()
@@ -113,7 +110,7 @@ def runNeuralNetworkExperiment(trainingDataset, testingDataset, nTimes, learning
         yTestList = testY.tolist()
         j = j + 1
 
-        generateTestPredictions("TestPredictionsKFoldNeuralNetwork" + str(n) + ".csv", predictions, yTestList)      
+        generateTestPredictions("TestPredictionsKFoldNeuralNetwork" + str(n) + ".csv", predictions, yTestList)
 
         if n != nTimes - 1:
             del ANN
@@ -121,7 +118,7 @@ def runNeuralNetworkExperiment(trainingDataset, testingDataset, nTimes, learning
             ANN.exportModelInfo()
             del ANN
         keras.backend.clear_session()
-    
+
     avgTestMAE = avgTestMAE / j
     avgTestMSE = avgTestMSE / j
     avgTestRMSE = avgTestRMSE / j
@@ -141,7 +138,7 @@ def runNeuralNetworkExperiment(trainingDataset, testingDataset, nTimes, learning
 
 
 def runSupportVectorMachineExperiment(trainingDataset, testingDataset, nTimes):
-    
+
     df = pd.read_csv(trainingDataset, header=0)
 
     # attributes that are features to predict PV output
@@ -189,7 +186,7 @@ def runSupportVectorMachineExperiment(trainingDataset, testingDataset, nTimes):
             scaler.fit(xTrain)
 
             xTrain = scaler.transform(xTrain)
-            xTest = scaler.transform(xTest) 
+            xTest = scaler.transform(xTest)
 
             svr.fit(xTrain, yTrain.ravel())
 
@@ -228,7 +225,7 @@ def runSupportVectorMachineExperiment(trainingDataset, testingDataset, nTimes):
 
         testPred = svr.predict(testX)
 
-        print("TEST RESULTS:")       
+        print("TEST RESULTS:")
 
         tempTestMAE = metrics.mean_absolute_error(testY, testPred)
         tempTestMSE = metrics.mean_squared_error(testY, testPred)
@@ -239,19 +236,19 @@ def runSupportVectorMachineExperiment(trainingDataset, testingDataset, nTimes):
         avgTestMSE = avgTestMSE + metrics.mean_squared_error(testY, testPred)
         avgTestRMSE = avgTestRMSE + np.sqrt(metrics.mean_squared_error(testY, testPred))
         avgTestVarianceScore = avgTestVarianceScore + metrics.r2_score(testY, testPred)
- 
+
         metric = Metric(tempTestMAE, tempTestMSE, tempTestRMSE, tempTestVarianceScore)
         metricsList.append(metric)
         showMetrics(testY, testPred, message = "TEST RESULTS")
 
         predictions = testPred.tolist()
-        yTestList = testY.tolist() 
+        yTestList = testY.tolist()
         j = j + 1
 
-        generateTestPredictions("TestPredictionsKFoldSVR" + str(n) + ".csv", predictions, yTestList) 
+        generateTestPredictions("TestPredictionsKFoldSVR" + str(n) + ".csv", predictions, yTestList)
 
-        del svr 
-    
+        del svr
+
     avgTestMAE = avgTestMAE / j
     avgTestMSE = avgTestMSE / j
     avgTestRMSE = avgTestRMSE / j
