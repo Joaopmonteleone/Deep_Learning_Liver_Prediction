@@ -28,3 +28,13 @@ plt.plot(base[:-1], cumulative)
 
 plt.show()
 
+
+# CUMULATIVE FREQUENCY UP TO 365 DAYS
+data2 = []
+for x in data:
+   if x < 360:
+      data2.append(x)
+values, base = np.histogram(data2, bins='auto')
+cumulative = np.cumsum(values)
+plt.plot(base[:-1], cumulative)
+plt.show()
