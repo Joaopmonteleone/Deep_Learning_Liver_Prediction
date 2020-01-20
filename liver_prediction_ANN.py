@@ -32,19 +32,27 @@ from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import RepeatedKFold
 from tensorflow import keras
-# from Utility import Metric, generateMetric, generateMeanPredictions, showMetrics
 
 
 
 
 
-
-# Part 1 - Data Preprocessing
+###############################################
+#             Data Preprocessing              #
+###############################################
 
 # Importing the dataset
-dataset = pd.read_csv('datasets/training1.csv')
-X = dataset.iloc[:, 1:56].values # all rows, columns index 1 to 55 (56 is excluded)
-y = dataset.iloc[:, 56].values # all rows, column index 56
+dataset = pd.read_csv('datasets/openrefine/training1200_ordinal_output.csv')
+X = dataset.iloc[:, :-1].values # all rows, all columns except last (result)
+y = dataset.iloc[:, 39].values # all rows, last column (result)
+
+
+# Encoding categorical data
+from sklearn.preprocessing import OneHotEncoder
+onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) #calling the class
+# etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
+X = onehotencoder.fit_transform(X).toarray()
+
 
 
 # Splitting the dataset into the Training set and Test set
@@ -53,8 +61,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 
 
 
-
-# Part 2 - ANN building
+###############################################
+#                ANN Building                 #
+###############################################
 '''
     Dropout is used to prevent overfitting. At each iteration of the training, some neurons
     are randomly disabled to prevent them from being too dependent on each other when they 
@@ -94,8 +103,9 @@ classifier = neuralNetwork()
 
 
 
-
-# Part 3 - Making predictions and evaluating the model
+###############################################
+#     Make predictions & evaluate model       #
+###############################################
 
 def predict(x_test):
     return classifier.predict(x_test)
@@ -119,9 +129,10 @@ cm = confusion_matrix(y_test, y_pred)
 
 
 
+###############################################
+#      Evaluate, improve and tune ANN         #
+###############################################
 
-
-# Part 4 - Evaluating, Improving and Tuning the ANN
 '''
     the function builds the ANN classifier, just like in Part 2 above
     except for the fit part to the training set 
@@ -153,8 +164,9 @@ variance = accuracies.std() # find the variance of the accuracies (if < 1% = rat
 
 
 
-
-# Part 5 - Improving and tuning the ANN
+###############################################
+#             Improving & Tuning              #
+###############################################
 '''
     Dropout Regularization to reduce overfitting 
     PARAMETER TUNING - THE GRID SEARCH TECHNIQUE
@@ -196,8 +208,9 @@ best_accuracy = grid_search.best_score_
 
 
 
-
-# Part 6 - Experimenting
+###############################################
+#                Experimenting                #
+###############################################
 
 # TODO: check with https://scikit-learn.org/stable/modules/classes.html#classification-metrics
 
