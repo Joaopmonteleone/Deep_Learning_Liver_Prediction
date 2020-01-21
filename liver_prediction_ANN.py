@@ -18,7 +18,7 @@ $ pip install --upgrade keras
 # Importing the libraries
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+
 # Keras libraries and packages
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -56,8 +56,19 @@ X = onehotencoder.fit_transform(X).toarray()
 
 
 # Splitting the dataset into the Training set and Test set
+from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+''' test_size is 20% = 0.2
+    random_state is a generator for random sampling '''
 
+
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc_X = StandardScaler()
+X_train = sc_X.fit_transform(X_train)
+X_test = sc_X.transform(X_test)
+''' fit the object of the training sets and then transform it. 
+    not the same for the test set, we only need to transform test set without fitting it '''
 
 
 
