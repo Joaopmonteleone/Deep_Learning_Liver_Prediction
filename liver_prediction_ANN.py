@@ -15,14 +15,10 @@ $ pip install --upgrade keras
 '''
 
 
-# Importing the libraries
-import numpy as np
-import pandas as pd
+###############################################
+#            IMPORTING LIBRARIES              #
+###############################################
 
-# Keras libraries and packages
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Dropout # to prevent overfitting
 # For evaluating
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier 
 from sklearn.model_selection import cross_val_score
@@ -40,6 +36,8 @@ from tensorflow import keras
 ###############################################
 #             Data Preprocessing              #
 ###############################################
+import numpy as np
+import pandas as pd
 
 # Importing the dataset
 dataset = pd.read_csv('datasets/openrefine/training1200_ordinal_output.csv')
@@ -72,9 +70,16 @@ X_test = sc_X.transform(X_test)
 
 
 
+
+
 ###############################################
 #                ANN Building                 #
 ###############################################
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
+
 '''
     Dropout is used to prevent overfitting. At each iteration of the training, some neurons
     are randomly disabled to prevent them from being too dependent on each other when they 
@@ -83,28 +88,31 @@ X_test = sc_X.transform(X_test)
     p: the fractions os the neurons that you want to drop, 0.1 = 10%
 '''
 
+
+
 def neuralNetwork():
-    # Initialising the ANN
-    classifier = Sequential()
+   # Initialising the ANN
+   classifier = Sequential()
+   
+   # Adding the input layer and the first hidden layer
+   classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 56))
+   classifier.add(Dropout(rate=0.1)) 
+   
+   # Adding the second hidden layer
+   classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
+   classifier.add(Dropout(rate=0.1))
+   
+   # Adding the output layer
+   classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+   
+   # Compiling the ANN
+   classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
-    # Adding the input layer and the first hidden layer
-    classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
-    classifier.add(Dropout(rate=0.1)) 
+   # Fitting the ANN to the Training set
+   classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
+ 
+   return classifier
 
-    # Adding the second hidden layer
-    classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
-    classifier.add(Dropout(rate=0.1))
-
-    # Adding the output layer
-    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
-
-    # Compiling the ANN
-    classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
-
-    # Fitting the ANN to the Training set
-    classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
-    
-    return classifier
 
 # calling the function
 neuralNetwork()
