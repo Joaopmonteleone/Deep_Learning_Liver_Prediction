@@ -41,16 +41,16 @@ import pandas as pd
 
 # Importing the dataset
 dataset = pd.read_csv('datasets/openrefine/training1200_ordinal_output.csv')
-X = dataset.iloc[:, :-1].values # all rows, all columns except last (result)
-y = dataset.iloc[:, 39].values # all rows, last column (result)
-
+X = dataset.iloc[:, :-2].values # all rows, all columns except last result and 3 months answer - (1198, 39)
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
-onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) #calling the class
+onehotencoder = OneHotEncoder(categorical_features = [39]) #encoding the output
+y = onehotencoder.fit_transform(dataset.values).toarray()
+y = y[:, 0:4]
+onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) #encoding the input
 # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
 X = onehotencoder.fit_transform(X).toarray()
-
 
 
 # Splitting the dataset into the Training set and Test set
@@ -95,18 +95,28 @@ def neuralNetwork():
    classifier = Sequential()
    
    # Adding the input layer and the first hidden layer
-   classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 56))
+   classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
    classifier.add(Dropout(rate=0.1)) 
-   
+   '''EXPERIMENT WITH AND WITHOUT THIS'''
+    
    # Adding the second hidden layer
-   classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
+   classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu'))
    classifier.add(Dropout(rate=0.1))
    
    # Adding the output layer
-   classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+   classifier.add(Dense(units = 4, kernel_initializer = 'uniform', activation = 'softmax'))
+   ''' 1 unit if the output is binary. 
+       same as the number of classes but need to encode the dependent 
+       variable and the activation function should be softmax (sigmoid function but applied to a dependent 
+       variable that has more than two categories)
+       sigmoid activation function to calculate a probability 
+   '''
    
    # Compiling the ANN
-   classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+   classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
+   '''
+       - metrics: criterion chosen to evaluate the model and improve its performance
+   '''
 
    # Fitting the ANN to the Training set
    classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
