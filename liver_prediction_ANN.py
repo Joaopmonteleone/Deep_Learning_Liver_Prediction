@@ -42,6 +42,7 @@ import pandas as pd
 # Importing the dataset
 dataset = pd.read_csv('datasets/openrefine/training1200_ordinal_output.csv')
 X = dataset.iloc[:, :-2].values # all rows, all columns except last result and 3 months answer - (1198, 39)
+y_before = dataset.iloc[:, 39].values # all rows, last column (result) keep a record to compare later
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
@@ -109,7 +110,7 @@ def neuralNetwork():
    classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
    # Fitting the ANN to the Training set
-   classifier.fit(X_train, y_train, batch_size = 5, epochs = 500)
+   classifier.fit(X_train, y_train, batch_size = 5, epochs = 100)
  
    return classifier
 
@@ -129,16 +130,13 @@ classifier = neuralNetwork()
 def predict(x_test):
     return classifier.predict(x_test)
 
+# Making a new prediction from a file
 y_pred = predict(X_test)
 
+# Making a new prediction inline
 new_prediction = classifier.predict(np.array([[50,0,31.56167151,0,0,0,0,1,0,0,0,0,0,1,0,0,165,11,15,0,0,0,1,0,0,0,0,56,1,37.109375,0,0,0,1,0,0,0,2,0,1,0.5,148,15,11,0.3,0,0,1,1,0,0,0,0,1,1]]))
-# np.array to make it an array
-new_prediction = (new_prediction > 0.5)
 
-prediction_try2 = classifier.predict(np.array([[33,0,34.60207612,0,0,0,0,0,0,0,1,0,0,1,0,0,570,17,34,0,0,1,0,1,0,0,0,71,1,38.26530612,1,0,0,1,0,0,0,1,0,1,1,140,14,16,0.5,0,0,1,0,0,0,0,1,0,1]]))
-prediction_try2 = (prediction_try2 > 0.5)
-
-# Making the Confusion Matrix
+# Making the Confusion Matrix - not valid for categorical outputs, only for binary
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 
