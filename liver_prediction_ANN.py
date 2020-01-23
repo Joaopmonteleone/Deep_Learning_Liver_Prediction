@@ -96,8 +96,7 @@ def neuralNetwork():
    
    # Adding the input layer and the first hidden layer
    classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
-   classifier.add(Dropout(rate=0.1)) 
-   '''EXPERIMENT WITH AND WITHOUT THIS'''
+   classifier.add(Dropout(rate=0.1)) #EXPERIMENT WITH AND WITHOUT THIS
     
    # Adding the second hidden layer
    classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu'))
@@ -105,21 +104,12 @@ def neuralNetwork():
    
    # Adding the output layer
    classifier.add(Dense(units = 4, kernel_initializer = 'uniform', activation = 'softmax'))
-   ''' 1 unit if the output is binary. 
-       same as the number of classes but need to encode the dependent 
-       variable and the activation function should be softmax (sigmoid function but applied to a dependent 
-       variable that has more than two categories)
-       sigmoid activation function to calculate a probability 
-   '''
    
    # Compiling the ANN
    classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
-   '''
-       - metrics: criterion chosen to evaluate the model and improve its performance
-   '''
 
    # Fitting the ANN to the Training set
-   classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
+   classifier.fit(X_train, y_train, batch_size = 5, epochs = 500)
  
    return classifier
 
@@ -140,7 +130,6 @@ def predict(x_test):
     return classifier.predict(x_test)
 
 y_pred = predict(X_test)
-y_pred = (y_pred > 0.5) # converting probabilities in the form True or False
 
 new_prediction = classifier.predict(np.array([[50,0,31.56167151,0,0,0,0,1,0,0,0,0,0,1,0,0,165,11,15,0,0,0,1,0,0,0,0,56,1,37.109375,0,0,0,1,0,0,0,2,0,1,0.5,148,15,11,0.3,0,0,1,1,0,0,0,0,1,1]]))
 # np.array to make it an array
