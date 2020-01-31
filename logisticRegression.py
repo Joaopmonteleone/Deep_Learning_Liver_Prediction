@@ -56,6 +56,16 @@ from sklearn.linear_model import LogisticRegression
 classifier = LogisticRegression(random_state = 0)
 classifier.fit(X_train, y_train)
 
+
+###############################################
+#            K-Nearest Neighbours             #
+###############################################
+
+# K NEIGHBOURS
+from sklearn.neighbors import KNeighborsClassifier
+classifier = KNeighborsClassifier(n_neighbors = 4, metric = 'minkowski', p = 2)
+classifier.fit(X_train, y_train)
+
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
 
