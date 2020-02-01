@@ -50,20 +50,28 @@ from tensorflow import keras
 
 
 # Importing the dataset
-dataset = pd.read_csv('datasets/openrefine/training1200_ordinal_output.csv')
+dataset = pd.read_csv('datasets/balanced_Dataset/export_dataframe.csv')
 X = dataset.iloc[:, :-2].values # all rows, all columns except last result and 3 months answer - (1198, 39)
 y_before = dataset.iloc[:, 39].values # all rows, last column (result) keep a record to compare later
 
 # Encoding categorical data
-onehotencoder = OneHotEncoder(categorical_features = [39]) #encoding the output
+# encoding the output
+onehotencoder = OneHotEncoder(categorical_features = [39])
 y = onehotencoder.fit_transform(dataset.values).toarray()
 y = y[:, 0:4]
-onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) #encoding the input
+# encoding the input
+onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) 
 # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
 X = onehotencoder.fit_transform(X).toarray()
 
+# Separating each column to predict separate classes
+y_1 = y[:, 0]
+y_2 = y[:, 1]
+y_3 = y[:, 2]
+y_4 = y[:, 3]
+
 # Splitting the dataset into the Training set and Test set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+X_train, X_test, y_train, y_test = train_test_split(X, y_1, test_size = 0.2, random_state = 0)
 ''' test_size is 20% = 0.2
     random_state is a generator for random sampling '''
 
@@ -88,7 +96,7 @@ X_test = sc_X.transform(X_test)
     are randomly disabled to prevent them from being too dependent on each other when they 
     learn the correlations so the ANN finds several independent correlations and prevents
     overfitting.
-    p: the fractions os the neurons that you want to drop, 0.1 = 10%
+    p: the fractions of the neurons that you want to drop, 0.1 = 10%
 '''
 
 
@@ -105,22 +113,22 @@ def neuralNetwork():
    classifier.add(Dropout(rate=0.1))
    
    # Adding the output layer
-   classifier.add(Dense(units = 4, kernel_initializer = 'uniform', activation = 'softmax'))
+   classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
    
    # Compiling the ANN
-   classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
+   classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
    # Fitting the ANN to the Training set
-   classifier.fit(X_train, y_train, batch_size = 5, epochs = 100)
+   classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
  
    return classifier
 
 
-# calling the function
-neuralNetwork()
-
 #classifier = KerasClassifier(build_fn = neuralNetwork)
 classifier = neuralNetwork()
+
+
+
 
 
 
@@ -132,15 +140,19 @@ classifier = neuralNetwork()
 def predict(x_test):
     return classifier.predict(x_test)
 
-# Making a new prediction from a file
-y_pred = predict(X_test)
+# Making new predictions from test dataset
+y_pred = predict(X_test)   # percentage prediction
+y_bool = []                # binary prediction (1s or 0s)
 
-# Making a new prediction inline
-new_prediction = classifier.predict(np.array([[50,0,31.56167151,0,0,0,0,1,0,0,0,0,0,1,0,0,165,11,15,0,0,0,1,0,0,0,0,56,1,37.109375,0,0,0,1,0,0,0,2,0,1,0.5,148,15,11,0.3,0,0,1,1,0,0,0,0,1,1]]))
-
+for n in y_pred:
+   if n > 0.75:
+      n = 1
+   else:
+      n = 0
+   y_bool.append(n)
+      
 # Making the Confusion Matrix - not valid for categorical outputs, only for binary
-
-cm = confusion_matrix(y_test, y_pred)
+cm = confusion_matrix(y_test, y_bool)
 
 
 
@@ -148,23 +160,14 @@ cm = confusion_matrix(y_test, y_pred)
 
 
 ###############################################
-#      Evaluate, improve and tune ANN         #
+#             Evaluating the ANN              #
 ###############################################
 
-'''
-    the function builds the ANN classifier, just like in Part 2 above
-    except for the fit part to the training set 
-    estimator: the object to use to fit the data (classifier)
-    X = the data to fit (X_train)
-    y = to train a model, you need y's to understand correlations
-    cv: number of folds in k-fold cross validation, 10 is recommended
-    n_jobs: number of CPUs to use to do the computations, -1 means 'all CPUs'
-'''
 
 def build_classifier():
     classifier = Sequential()
-    classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
-    classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu'))
+    classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
+    classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu'))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
@@ -173,6 +176,11 @@ classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epoch
 
 # this line takes a while
 accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = 1)
+''' estimator: the object to use to fit the data (classifier)
+    X = the data to fit (X_train)
+    y = to train a model, you need y's to understand correlations
+    cv: number of folds in k-fold cross validation, 10 is recommended
+    n_jobs: number of CPUs to use to do the computations, -1 means 'all CPUs'  '''
 
 mean = accuracies.mean() # find the average of the accuracies
 variance = accuracies.std() # find the variance of the accuracies (if < 1% = rather low variance)
@@ -183,16 +191,12 @@ variance = accuracies.std() # find the variance of the accuracies (if < 1% = rat
 
 
 ###############################################
-#             Improving & Tuning              #
+#        Improving & Tuning the ANN           #
 ###############################################
 '''
     Dropout Regularization to reduce overfitting 
     PARAMETER TUNING - THE GRID SEARCH TECHNIQUE
-    THIS TAKES SEVERAL HOURS LOLOLOLO
-    not really but it takes a while
-    
-    The parameters to study
-    When tuning the optimizer, they must be passed through the function
+    When tuning the optimizer, the parameters to study must be passed through the function
 '''
 
 def build_classifier(optimizer):# optimizer is passed because it is tuned in the parameters
@@ -204,9 +208,9 @@ def build_classifier(optimizer):# optimizer is passed because it is tuned in the
     return classifier
 
 classifier = KerasClassifier(build_fn = build_classifier) # the global classifier 
-parameters = {'batch_size': [25, 32],
-              'epochs': [100, 500],
-              'optimizer': ['adam', 'rmsprop']} 
+parameters = {'batch_size': [10, 25, 32, 40, 50], #10
+              'epochs': [100, 500, 750], #500
+              'optimizer': ['adam', 'rmsprop', 'sgd', 'adagrad']} # adagrad
 
 grid_search = GridSearchCV(estimator = classifier,
                            param_grid = parameters,
@@ -216,7 +220,7 @@ grid_search = GridSearchCV(estimator = classifier,
 grid_search = grid_search.fit(X_train, y_train) # fit the grid search to the data
 
 # find the attributes of the class
-best_parameters = grid_search.best_params_ 
+best_parameters = grid_search.best_params_ #[]
 best_accuracy = grid_search.best_score_ 
 
 
