@@ -19,13 +19,24 @@ $ pip install --upgrade keras
 #            IMPORTING LIBRARIES              #
 ###############################################
 
+# For preprocessing
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+# For the ANN building
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
+# For making predictions
+from sklearn.metrics import confusion_matrix
 # For evaluating
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier 
 from sklearn.model_selection import cross_val_score
 # For tuning
 from sklearn.model_selection import GridSearchCV
 from sklearn import metrics
-from sklearn import preprocessing
 from sklearn.model_selection import RepeatedKFold
 from tensorflow import keras
 
@@ -36,8 +47,7 @@ from tensorflow import keras
 ###############################################
 #             Data Preprocessing              #
 ###############################################
-import numpy as np
-import pandas as pd
+
 
 # Importing the dataset
 dataset = pd.read_csv('datasets/openrefine/training1200_ordinal_output.csv')
@@ -45,7 +55,6 @@ X = dataset.iloc[:, :-2].values # all rows, all columns except last result and 3
 y_before = dataset.iloc[:, 39].values # all rows, last column (result) keep a record to compare later
 
 # Encoding categorical data
-from sklearn.preprocessing import OneHotEncoder
 onehotencoder = OneHotEncoder(categorical_features = [39]) #encoding the output
 y = onehotencoder.fit_transform(dataset.values).toarray()
 y = y[:, 0:4]
@@ -53,16 +62,12 @@ onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) #encodi
 # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
 X = onehotencoder.fit_transform(X).toarray()
 
-
 # Splitting the dataset into the Training set and Test set
-from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 ''' test_size is 20% = 0.2
     random_state is a generator for random sampling '''
 
-
 # Feature Scaling
-from sklearn.preprocessing import StandardScaler
 sc_X = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
@@ -77,9 +82,6 @@ X_test = sc_X.transform(X_test)
 #                ANN Building                 #
 ###############################################
 
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Dropout
 
 '''
     Dropout is used to prevent overfitting. At each iteration of the training, some neurons
@@ -88,7 +90,6 @@ from tensorflow.keras.layers import Dropout
     overfitting.
     p: the fractions os the neurons that you want to drop, 0.1 = 10%
 '''
-
 
 
 def neuralNetwork():
@@ -123,6 +124,7 @@ classifier = neuralNetwork()
 
 
 
+
 ###############################################
 #     Make predictions & evaluate model       #
 ###############################################
@@ -137,7 +139,7 @@ y_pred = predict(X_test)
 new_prediction = classifier.predict(np.array([[50,0,31.56167151,0,0,0,0,1,0,0,0,0,0,1,0,0,165,11,15,0,0,0,1,0,0,0,0,56,1,37.109375,0,0,0,1,0,0,0,2,0,1,0.5,148,15,11,0.3,0,0,1,1,0,0,0,0,1,1]]))
 
 # Making the Confusion Matrix - not valid for categorical outputs, only for binary
-from sklearn.metrics import confusion_matrix
+
 cm = confusion_matrix(y_test, y_pred)
 
 
@@ -255,8 +257,8 @@ for p in predictions:
 metrics = precision_recall_curve(y_test, predictions)
 
 
-# scaler.fit(X_test)
-# X_test = scaler.transform(X_test)
+scaler.fit(X_test)
+X_test = scaler.transform(X_test)
         
         
         
