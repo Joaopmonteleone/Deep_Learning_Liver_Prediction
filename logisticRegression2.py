@@ -12,6 +12,9 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
+from tensorflow.keras.utils import plot_model
+import tensorflow_docs.modeling
+import tensorflow_docs.plots
 
 
 # Custom scaling function
@@ -33,17 +36,15 @@ import matplotlib.pyplot as plt
 #        print(scaler.min_)
 
 # Importing the dataset
-dataset = pd.read_csv('Processed-Population-Data.csv')
+dataset = pd.read_csv('datasets/regressionDataset.csv')
 
 # Set the input and output columns
-inputs = dataset.iloc[:,pd.np.r_[0:13, 15:23, 28:35, 38, 40:44]]
-outputs = dataset.iloc[:,pd.np.r_[13:15, 23:28, 35:38, 39]]
-# Select a single output to predict for the time being
-selectedOutput = dataset.iloc[:,[13]] # Total mass (optimised) structural steel frame
+X = dataset.iloc[:, :-1].values
+y = dataset.iloc[:, 38].values
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
-inputs_train, inputs_test, output_train, output_test = train_test_split(inputs, selectedOutput, test_size = 0.2, random_state = 0)
+inputs_train, inputs_test, output_train, output_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 ''' test_size is 20% = 0.2
     random_state is a generator for random sampling '''
 
@@ -53,11 +54,8 @@ scaler = MinMaxScaler()
 inputs_train_scaled = scaler.fit_transform(inputs_train)
 inputs_test_scaled = scaler.transform(inputs_test)
 
-# output_train_scaled = scaler.fit_transform(output_train)
-# output_test_scaled = scaler.transform(output_test)
+
 # Neural Network
-
-
 
 def build_model():
   ''' This defines the structure of the neural network. the first line "layers.Dense..."
@@ -83,8 +81,8 @@ def build_model():
 
 model = build_model()
 
+
 # Visualization of the model
-'''
 plot_model(model,
            to_file='model.png',
            show_shapes=True,
@@ -92,7 +90,7 @@ plot_model(model,
            rankdir='TB',
            expand_nested=True,
            dpi=96)
-'''
+
 
 
 # How many generations do we run the algorithm
@@ -116,17 +114,17 @@ hist.tail()
 plotter = tfdocs.plots.HistoryPlotter()
 plotter.plot({'Basic': history}, metric = "mse")
 plt.ylim([0,100000])
-plt.ylabel('MSE [Total Mass]')
+plt.ylabel('MSE [Days]')
 
 # Evaluate the model by using the test set
 print("\n")
 loss, mae, mse = model.evaluate(inputs_test_scaled, output_test, verbose=2)
-print("Testing set Mean Abs Error: {:5.2f} Total Mass".format(mae))
+print("Testing set Mean Abs Error: {:5.2f} Days".format(mae))
 
 test_predictions = model.predict(inputs_test_scaled).flatten()
 
 a = plt.axes(aspect='equal')
 plt.scatter(output_test, test_predictions)
-plt.xlabel('True Values [Total mass]')
-plt.ylabel('Predictions [Total mass]')
+plt.xlabel('True Values [Days]')
+plt.ylabel('Predictions [Days]')
 _ = plt.plot()
