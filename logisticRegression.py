@@ -19,15 +19,12 @@ import pandas as pd
 ###############################################
 
 # Importing the dataset
-dataset = pd.read_csv('datasets/openrefine/training1200_ordinal_output.csv')
-X = dataset.iloc[:, :-2].values 
-y_before = dataset.iloc[:, 39].values
+dataset = pd.read_csv('datasets/regressionDataset.csv')
+X = dataset.iloc[:, :-1].values 
+y = dataset.iloc[:, 38].values
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
-onehotencoder = OneHotEncoder(categorical_features = [39]) #encoding the output
-y = onehotencoder.fit_transform(dataset.values).toarray()
-y = y[:, 0:4]
 onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) #encoding the input
 # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
 X = onehotencoder.fit_transform(X).toarray()
