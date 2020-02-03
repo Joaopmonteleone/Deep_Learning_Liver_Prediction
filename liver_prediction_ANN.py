@@ -115,10 +115,12 @@ def neuralNetwork():
    classifier.add(Dropout(rate=0.1))
    
    # Adding the output layer
-   classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+   classifier.add(Dense(units = 4, kernel_initializer = 'uniform', activation = 'softmax'))
+   # softmax for classification
+   # sigmoid or binary
    
    # Compiling the ANN
-   classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+   classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
    # Fitting the ANN to the Training set
    classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
@@ -144,8 +146,9 @@ def predict(x_test):
 
 # Making new predictions from test dataset
 y_pred = predict(X_test)   # percentage prediction
-y_bool = []                # binary prediction (1s or 0s)
 
+# binary prediction (1s or 0s) ONLY WORKS WHEN PREDICTING ONE, NOT 4
+y_bool = []                
 for n in y_pred:
    if n > 0.75:
       n = 1
@@ -170,8 +173,8 @@ def build_classifier():
     classifier = Sequential()
     classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
     classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu'))
-    classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
-    classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+    classifier.add(Dense(units = 4, kernel_initializer = 'uniform', activation = 'sigmoid'))
+    classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
     return classifier
 
 classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 100)
