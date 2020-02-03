@@ -8,7 +8,6 @@ Created on Mon Jan 27 18:25:57 2020
 #          Importing the libraries            #
 ###############################################
 
-import pandas
 import scipy.stats as stats
 import pandas as pd
 
@@ -46,7 +45,7 @@ variables.remove('diabetesdon')
 # For all qualitative variables, run Chi Squared test
 for var in variables:
    print(var)
-   chi_Squared_test(british_classi[[var]])
+   #chi_Squared_test(british_classi[[var]])
    chi_Squared_test(spanish_classi[[var]])
    
 

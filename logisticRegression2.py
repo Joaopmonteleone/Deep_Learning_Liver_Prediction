@@ -15,28 +15,11 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.utils import plot_model
 import tensorflow_docs.modeling
 import tensorflow_docs.plots
+from sklearn.preprocessing import StandardScaler
 
-
-# Custom scaling function
-#"""
-#None of the scaling functions from within pandas allow increasing the size of
-#the scaled data frame. This function takes in a float as an input which dictates
-#relative to the mean of the dataset how much lower the scaling will be.
-#"""
-#def customScaler(listOfColumns, scale):
-#    for column in listOfColumns:
-#        # Select column contents by column name using [] operator
-#        listOfValues = listOfColumns[column].values
-#        # Increase the range of the data
-#        newMin = listOfValues.mean() - ((listOfValues.mean() - listOfValues.min()) * (1 + scale))
-#        newMax = listOfValues.mean() + ((listOfValues.max() - listOfValues.mean()) * (1 + scale))
-#        newRange = newMax - newMin
-#        scaler = MinMaxScaler()
-#        scaler.fit(listOfColumns)
-#        print(scaler.min_)
 
 # Importing the dataset
-dataset = pd.read_csv('datasets/regressionDataset.csv')
+dataset = pd.read_csv('datasets/balanced/regressionBalanced.csv')
 
 # Set the input and output columns
 X = dataset.iloc[:, :-1].values
@@ -49,10 +32,10 @@ inputs_train, inputs_test, output_train, output_test = train_test_split(X, y, te
     random_state is a generator for random sampling '''
 
 
-# Normalise the data
-scaler = MinMaxScaler()
-inputs_train_scaled = scaler.fit_transform(inputs_train)
-inputs_test_scaled = scaler.transform(inputs_test)
+# Feature Scaling
+sc_X = StandardScaler()
+inputs_train_scaled = sc_X.fit_transform(inputs_train)
+inputs_test_scaled = sc_X.transform(inputs_test)
 
 
 # Neural Network
@@ -81,7 +64,7 @@ def build_model():
 
 model = build_model()
 
-
+'''
 # Visualization of the model
 plot_model(model,
            to_file='model.png',
@@ -90,7 +73,7 @@ plot_model(model,
            rankdir='TB',
            expand_nested=True,
            dpi=96)
-
+'''
 
 
 # How many generations do we run the algorithm
@@ -113,7 +96,7 @@ hist.tail()
 #Visualize Mean squared error over epochs
 plotter = tfdocs.plots.HistoryPlotter()
 plotter.plot({'Basic': history}, metric = "mse")
-plt.ylim([0,100000])
+plt.ylim([0,110000])
 plt.ylabel('MSE [Days]')
 
 # Evaluate the model by using the test set

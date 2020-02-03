@@ -20,16 +20,7 @@ TO DO:
 
 
 
-Conclusion of Part 3 - Classification
-In this Part 3 you learned about 7 classification models. Like for Part 2 - Regression, that's quite a lot so you might be asking yourself the same questions as before:
-
-What are the pros and cons of each model ?
-
-How do I know which model to choose for my problem ?
-
-How can I improve each of these models ?
-
-Again, let's answer each of these questions one by one:
+Conclusion Classification
 
 1. What are the pros and cons of each model ?
 
