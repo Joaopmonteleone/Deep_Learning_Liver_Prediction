@@ -1,63 +1,84 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Feb  1 22:39:40 2020
+Created on Wed Feb  5 11:29:01 2020
 
-@author: Maria
+@author: 40011956
 """
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 
-
-# Importing the dataset
-dataset = pd.read_csv('datasets/balanced_Dataset/export_dataframe.csv')
-X = dataset.iloc[:, :-2].values # all rows, all columns except last result and 3 months answer - (1198, 39)
-y_before = dataset.iloc[:, 39].values # all rows, last column (result) keep a record to compare later
-
-# Encoding categorical data
-# encoding the output
-onehotencoder = OneHotEncoder(categorical_features = [39])
-y = onehotencoder.fit_transform(dataset.values).toarray()
-y = y[:, 0:4]
-# encoding the input
-onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) 
-# etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
-X = onehotencoder.fit_transform(X).toarray()
-
-# Separating each column to predict separate classes
-y_1 = y[:, 0]
-y_2 = y[:, 1]
-y_3 = y[:, 2]
-y_4 = y[:, 3]
-
-# Splitting the dataset into the Training set and Test set
-X_train, X_test, y_train, y_test = train_test_split(X, y_1, test_size = 0.2, random_state = 0)
-
-# Feature Scaling
-sc_X = StandardScaler()
-X_train = sc_X.fit_transform(X_train)
-X_test = sc_X.transform(X_test)
-
-
-# Fitting Random Forest Classification to the Training set
+#from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import RandomForestClassifier
-classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
-classifier.fit(X_train, y_train)
-'''n_estimators: number of trees in forest, which will predict if each
-   match is a good match or not, based on average predictions, the result
-   will be chosen. Default is 10. Try different numbers. Detect overfitting.
-   criterion: entropy measures the quality of the split
-'''
+import matplotlib.pyplot as plt
+from sklearn.tree import export_graphviz
+import numpy as np
+import pydot
 
-# Predicting the Test set results
-y_pred = classifier.predict(X_test)
+###############################################
+#               RANDOM FOREST                 #
+###############################################
 
-# Making the Confusion Matrix
-from sklearn.metrics import confusion_matrix
-cm = confusion_matrix(y_test, y_pred)
+def randomForest(X_train, X_test, y_train, y_test):
+   rf = RandomForestClassifier(n_estimators = 100, random_state = 42)
+
+   rf.fit(X_train, np.ravel(y_train))
+
+   # Predictions
+   predictions = rf.predict(X_test).flatten()
+
+   errors = abs(predictions - y_test.values.flatten())
+
+   print('Mean Absolute Error:', round(np.mean(errors), 2))
+
+   # Calculate mean absolute percentage error (MAPE)
+   mape = 100 * (errors / y_test.values.flatten())
+   # Calculate and display accuracy
+   accuracy = 100 - np.mean(mape)
+   print('Accuracy:', round(accuracy, 2), '%.')
+
+   return rf
+
+
+###############################################
+#                VISUALISATION                #
+###############################################
+def plotRandomForest(output_test, predictions):
+   plt.scatter(output_test, predictions)
+   plt.xlabel('True Values [Total mass]')
+   plt.ylabel('Predictions [Total mass]')
+   _ = plt.plot()
+
+
+def makeTree(rf, inputs_train, inputs_train_scaled, output_train):
+   # Pull out one tree from the forest
+   tree = rf.estimators_[5]
+   # Export the image to a dot file
+   feature_list = list(inputs_train.columns)
+   export_graphviz(tree, out_file = 'tree.dot', feature_names = feature_list, rounded = True, precision = 1)
+   # Use dot file to create a graph
+   (graph, ) = pydot.graph_from_dot_file('images/tree.dot')
+   # Write graph to a png file
+   graph.write_png('images/tree.png')
+
+
+   # Limit depth of tree to 3 levels
+   rf_small = RandomForestRegressor(n_estimators=10, max_depth = 3)
+   rf_small.fit(inputs_train_scaled, np.ravel(output_train))
+   # Extract the small tree
+   tree_small = rf_small.estimators_[5]
+   # Save the tree as a png image
+   export_graphviz(tree_small, out_file = 'images/small_tree.dot', feature_names = feature_list, rounded = True, precision = 1)
+   (graph, ) = pydot.graph_from_dot_file('images/small_tree.dot')
+   graph.write_png('images/small_tree.png')
+   
+   return feature_list
 
 
 
-
+def getImportance(rf, feature_list):
+   # Get numerical feature importances
+   importances = list(rf.feature_importances_)
+   # List of tuples with variable and importance
+   feature_importances = [(feature, round(importance, 2)) for feature, importance in zip(feature_list, importances)]
+   # Sort the feature importances by most important first
+   feature_importances = sorted(feature_importances, key = lambda x: x[1], reverse = True)
+   # Print out the feature and importances 
+   [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_importances]

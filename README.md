@@ -19,6 +19,23 @@ TO DO:
 - [] Support Vector Machine
 
 
+'''
+$ pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
+
+$ pip install --user tensorflow
+
+$ pip install --upgrade keras
+
+$ conda install graphviz
+
+$ conda install pydot
+'''
+
+Installing Keras
+
+
+Installing ohter stuff
+
 
 Conclusion Classification
 
