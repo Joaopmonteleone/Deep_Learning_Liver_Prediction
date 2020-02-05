@@ -4,9 +4,6 @@ Created on Wed Feb  5 11:32:59 2020
 
 @author: 40011956
 """
-
-
-
 ###############################################
 #             Data Preprocessing              #
 ###############################################
@@ -48,25 +45,39 @@ sc_X = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
 
-
+X_train_scaled = sc_X.fit_transform(X_train)
 
 
 ###############################################
 #                     ANN                     #
 ###############################################
 
-from ANN import neuralNetwork
+from ANN import neuralNetwork, predict, evaluateANN, grid_search
 activation_hidden = 'relu'
 activation_output = 'sigmoid' #softmax for 4, sigmoid for binary
 optimizer = 'adagrad' # adagrad, adam, rmsprop, sgd
 loss = 'binary_crossentropy' # binary or categorical
 batch_size = 10
 epochs = 500
-neuralNetwork(X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs)
+classifier = neuralNetwork(X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs)
   
+y_pred, y_bool, cm = predict(classifier, X_test, y_test)
+
+# doesn't work
+classifier, accuracies, mean, variance = evaluateANN(X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs)
+
+best_parameters, best_accuracy = grid_search(X_train, y_train)
+
+
+###############################################
+#                Random Forest                #
+###############################################
     
-    
-    
+from randomForest import randomForest, plotRandomForest, makeTree, getImportance
+rf, predictions = randomForest(X_train, X_test, y_train, y_test)
+plotRandomForest(y_test, predictions)
+feature_list = makeTree(rf, X_train, X_train_scaled, y_train)  
+feature_importances = getImportance(rf, feature_list)
     
     
     

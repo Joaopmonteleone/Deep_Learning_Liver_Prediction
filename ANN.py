@@ -40,7 +40,7 @@ def neuralNetwork(X_train, y_train, activation_hidden, activation_output, optimi
    classifier = Sequential()
    
    # Adding the input layer and the first hidden layer
-   classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden, input_dim = X_train.columns))
+   classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden, input_dim = X_train.shape[1]))
    classifier.add(Dropout(rate=0.1)) #EXPERIMENT WITH AND WITHOUT THIS
     
    # Adding the second hidden layer
@@ -103,7 +103,7 @@ def predict(classifier, X_test, y_test):
 
 def evaluateANN(X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs):
     classifier = Sequential()
-    classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden, input_dim = X_train.columns))
+    classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden, input_dim = X_train.shape[1]))
     classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden))
     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = activation_output))
     classifier.compile(optimizer = optimizer, loss = loss, metrics = ['accuracy'])

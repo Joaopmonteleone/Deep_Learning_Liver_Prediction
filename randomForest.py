@@ -34,7 +34,7 @@ def randomForest(X_train, X_test, y_train, y_test):
    accuracy = 100 - np.mean(mape)
    print('Accuracy:', round(accuracy, 2), '%.')
 
-   return rf
+   return rf, predictions
 
 
 ###############################################
@@ -82,3 +82,4 @@ def getImportance(rf, feature_list):
    feature_importances = sorted(feature_importances, key = lambda x: x[1], reverse = True)
    # Print out the feature and importances 
    [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_importances]
+   return feature_importances
