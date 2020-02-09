@@ -9,13 +9,13 @@ import numpy as np
 import pandas as pd
 
 # Importing the dataset
-dataset = pd.read_csv('datasets/openrefine/training1200_ordinal_output.csv')
+dataset = pd.read_csv('regressionBalanced.csv')
 
 hello = []
 
 count = 0
 for index, row in dataset.iterrows():
-   if row[39] == 4:
+   if row[38] >= 360:
       hello.append(count)
    count += 1
    
@@ -26,4 +26,4 @@ for i in hello:
    print(i)
    dataset = dataset.drop([i])
    
-export_csv = dataset.to_csv (r'C:\Users\Maria\Desktop\export_dataframe.csv', index = None, header=True) #Don't forget to add '.csv' at the end of the path
+export_csv = dataset.to_csv (r'C:\Users\Maria\Desktop\regressionBalanced.csv', index = None, header=True) 

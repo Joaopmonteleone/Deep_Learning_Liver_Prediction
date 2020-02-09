@@ -10,9 +10,9 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/balanced/classificationBalanced.csv')
-X = dataset.iloc[:, :-2].values # all rows, all columns except last result and 3 months answer - (1198, 39)
-y_before = dataset.iloc[:, 39].values # all rows, last column (result) keep a record to compare later
+dataset = pd.read_csv('datasets/balanced/regressionBalanced.csv')
+X = dataset.iloc[:, :-1].values # all rows, all columns except last result and 3 months answer - (1198, 39)
+y_before = dataset.iloc[:, 38].values # all rows, last column (result) keep a record to compare later
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
@@ -80,6 +80,14 @@ feature_list = makeTree(rf, X_train, X_train_scaled, y_train)
 feature_importances = getImportance(rf, feature_list)
     
     
-    
+from randomForest import randomForest
+rfModel = randomForest(X_train, y_train, X_test, y_test)
+results = ['Random Forest', str(rfModel.getMAE()), 
+           str(rfModel.getMSE()), str(rfModel.getMAPE())]
+# Get top 4 instances
+importances = rfModel.getImportance()[:4]
+for i, j in importances:
+     list = ['', '', '', '', '', '', i, j]
+     results.append(list)
     
     
