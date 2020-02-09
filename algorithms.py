@@ -10,31 +10,36 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/balanced/regEncodedBalanced.csv')
+dataset = pd.read_csv('datasets/regEncodedBalanced.csv')
+
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
-y_before = dataset.iloc[:, 55] # all rows, last column (result) keep a record to compare later
+y_before = dataset.iloc[:, (dataset.values.shape[1]-1)] # all rows, last column (result) keep a record to compare later
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
-y = y_before # Do not encode for regression
-# encoding the output FOR CLASSIFICATION
+def encode(dataframe, columns):
+   onehotencoder = OneHotEncoder(categorical_features = columns)
+   encoded = onehotencoder.fit_transform(dataframe.values).toarray()
+   return encoded
+X = encode(X_before, [6, 7, 14, 21, 36]) # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
+   
+
+# encoding the output FOR CLASSIFICATION - doesn't work
 onehotencoder = OneHotEncoder(categorical_features = [38])
 y = onehotencoder.fit_transform(dataset.values).toarray()
 y = y[:, 0:4]
-# encoding the input
-onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) 
-X = onehotencoder.fit_transform(X_before).toarray()
-# etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
-
 # Separating each column to predict separate classes
 y_1 = y[:, 0]
 y_2 = y[:, 1]
 y_3 = y[:, 2]
 y_4 = y[:, 3]
 
+
 # NO ENCODING
 X = X_before
 y = y_before
+
+
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
@@ -80,3 +85,11 @@ importances = rfModel.getImportance()
 randomForest.plotRandomForest(y_test, rfModel.predictions)
 randomForest.makeTree(rfModel)
     
+
+###############################################
+#             Regression Analysis             #
+###############################################
+from regressionAnalysis import sequentialNN
+regressor = sequentialNN(X_train, y_train, X_test, y_test)
+regressor.visualizeMSEoverEPOCHS()
+regressor.visualizePredictionsVsActual()
