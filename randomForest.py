@@ -14,6 +14,7 @@ class randomForest:
     def __init__(self, inputs_train, output_train, inputs_test, output_test, X_before):
         rf = RandomForestRegressor(n_estimators = 1000, random_state = 42)
         
+        print("Processing Random Forest algorithm...")
         rf.fit(inputs_train, np.ravel(output_train))
         
         self.rf = rf
@@ -68,11 +69,11 @@ class randomForest:
        # Pull out one tree from the forest
        tree = self.rf.estimators_[5]
        # Export the image to a dot file
-       export_graphviz(tree, out_file = 'images/tree.dot', feature_names = self.feature_list, rounded = True, precision = 1)
+       export_graphviz(tree, out_file = 'results/tree.dot', feature_names = self.feature_list, rounded = True, precision = 1)
        # Use dot file to create a graph
-       (graph, ) = pydot.graph_from_dot_file('images/tree.dot')
+       (graph, ) = pydot.graph_from_dot_file('results/tree.dot')
        # Write graph to a png file
-       graph.write_png('images/tree.png')
+       graph.write_png('results/tree.png')
     
     
        # Limit depth of tree to 3 levels
@@ -81,8 +82,8 @@ class randomForest:
        # Extract the small tree
        tree_small = rf_small.estimators_[5]
        # Save the tree as a png image
-       export_graphviz(tree_small, out_file = 'images/small_tree.dot', feature_names = self.feature_list, rounded = True, precision = 1)
-       (graph, ) = pydot.graph_from_dot_file('images/small_tree.dot')
-       graph.write_png('images/small_tree.png')
+       export_graphviz(tree_small, out_file = 'results/small_tree.dot', feature_names = self.feature_list, rounded = True, precision = 1)
+       (graph, ) = pydot.graph_from_dot_file('results/small_tree.dot')
+       graph.write_png('results/small_tree.png')
        
       

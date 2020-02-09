@@ -10,21 +10,17 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/balanced/regressionBalanced.csv')
+dataset = pd.read_csv('datasets/balanced/regEncodedBalanced.csv')
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
-y_before = dataset.iloc[:, 38] # all rows, last column (result) keep a record to compare later
+y_before = dataset.iloc[:, 55] # all rows, last column (result) keep a record to compare later
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
-
-# Do not encode for regression
-y = y_before
-
+y = y_before # Do not encode for regression
 # encoding the output FOR CLASSIFICATION
 onehotencoder = OneHotEncoder(categorical_features = [38])
 y = onehotencoder.fit_transform(dataset.values).toarray()
 y = y[:, 0:4]
-
 # encoding the input
 onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) 
 X = onehotencoder.fit_transform(X_before).toarray()
@@ -35,6 +31,10 @@ y_1 = y[:, 0]
 y_2 = y[:, 1]
 y_3 = y[:, 2]
 y_4 = y[:, 3]
+
+# NO ENCODING
+X = X_before
+y = y_before
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
@@ -74,14 +74,9 @@ best_parameters, best_accuracy = grid_search(X_train, y_train)
     
 from randomForest import randomForest
 rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
-results = ['Random Forest', str(rfModel.getMAE()), 
-           str(rfModel.getMSE()), str(rfModel.getMAPE())]
 # Get top 15 instances
-importances = rfModel.getImportance()[:15]
-for i, j in importances:
-     list = [i, j]
-     results.append(list)
+importances = rfModel.getImportance()
 # Plot graph
 randomForest.plotRandomForest(y_test, rfModel.predictions)
-    
+randomForest.makeTree(rfModel)
     
