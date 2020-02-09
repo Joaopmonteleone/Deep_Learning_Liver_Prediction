@@ -11,20 +11,23 @@ Created on Wed Feb  5 11:32:59 2020
 # Importing the dataset
 import pandas as pd
 dataset = pd.read_csv('datasets/balanced/regressionBalanced.csv')
-X = dataset.iloc[:, :-1].values # all rows, all columns except last result and 3 months answer - (1198, 39)
-y_before = dataset.iloc[:, 38].values # all rows, last column (result) keep a record to compare later
+X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
+y_before = dataset.iloc[:, 38] # all rows, last column (result) keep a record to compare later
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
-# output NOT encoded
+
+# Do not encode for regression
 y = y_before
-# encoding the output
-onehotencoder = OneHotEncoder(categorical_features = [39])
+
+# encoding the output FOR CLASSIFICATION
+onehotencoder = OneHotEncoder(categorical_features = [38])
 y = onehotencoder.fit_transform(dataset.values).toarray()
 y = y[:, 0:4]
+
 # encoding the input
 onehotencoder = OneHotEncoder(categorical_features = [6, 7, 14, 21, 36]) 
-X = onehotencoder.fit_transform(X).toarray()
+X = onehotencoder.fit_transform(X_before).toarray()
 # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
 
 # Separating each column to predict separate classes
@@ -35,17 +38,13 @@ y_4 = y[:, 3]
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y_4, test_size = 0.2, random_state = 0)
-''' test_size is 20% = 0.2
-    random_state is a generator for random sampling '''
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
 # Feature Scaling
-from sklearn.preprocessing import StandardScaler
-sc_X = StandardScaler()
-X_train = sc_X.fit_transform(X_train)
-X_test = sc_X.transform(X_test)
-
-X_train_scaled = sc_X.fit_transform(X_train)
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 
 
 ###############################################
@@ -73,21 +72,16 @@ best_parameters, best_accuracy = grid_search(X_train, y_train)
 #                Random Forest                #
 ###############################################
     
-from randomForest import randomForest, plotRandomForest, makeTree, getImportance
-rf, predictions = randomForest(X_train, X_test, y_train, y_test)
-plotRandomForest(y_test, predictions)
-feature_list = makeTree(rf, X_train, X_train_scaled, y_train)  
-feature_importances = getImportance(rf, feature_list)
-    
-    
 from randomForest import randomForest
-rfModel = randomForest(X_train, y_train, X_test, y_test)
+rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
 results = ['Random Forest', str(rfModel.getMAE()), 
            str(rfModel.getMSE()), str(rfModel.getMAPE())]
-# Get top 4 instances
-importances = rfModel.getImportance()[:4]
+# Get top 15 instances
+importances = rfModel.getImportance()[:15]
 for i, j in importances:
-     list = ['', '', '', '', '', '', i, j]
+     list = [i, j]
      results.append(list)
+# Plot graph
+randomForest.plotRandomForest(y_test, rfModel.predictions)
     
     

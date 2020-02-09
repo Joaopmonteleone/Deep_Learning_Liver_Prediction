@@ -11,13 +11,13 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 ###############################################
 
 class randomForest:
-    def __init__(self, inputs_train, output_train, inputs_test, output_test):
+    def __init__(self, inputs_train, output_train, inputs_test, output_test, X_before):
         rf = RandomForestRegressor(n_estimators = 1000, random_state = 42)
         
         rf.fit(inputs_train, np.ravel(output_train))
         
         self.rf = rf
-        self.feature_list = list(inputs_train.columns)
+        self.feature_list = list(X_before.columns)
         self.inputs_train = inputs_train
         self.output_train = output_train
         self.output_test = output_test
@@ -28,6 +28,9 @@ class randomForest:
         self.mse = mean_squared_error(output_test.values.flatten(), self.predictions)
         self.mae = mean_absolute_error(output_test.values.flatten(), self.predictions)
     
+    def getPredictions(self):
+       return self.predictions
+      
     def getMAE(self):
         return self.mae
     
@@ -81,3 +84,5 @@ class randomForest:
        export_graphviz(tree_small, out_file = 'images/small_tree.dot', feature_names = self.feature_list, rounded = True, precision = 1)
        (graph, ) = pydot.graph_from_dot_file('images/small_tree.dot')
        graph.write_png('images/small_tree.png')
+       
+      
