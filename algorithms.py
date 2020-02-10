@@ -10,11 +10,13 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/regEncodedBalanced.csv')
+dataset = pd.read_csv('datasets/claBalanced.csv')
 
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
 y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
 
+
+'''BELOW IS ONLY USED FOR CLASSIFICATION DATA'''
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
 def encode(dataframe, columns):
@@ -34,7 +36,7 @@ y_3 = y_encoded[:, 2]
 y_4 = y_encoded[:, 3]
 
 
-selectedY = y_before
+selectedY = y_4
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X_before, 
@@ -50,10 +52,9 @@ X_test = scaler.transform(X_test)
 
 
 ###############################################
-#                     ANN                     #
+#          ANN for classification             #
 ###############################################
-
-from ANN import ANN, predict
+from ANN import ANN, grid_search
 activation_hidden = 'relu'
 activation_output = ['softmax', 'sigmoid'] #softmax for 4, sigmoid for binary
 optimizer = ['adagrad', 'adam', 'rmsprop', 'sgd'] # adagrad, adam, rmsprop, sgd
@@ -61,20 +62,28 @@ loss = ['categorical_crossentropy', 'binary_crossentropy'] # binary or categoric
 batch_size = 10
 epochs = 500
 output_units = 1
-classifier = ANN(X_train, y_train, activation_hidden, activation_output[1], optimizer[0], loss[1], batch_size, epochs, output_units)
 
-y_pred, y_bool, cm = predict(X_test, y_test)
+classifier = ANN(X_train, y_train, 
+                 activation_hidden, activation_output[1], 
+                 optimizer[0], loss[1], 
+                 batch_size, epochs, 
+                 output_units)
+
+y_pred = classifier.predict_one(X_test)
 
 # doesn't work
-classifier, accuracies, mean, variance = classifier.evaluateANN(X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs)
+classifier, accuracies, mean, variance = ANN.evaluateANN(X_train, y_train, 
+                                                                activation_hidden, 
+                                                                activation_output[1], 
+                                                                optimizer[0], loss[1], 
+                                                                batch_size, epochs)
 
-best_parameters, best_accuracy = classifier.grid_search(X_train, y_train)
+best_parameters, best_accuracy = ANN.grid_search(X_train, y_train)
 
 
 ###############################################
 #                Random Forest                #
-###############################################
-    
+############################################### 
 from randomForest import randomForest
 rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
 # Get top 15 instances
@@ -91,6 +100,7 @@ from regressionAnalysis import sequentialNN
 regressor = sequentialNN(X_train, y_train, X_test, y_test)
 regressor.visualizeMSEoverEPOCHS()
 regressor.visualizePredictionsVsActual()
+
 
 ###############################################
 #          Support Vector Regression          #
