@@ -25,9 +25,9 @@ class randomForest:
         
         # Prediction and Error
         self.predictions = rf.predict(inputs_test)
-        self.errors = abs(self.predictions - output_test.values.flatten()) 
-        self.mse = mean_squared_error(output_test.values.flatten(), self.predictions)
-        self.mae = mean_absolute_error(output_test.values.flatten(), self.predictions)
+        self.errors = abs(self.predictions - output_test.flatten()) 
+        self.mse = mean_squared_error(output_test.flatten(), self.predictions)
+        self.mae = mean_absolute_error(output_test.flatten(), self.predictions)
     
     def getPredictions(self):
        return self.predictions
