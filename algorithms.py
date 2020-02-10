@@ -10,10 +10,10 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/regEncodedBalanced.csv')
+dataset = pd.read_csv('datasets/claBalanced.csv')
 
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
-y_before = dataset.iloc[:, (dataset.values.shape[1]-1)] # all rows, last column (result) keep a record to compare later
+y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
@@ -21,29 +21,26 @@ def encode(dataframe, columns):
    onehotencoder = OneHotEncoder(categorical_features = columns)
    encoded = onehotencoder.fit_transform(dataframe.values).toarray()
    return encoded
-X = encode(X_before, [6, 7, 14, 21, 36]) # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
-   
+X_encoded = encode(X_before, [6, 7, 14, 21, 36]) # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
 
-# encoding the output FOR CLASSIFICATION - doesn't work
-onehotencoder = OneHotEncoder(categorical_features = [38])
-y = onehotencoder.fit_transform(dataset.values).toarray()
-y = y[:, 0:4]
+# encoding the output FOR CLASSIFICATION
+y_encoded = encode(dataset, [38])
+y_encoded = y_encoded[:, 0:4]
+
 # Separating each column to predict separate classes
-y_1 = y[:, 0]
-y_2 = y[:, 1]
-y_3 = y[:, 2]
-y_4 = y[:, 3]
+y_1 = y_encoded[:, 0]
+y_2 = y_encoded[:, 1]
+y_3 = y_encoded[:, 2]
+y_4 = y_encoded[:, 3]
 
 
-# NO ENCODING
-X = X_before
-y = y_before
-
-
-
+selectedY = y_4
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+X_train, X_test, y_train, y_test = train_test_split(X_encoded, 
+                                                    selectedY, 
+                                                    test_size = 0.2, 
+                                                    random_state = 0)
 
 # Feature Scaling
 from sklearn.preprocessing import MinMaxScaler
@@ -56,21 +53,22 @@ X_test = scaler.transform(X_test)
 #                     ANN                     #
 ###############################################
 
-from ANN import neuralNetwork, predict, evaluateANN, grid_search
+from ANN import ANN, predict
 activation_hidden = 'relu'
-activation_output = 'sigmoid' #softmax for 4, sigmoid for binary
-optimizer = 'adagrad' # adagrad, adam, rmsprop, sgd
-loss = 'binary_crossentropy' # binary or categorical
+activation_output = ['softmax', 'sigmoid'] #softmax for 4, sigmoid for binary
+optimizer = ['adagrad', 'adam', 'rmsprop', 'sgd'] # adagrad, adam, rmsprop, sgd
+loss = ['categorical_crossentropy', 'binary_crossentropy'] # binary or categorical
 batch_size = 10
 epochs = 500
-classifier = neuralNetwork(X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs)
-  
-y_pred, y_bool, cm = predict(classifier, X_test, y_test)
+output_units = 1
+classifier = ANN(X_train, y_train, activation_hidden, activation_output[1], optimizer[0], loss[1], batch_size, epochs, output_units)
+
+y_pred, y_bool, cm = predict(X_test, y_test)
 
 # doesn't work
-classifier, accuracies, mean, variance = evaluateANN(X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs)
+classifier, accuracies, mean, variance = classifier.evaluateANN(X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs)
 
-best_parameters, best_accuracy = grid_search(X_train, y_train)
+best_parameters, best_accuracy = classifier.grid_search(X_train, y_train)
 
 
 ###############################################

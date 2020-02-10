@@ -5,6 +5,8 @@ Created on Sat Feb  1 21:36:33 2020
 @author: Maria
 """
 
+
+
 # Fit to data
 from sklearn import svm
 X = [[0, 0], [1, 1]]
