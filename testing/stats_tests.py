@@ -27,9 +27,9 @@ spanish_numeri = pd.read_csv('quantitative_spanish.csv')
 
 def chi_Squared_test(x):
    
-   t, p = stats.chisquare(x)
+   chisq, p = stats.chisquare(x)
    
-   print("t = ",float(t))
+   print("chisq = ",float(chisq))
    print("p = ",float(p))
 
 # Get name of columns and add to variables list
@@ -45,7 +45,7 @@ variables.remove('diabetesdon')
 # For all qualitative variables, run Chi Squared test
 for var in variables:
    print(var)
-   #chi_Squared_test(british_classi[[var]])
+   chi_Squared_test(british_classi[[var]])
    chi_Squared_test(spanish_classi[[var]])
    
 
@@ -69,6 +69,6 @@ for col in british_numeri.columns:
 for var in variablesNum:
    print(var)
    shapiroWilkTest(british_numeri[[var]])
-   shapiroWilkTest(spanish_numeri[[var]])
+   #shapiroWilkTest(spanish_numeri[[var]])
     
    
