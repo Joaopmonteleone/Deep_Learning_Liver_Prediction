@@ -8,6 +8,7 @@ Created on Mon Jan 20 11:29:41 2020
 # CUMULATIVE FREQUENCY
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
 
 # read data
 data = []
@@ -23,6 +24,9 @@ data = list(map(int, data))
 values, base = np.histogram(data, bins='auto')
 #evaluate the cumulative
 cumulative = np.cumsum(values)
+
+plt.xlabel('Days survived')
+plt.ylabel('Cumulative Frequency')
 # plot the cumulative function
 plt.plot(base[:-1], cumulative)
 
@@ -36,5 +40,7 @@ for x in data:
       data2.append(x)
 values, base = np.histogram(data2, bins='auto')
 cumulative = np.cumsum(values)
+plt.xlabel('Days survived')
+plt.ylabel('Cumulative Frequency')
 plt.plot(base[:-1], cumulative)
 plt.show()
