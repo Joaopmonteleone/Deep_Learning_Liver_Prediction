@@ -39,7 +39,7 @@ y_4 = y_encoded[:, 3]
 selectedY = y_4
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X_before, 
+X_train, X_test, y_train, y_test = train_test_split(X_encoded, 
                                                     selectedY, 
                                                     test_size = 0.2, 
                                                     random_state = 0)
@@ -55,30 +55,23 @@ X_test = scaler.transform(X_test)
 #          ANN for classification             #
 ###############################################
 from ANN import ANN, grid_search
-activation_hidden = 'relu'
+
 activation_output = ['softmax', 'sigmoid'] #softmax for 4, sigmoid for binary
 optimizer = ['adagrad', 'adam', 'rmsprop', 'sgd'] # adagrad, adam, rmsprop, sgd
 loss = ['categorical_crossentropy', 'binary_crossentropy'] # binary or categorical
-batch_size = 10
-epochs = 500
-output_units = 1
 
 classifier = ANN(X_train, y_train, 
-                 activation_hidden, activation_output[1], 
-                 optimizer[0], loss[1], 
-                 batch_size, epochs, 
-                 output_units)
+                 'relu', activation_output[1], 
+                 optimizer[1], loss[1], 
+                 10, 500, 1)
 
 y_pred = classifier.predict_one(X_test)
 
-# doesn't work
-classifier, accuracies, mean, variance = ANN.evaluateANN(X_train, y_train, 
-                                                                activation_hidden, 
-                                                                activation_output[1], 
-                                                                optimizer[0], loss[1], 
-                                                                batch_size, epochs)
+accuracies, mean, variance = ANN.evaluate(X_train, y_train)
 
-best_parameters, best_accuracy = ANN.grid_search(X_train, y_train)
+best_parameters, best_accuracy = grid_search(X_train, y_train)
+
+
 
 
 ###############################################

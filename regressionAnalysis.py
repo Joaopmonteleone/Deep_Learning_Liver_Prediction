@@ -2,7 +2,6 @@ import pandas as pd
 import tensorflow as tf
 import tensorflow_docs as tfdocs
 import tensorflow_docs.plots
-import tensorflow_docs.modeling
 from tensorflow import keras
 from tensorflow.keras import layers
 from keras.utils.vis_utils import plot_model

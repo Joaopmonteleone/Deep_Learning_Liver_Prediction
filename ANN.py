@@ -35,24 +35,37 @@ class ANN:
        
       self.model = classifier
  
-   ###############################################
-   #             Evaluating the ANN              #
-   ###############################################
-   def evaluateANN(self, X_train, y_train, 
+    
+   def evaluate(X_train, y_train):
+      classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 100)
+    
+      accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = 1)
+      mean = accuracies.mean()
+      variance = accuracies.std()
+    
+      return accuracies, mean, variance
+  
+    
+    
+   def evaluateANN(X_train, y_train, 
                    activation_hidden, activation_output, 
-                   optimizer, loss, batch_size, epochs):
-      
-       classifier = Sequential()
-       classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden, input_dim = X_train.shape[1]))
-       classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden))
-       classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = activation_output))
-       classifier.compile(optimizer = optimizer, loss = loss, metrics = ['accuracy'])
+                   optimizer, loss, batch_size, epochs, output_units):
        
+       classifier = Sequential()
+       print("1")
+       classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden, input_dim = 55))
+       print("2")
+       classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden))
+       print("3")
+       classifier.add(Dense(units = output_units, kernel_initializer = 'uniform', activation = activation_output))
+       print("4")
+       classifier.compile(optimizer = optimizer, loss = loss, metrics = ['accuracy'])
+       print("5")
        classifier = KerasClassifier(build_fn = classifier, batch_size = batch_size, epochs = epochs)
    
        ''' Same as the ANN architecture but instead of fitting to X_Train and y_train, it is vuilt
        on 10 different training folds, each time measuring the model performance on one test fold. ''' 
-   
+       print("6")
        # this line takes a while
        accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = 1)
        ''' estimator: the object to use to fit the data (classifier)
@@ -61,11 +74,12 @@ class ANN:
        cv: number of folds in k-fold cross validation, 10 is recommended
        n_jobs: number of CPUs to use to do the computations, -1 means 'all CPUs' to run parallel
            computations and run the training faster'''
-   
+       print("7")
        mean = accuracies.mean() # find the average of the accuracies
+       print("8")
        variance = accuracies.std() # find the variance of the accuracies (if < 1% = rather low variance)
        
-       return classifier, accuracies, mean, variance
+       return accuracies, mean, variance
 
     # WITH BALANCED DATASET CATEGORICAL
     # mean 0.3441 - very very very low
@@ -94,8 +108,13 @@ class ANN:
       cm = confusion_matrix(self.y_test, y_bool)
       return y_pred, y_bool, cm
 
-
-
+def build_classifier():
+     classifier = Sequential()
+     classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu', input_dim = 55))
+     classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu'))
+     classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+     return classifier
 ###############################################
 #        Improving & Tuning the ANN           #
 ###############################################
@@ -105,7 +124,7 @@ class ANN:
     ONLY USE WHEN PREDICTING BINARY OUTPUTS '''
 
 
-def build_classifier(optimizer, units, activation):# optimizer is passed because it is tuned in the parameters
+def build_classifier2(optimizer, units, activation):# optimizer is passed because it is tuned in the parameters
     classifier = Sequential() # this is a local classifier
     classifier.add(Dense(units = units, kernel_initializer = 'uniform', activation = activation, input_dim = 55))
     classifier.add(Dense(units = units, kernel_initializer = 'uniform', activation = activation))
@@ -114,7 +133,7 @@ def build_classifier(optimizer, units, activation):# optimizer is passed because
     return classifier
 
 def grid_search(self,X_train, y_train):
-    classifier = KerasClassifier(build_fn = build_classifier) 
+    classifier = KerasClassifier(build_fn = build_classifier2) 
     parameters = {'batch_size': [10, 25, 32, 40, 100], #10
                   'epochs': [100, 500], #500
                   'optimizer': ['adam', 'rmsprop', 'sgd', 'adagrad'], #adagrad
