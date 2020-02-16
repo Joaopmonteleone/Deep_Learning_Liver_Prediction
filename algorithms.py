@@ -2,7 +2,7 @@
 """
 Created on Wed Feb  5 11:32:59 2020
 
-@author: 40011956
+@author: Maria
 """
 ###############################################
 #             Data Preprocessing              #
@@ -54,7 +54,7 @@ X_test = scaler.transform(X_test)
 ###############################################
 #          ANN for classification             #
 ###############################################
-from ANN import ANN, grid_search
+from ANN import ANN
 
 activation_output = ['softmax', 'sigmoid'] #softmax for 4, sigmoid for binary
 optimizer = ['adagrad', 'adam', 'rmsprop', 'sgd'] # adagrad, adam, rmsprop, sgd
@@ -63,13 +63,15 @@ loss = ['categorical_crossentropy', 'binary_crossentropy'] # binary or categoric
 classifier = ANN(X_train, y_train, 
                  'relu', activation_output[1], 
                  optimizer[1], loss[1], 
-                 10, 500, 1)
+                 10, 500, 1) # batch_size, epochs, output layer hidden units
 
 y_pred = classifier.predict_one(X_test)
 
+# Evaluate ANN
 accuracies, mean, variance = ANN.evaluate(X_train, y_train)
 
-best_parameters, best_accuracy = grid_search(X_train, y_train)
+# Grid Search
+best_parameters, best_accuracy = ANN.grid_search(X_train, y_train)
 
 
 
