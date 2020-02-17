@@ -66,7 +66,6 @@ classifier = ANN(X_train, y_train,
                  optimizer[1], loss[0], 
                  10, 500, 4) # batch_size, epochs, output layer hidden units
 
-#y_pred = classifier.predict_one(X_test)
 y_pred, y_bool, accuracy = classifier.predict_all(X_test, y_test)
 
 # Evaluate ANN
