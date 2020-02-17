@@ -36,7 +36,7 @@ y_3 = y_encoded[:, 2]
 y_4 = y_encoded[:, 3]
 
 
-selectedY = y_4
+selectedY = y_encoded
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X_encoded, 
@@ -58,14 +58,15 @@ from ANN import ANN
 
 activation_output = ['softmax', 'sigmoid'] #softmax for 4, sigmoid for binary
 optimizer = ['adagrad', 'adam', 'rmsprop', 'sgd'] # adagrad, adam, rmsprop, sgd
-loss = ['categorical_crossentropy', 'binary_crossentropy'] # binary or categorical
+loss = ['categorical_crossentropy', 'binary_crossentropy', # binary or categorical
+        'sparse_categorical_crossentropy']# use 5 output units
 
 classifier = ANN(X_train, y_train, 
-                 'relu', activation_output[1], 
-                 optimizer[1], loss[1], 
-                 10, 500, 1) # batch_size, epochs, output layer hidden units
+                 'relu', activation_output[0], 
+                 optimizer[1], loss[0], 
+                 10, 500, 4) # batch_size, epochs, output layer hidden units
 
-y_pred = classifier.predict_one(X_test)
+#y_pred = classifier.predict_one(X_test)
 y_pred, y_bool, accuracy = classifier.predict_all(X_test, y_test)
 
 # Evaluate ANN

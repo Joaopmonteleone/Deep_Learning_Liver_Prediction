@@ -16,6 +16,7 @@ from sklearn.metrics import confusion_matrix
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier 
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import multilabel_confusion_matrix
 # For tuning
 from sklearn.model_selection import GridSearchCV
 
@@ -75,18 +76,14 @@ class ANN:
        best_accuracy = grid_search.best_score_ 
        
        return best_parameters, best_accuracy
-
-
-   def predict_one(self, X_test):
-       y_pred = self.model.predict(X_test)
-       return y_pred
     
       
    def predict_all(self, X_pred, y_true):
-       y_pred = self.predict_one(X_pred)
+       y_pred = self.model.predict(X_pred)
        y_bool = []   
        accuracy = 0
        if type(y_true) == 'numpy.ndarray': # binary prediction (1s or 0s) predicting1 category
+          print("Predicting 1 category")
           for n in y_pred:
              if n > 0.75:
                 n = 1
@@ -97,7 +94,13 @@ class ANN:
           # Making the Confusion Matrix
           accuracy = confusion_matrix(y_true, y_bool)
        else: # Predicting 4 categories
-          accuracy = accuracy_score(y_true, y_pred.round(), normalize=False)
+          #accuracy = accuracy_score(y_true, y_pred.round(), normalize=False)
+          print("Predicting 4 categories")
+          #print(y_true)
+          print()
+          #print(y_pred.round())
+          accuracy = multilabel_confusion_matrix(y_true, y_pred.round())
+          # https://scikit-learn.org/stable/modules/model_evaluation.html#multi-label-confusion-matrix
        return y_pred, y_bool, accuracy
 
 
