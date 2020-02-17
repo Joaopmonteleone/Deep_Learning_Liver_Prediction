@@ -15,6 +15,7 @@ from sklearn.metrics import confusion_matrix
 # For evaluating
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier 
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import accuracy_score
 # For tuning
 from sklearn.model_selection import GridSearchCV
 
@@ -81,20 +82,23 @@ class ANN:
        return y_pred
     
       
-   def predict_all(self, X_test):
-       y_pred = self.predict_one(X_test)
+   def predict_all(self, X_pred, y_true):
+       y_pred = self.predict_one(X_pred)
        y_bool = []   
-       cm = 0
-       if self.y_test.shape[1] == 1: # binary prediction (1s or 0s) ONLY WORKS WHEN PREDICTING ONE, NOT 4
+       accuracy = 0
+       if type(y_true) == 'numpy.ndarray': # binary prediction (1s or 0s) predicting1 category
           for n in y_pred:
              if n > 0.75:
                 n = 1
              else:
                 n = 0
              y_bool.append(n)
-       # Making the Confusion Matrix - not valid for categorical outputs, only for binary
-       cm = confusion_matrix(self.y_test, y_bool)
-       return y_pred, y_bool, cm
+          print(type(y_true))
+          # Making the Confusion Matrix
+          accuracy = confusion_matrix(y_true, y_bool)
+       else: # Predicting 4 categories
+          accuracy = accuracy_score(y_true, y_pred.round(), normalize=False)
+       return y_pred, y_bool, accuracy
 
 
 
