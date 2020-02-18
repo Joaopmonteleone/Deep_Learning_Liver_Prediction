@@ -10,7 +10,7 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/claBalanced.csv')
+dataset = pd.read_csv('datasets/regEncodedBalanced.csv')
 
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
 y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
@@ -36,10 +36,10 @@ y_3 = y_encoded[:, 2]
 y_4 = y_encoded[:, 3]
 
 
-selectedY = y_encoded
+selectedY = y_before
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X_encoded, 
+X_train, X_test, y_train, y_test = train_test_split(X_before, 
                                                     selectedY, 
                                                     test_size = 0.2, 
                                                     random_state = 0)
@@ -62,17 +62,17 @@ loss = ['categorical_crossentropy', 'binary_crossentropy', # binary or categoric
         'sparse_categorical_crossentropy']# use 5 output units
 
 classifier = ANN(X_train, y_train, 
-                 'relu', activation_output[0], 
-                 optimizer[1], loss[0], 
-                 10, 500, 4) # batch_size, epochs, output layer hidden units
+                 'relu', activation_output[1], 
+                 optimizer[1], loss[1], 
+                 10, 500, 1) # batch_size, epochs, output layer hidden units
 
 y_pred, y_bool, accuracy = classifier.predict_all(X_test, y_test)
 
-# Evaluate ANN
+# Evaluate ANN - only with binary prediction
 accuracies, mean, variance = ANN.evaluate(X_train, y_train)
 
 # Grid Search
-best_parameters, best_accuracy = ANN.grid_search(X_train, y_train)
+best_parameters, best_accuracy = ANN.grid_search(X_train, y_train) 
 
 
 

@@ -50,7 +50,7 @@ class randomForest:
        # Sort the feature importances by most important first
        feature_importances = sorted(feature_importances, key = lambda x: x[1], reverse = True)
        # Print out the feature and importances 
-       # [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_importances]
+       [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_importances]
        return feature_importances
 
 
@@ -59,8 +59,8 @@ class randomForest:
     ###############################################
     def plotRandomForest(output_test, predictions):
        plt.scatter(output_test, predictions)
-       plt.xlabel('True Values [Total mass]')
-       plt.ylabel('Predictions [Total mass]')
+       plt.xlabel('True Values')
+       plt.ylabel('Predictions')
        _ = plt.plot()
        plt.show()
     

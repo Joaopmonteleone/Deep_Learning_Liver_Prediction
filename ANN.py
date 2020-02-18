@@ -57,11 +57,11 @@ class ANN:
     
    def grid_search(X_train, y_train):
        classifier = KerasClassifier(build_fn = gridSearch_model) 
-       parameters = {'batch_size': [10, 25, 32, 40, 100], #10
+       parameters = {'batch_size': [10, 100], #10 25, 33, 40, 
                      'epochs': [100, 500], #500
-                     'optimizer': ['adam', 'rmsprop', 'sgd', 'adagrad'], #adagrad
+                     'optimizer': ['adam', 'rmsprop'], #adagrad, 'sgd', 'adagrad'
                      'units': [5, 15, 30, 45, 60],
-                     'activation': ['tanh', 'relu']
+                     'activation': ['relu'] #'tanh', 
                      } 
        
        grid_search = GridSearchCV(estimator = classifier,
