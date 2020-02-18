@@ -5,7 +5,7 @@ Created on Wed Feb  5 12:13:53 2020
 @author: Maria
 """
 
-
+import numpy as np
 # For the ANN building
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -82,7 +82,7 @@ class ANN:
        y_pred = self.model.predict(X_pred)
        y_bool = []   
        accuracy = 0
-       if type(y_true) == 'numpy.ndarray': # binary prediction (1s or 0s) predicting1 category
+       if np.size(y_pred,1) == 1: # binary prediction (1s or 0s) predicting1 category
           print("Predicting 1 category")
           for n in y_pred:
              if n > 0.75:
@@ -90,13 +90,11 @@ class ANN:
              else:
                 n = 0
              y_bool.append(n)
-          print(type(y_true))
           # Making the Confusion Matrix
           accuracy = confusion_matrix(y_true, y_bool)
           print(accuracy)
        else: # Predicting 4 categories
           #accuracy = accuracy_score(y_true, y_pred.round(), normalize=False)
-          print()
           print("Predicting 4 categories")
           accuracy = multilabel_confusion_matrix(y_true, y_pred.round())
           print(accuracy)
