@@ -15,7 +15,6 @@ dataset = pd.read_csv('datasets/claBalanced.csv')
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
 y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
 
-
 '''BELOW IS ONLY USED FOR CLASSIFICATION DATA'''
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
@@ -106,15 +105,46 @@ svr = svr(X_train, y_train, X_test, y_test)
 predictions = svr.getPredictions()
 svr.svr_graph()
 
+
 ###############################################
 #           Support Vector Machine            #
 ###############################################
 ''' claBalanced - y_before  '''
 from svm import svm
 svm = svm(X_train, y_train, X_test, y_test)
-predictions = svm.getPredictions()
+#predictions = svm.getPredictions()
 accuracy = svm.getAccuracy()
-class_report = svm.getClassificationReport()
-cm = svm.getMultilabelCM()
+#class_report = svm.getClassificationReport()
+#cm = svm.getMultilabelCM()
 svm.svm_graph()
+
+from svm import svm
+svm = svm(X_train, y_train, X_test, y_test)
+scores = {}
+for i in range(10):
+    params, estimator, score = svm.grid_search()
+    scores[i] = score
+maxval = max(scores.values())
+res = [(k, v) for k, v in scores.items() if v == maxval]
+print("Highest score:", res)
+
+
+
+
+''' READ: '''
+
+#https://scikit-learn.org/stable/modules/multiclass.html
+#https://machinelearningmastery.com/tactics-to-combat-imbalanced-classes-in-your-machine-learning-dataset/
+#https://towardsdatascience.com/synthetic-data-generation-a-must-have-skill-for-new-data-scientists-915896c0c1ae
+
+
+
+
+
+
+
+
+
+
+
 
