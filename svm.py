@@ -8,8 +8,8 @@ Created on Sat Feb  1 21:36:33 2020
 # Support Vector Regression
 
 import matplotlib.pyplot as plt
-from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, classification_report #, multilabel_confusion_matrix
+from sklearn.svm import SVC, LinearSVC
+from sklearn.metrics import accuracy_score, classification_report, multilabel_confusion_matrix
 
 ###############################################
 #                    SVM                      #
@@ -20,18 +20,18 @@ class svm:
        
         self.y_true = y_true
         
-        model = SVC(random_state=0, tol=1e-5)
+        #model = SVC(gamma='auto')
+        model = LinearSVC(multi_class = 'crammer_singer', random_state = 42)
            
-        model.fit(X_train, y_train.flatten())
+        model.fit(X_train, y_train)
         
         # Prediction and Error
         self.predictions = model.predict(X_test)
+        self.score = model.score(self.predictions, y_true)
         self.accuracy_score = accuracy_score(y_true, self.predictions) 
-        target_names = ['class 1', 'class 2', 'class 3', 'class 4']
         self.classification_report = classification_report(y_true, self.predictions, 
-                                                           target_names = target_names,
                                                            output_dict = True)
-        #self.multilabel_confusion_matrix = multilabel_confusion_matrix(y_true, self.predictions)
+        self.multilabel_confusion_matrix = multilabel_confusion_matrix(y_true, self.predictions)
         
     def getPredictions(self):
         print(self.predictions)
@@ -49,20 +49,20 @@ class svm:
             
         return self.classification_report
     
-#    def getMultilabelCM(self):
-#        # return mean absolute percentage error (MAPE)
-#        return self.multilabel_confusion_matrix
+    def getMultilabelCM(self):
+        print(self.multilabel_confusion_matrix)
+        return self.multilabel_confusion_matrix
 
 
     ###############################################
     #                VISUALISATION                #
     ###############################################
     
-    def svm_graph(y_true, y_pred):
-       plt.scatter(y_true, y_pred)
+    def svm_graph(self):
+       plt.scatter(self.y_true, self.predictions)
        plt.xlabel('True Values')
        plt.ylabel('Predictions')
-       _ = plt.plot()
+       plt.plot()
        plt.show()
 
 

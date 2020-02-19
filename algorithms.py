@@ -39,7 +39,7 @@ y_4 = y_encoded[:, 3]
 selectedY = y_before
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X_encoded, 
+X_train, X_test, y_train, y_test = train_test_split(X_before, 
                                                     selectedY, 
                                                     test_size = 0.2, 
                                                     random_state = 0)
@@ -115,6 +115,6 @@ svm = svm(X_train, y_train, X_test, y_test)
 predictions = svm.getPredictions()
 accuracy = svm.getAccuracy()
 class_report = svm.getClassificationReport()
-#cm = svm.getMultilabelCM()
-svm.svm_graph(y_test, predictions)
+cm = svm.getMultilabelCM()
+svm.svm_graph()
 
