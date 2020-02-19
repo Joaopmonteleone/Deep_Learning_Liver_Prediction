@@ -118,10 +118,8 @@ accuracy = svm.getAccuracy()
 #cm = svm.getMultilabelCM()
 svm.svm_graph()
 
-from svm import svm
-svm = svm(X_train, y_train, X_test, y_test)
 scores = {}
-for i in range(10):
+for i in range(30):
     params, estimator, score = svm.grid_search()
     scores[i] = score
 maxval = max(scores.values())
@@ -130,8 +128,9 @@ print("Highest score:", res)
 
 
 
-
-''' READ: '''
+###############################################
+#                    READ                     #
+###############################################
 
 #https://scikit-learn.org/stable/modules/multiclass.html
 #https://machinelearningmastery.com/tactics-to-combat-imbalanced-classes-in-your-machine-learning-dataset/

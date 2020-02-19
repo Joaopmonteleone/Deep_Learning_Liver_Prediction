@@ -74,6 +74,7 @@ class svm:
     def grid_search(self):
         param_grid = { 'C': [1, 100, 0.1],
                       'max_iter': [500, 1000],
+                      'loss': ['squared_hinge', 'hinge'],
                       'multi_class': ['ovr', 'crammer_singer']}  
         grid = GridSearchCV(LinearSVC(), param_grid, refit = True, verbose = 3) 
           
