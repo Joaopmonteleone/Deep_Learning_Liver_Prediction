@@ -10,7 +10,7 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/regEncodedBalanced.csv')
+dataset = pd.read_csv('datasets/claBalanced.csv')
 
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
 y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
@@ -39,7 +39,7 @@ y_4 = y_encoded[:, 3]
 selectedY = y_before
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X_before, 
+X_train, X_test, y_train, y_test = train_test_split(X_encoded, 
                                                     selectedY, 
                                                     test_size = 0.2, 
                                                     random_state = 0)
@@ -105,3 +105,16 @@ from supportVectorR import svr
 svr = svr(X_train, y_train, X_test, y_test)
 predictions = svr.getPredictions()
 svr.svr_graph()
+
+###############################################
+#           Support Vector Machine            #
+###############################################
+''' claBalanced - y_before  '''
+from svm import svm
+svm = svm(X_train, y_train, X_test, y_test)
+predictions = svm.getPredictions()
+accuracy = svm.getAccuracy()
+class_report = svm.getClassificationReport()
+#cm = svm.getMultilabelCM()
+svm.svm_graph(y_test, predictions)
+

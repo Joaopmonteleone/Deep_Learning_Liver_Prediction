@@ -53,5 +53,5 @@ class svr:
        plt.scatter(self.y_test, self.predictions)
        plt.xlabel('True Values [Days survived]')
        plt.ylabel('Predictions [Days survived]')
-       _ = plt.plot()
+       plt.plot()
        plt.show()

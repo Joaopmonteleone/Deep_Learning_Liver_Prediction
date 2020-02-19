@@ -94,11 +94,9 @@ class ANN:
           accuracy = confusion_matrix(y_true, y_bool)
           print(accuracy)
        else: # Predicting 4 categories
-          #accuracy = accuracy_score(y_true, y_pred.round(), normalize=False)
           print("Predicting 4 categories")
           accuracy = multilabel_confusion_matrix(y_true, y_pred.round())
           print(accuracy)
-          # https://scikit-learn.org/stable/modules/model_evaluation.html#multi-label-confusion-matrix
        return y_pred, y_bool, accuracy
 
 
