@@ -79,7 +79,7 @@ class sequentialNN:
     
     def visualizeNeuralNetwork(self):
         plot_model(self.model,
-           to_file='model.png',
+           to_file='results/model.png',
            show_shapes=True,
            show_layer_names=True,
            rankdir='TB',
