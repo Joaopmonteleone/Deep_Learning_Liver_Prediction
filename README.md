@@ -18,8 +18,8 @@ TO DO:
 - [] Fix evaluation script
 - [] Support Vector Machine
 
+```shell
 
-'''
 $ conda install git
 
 $ pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
@@ -33,13 +33,9 @@ $ conda install graphviz
 $ conda install pydot
 
 $ conda install pyplot
-'''
+```
 
-Installing Keras
-
-
-Installing ohter stuff
-
+https://github.com/tensorflow/tensorflow/issues/27935
 
 Conclusion Classification
 
