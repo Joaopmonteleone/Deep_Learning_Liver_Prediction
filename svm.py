@@ -8,7 +8,7 @@ Created on Sat Feb  1 21:36:33 2020
 # Support Vector Regression
 
 import matplotlib.pyplot as plt
-from sklearn.svm import SVC, LinearSVC
+from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, classification_report#, multilabel_confusion_matrix
 from sklearn.model_selection import GridSearchCV
 

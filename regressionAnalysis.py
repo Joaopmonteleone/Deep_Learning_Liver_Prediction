@@ -1,7 +1,6 @@
 import pandas as pd
 import tensorflow as tf
-import tensorflow_docs as tfdocs
-import tensorflow_docs.plots
+#import tensorflow_docs as tfdocs
 from tensorflow import keras
 from tensorflow.keras import layers
 from keras.utils.vis_utils import plot_model
@@ -12,10 +11,7 @@ class sequentialNN:
     def __init__(self, inputs_train, output_train, inputs_test, output_test):
         self.inputs_test = inputs_test
         self.output_test = output_test
-        ''' This defines the structure of the neural network. the first line "layers.Dense..."
-            indicates that network will take 33 inputs "input_shape(..." and have 64 nodes in the hidden layer
-            activation is just the activation function which in this case is rectified linear unit
-        '''
+        
         model = keras.Sequential([
           layers.Dense(30, activation='relu', input_shape=[len(inputs_train[0])]),
           layers.Dense(30, activation='relu'),
@@ -42,7 +38,8 @@ class sequentialNN:
         history = model.fit(
           inputs_train, output_train,
           epochs=EPOCHS, validation_split = 0.2, verbose=0,
-          callbacks=[early_stop, tfdocs.modeling.EpochDots()])
+          #callbacks=[early_stop, tfdocs.modeling.EpochDots()]
+          )
         
         self.history = history
         
@@ -86,16 +83,17 @@ class sequentialNN:
            expand_nested=True,
            dpi=96)
         
-    def visualizeMSEoverEPOCHS(self):
-        #Visualize Mean squared error over epochs
-        plotter = tfdocs.plots.HistoryPlotter()
-        plotter.plot({'Basic': self.history}, metric = "mse")
-        plt.ylim([0,100000])
-        plt.ylabel('MSE [Total Mass]')
+#    def visualizeMSEoverEPOCHS(self):
+#        #Visualize Mean squared error over epochs
+#        plotter = tfdocs.plots.HistoryPlotter()
+#        plotter.plot({'Basic': self.history}, metric = "mse")
+#        plt.ylim([0,100000])
+#        plt.ylabel('MSE [Total Mass]')
         
     def visualizePredictionsVsActual(self):        
         plt.axes(aspect='equal')
         plt.scatter(self.output_test, self.predictions)
         plt.xlabel('True Values [Days survived]')
         plt.ylabel('Predictions [Days survived]')
-        _ = plt.plot()
+        plt.plot()
+        plt.show()
