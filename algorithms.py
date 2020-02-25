@@ -10,7 +10,7 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/regEncoded.csv')
+dataset = pd.read_csv('datasets/syntheticDataReg.csv')
 
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
 y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
@@ -82,9 +82,10 @@ best_parameters, best_accuracy = ANN.grid_search(X_train, y_train)
 
 
 ###############################################
-#                Random Forest                #
+#         Regression Random Forest            #
 ############################################### 
 from randomForest import randomForest
+# RandomForestRegressor
 rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
 # Get top 15 instances
 importances = rfModel.getImportance()

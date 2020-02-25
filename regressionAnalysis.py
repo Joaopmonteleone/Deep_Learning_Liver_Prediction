@@ -1,11 +1,11 @@
 import pandas as pd
 import tensorflow as tf
-#import tensorflow_docs as tfdocs
 from tensorflow import keras
 from tensorflow.keras import layers
 from keras.utils.vis_utils import plot_model
 import matplotlib.pyplot as plt
 import numpy as np
+from modeling import HistoryPlotter
 
 class sequentialNN:
     def __init__(self, inputs_train, output_train, inputs_test, output_test):
@@ -31,14 +31,14 @@ class sequentialNN:
         EPOCHS = 1000
         
         # Early stop stops the training if there is no improvement to avoid overfitting.
-        early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
+#        early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
         
         # Insert the training data into the model. Validation_split is allocating 20%
         # of the data for the validation a.k.a not used for training.
         history = model.fit(
           inputs_train, output_train,
           epochs=EPOCHS, validation_split = 0.2, verbose=0,
-          #callbacks=[early_stop, tfdocs.modeling.EpochDots()]
+#          callbacks=[early_stop, EpochDots()]
           )
         
         self.history = history
@@ -66,8 +66,7 @@ class sequentialNN:
         return self.mse
     
     def getMAPE(self):
-        errors = abs(self.predictions - self.output_test.values.flatten())        
-        # return mean absolute percentage error (MAPE)
+        errors = abs(self.predictions - self.output_test.values.flatten())  
         return np.mean(100 * (errors / self.output_test.values.flatten()))
     
     ###############################################
@@ -83,12 +82,12 @@ class sequentialNN:
            expand_nested=True,
            dpi=96)
         
-#    def visualizeMSEoverEPOCHS(self):
-#        #Visualize Mean squared error over epochs
-#        plotter = tfdocs.plots.HistoryPlotter()
-#        plotter.plot({'Basic': self.history}, metric = "mse")
-#        plt.ylim([0,100000])
-#        plt.ylabel('MSE [Total Mass]')
+    def visualizeMSEoverEPOCHS(self):
+        #Visualize Mean squared error over epochs
+        plotter = HistoryPlotter()
+        plotter.plot({'Basic': self.history}, metric = "mse")
+        plt.ylim([0,100000])
+        plt.ylabel('MSE [Total Mass]')
         
     def visualizePredictionsVsActual(self):        
         plt.axes(aspect='equal')
