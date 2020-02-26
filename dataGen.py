@@ -10,6 +10,7 @@ from sklearn.datasets import make_regression
 import random
 
 dataset = pd.read_csv('datasets/regNo365.csv')
+dataset2 = pd.read_csv('datasets/regSynthetic.csv')
 
 # make a list of all column names    
 columnNames = []
@@ -38,61 +39,41 @@ def makeRandomData():
 ###############################################
 #               Slight Mutations              #
 ###############################################
-def slightMutations():
-    print("Slight mutations function")
-    
-    Row_list =[] 
-    for index, rows in dataset.iterrows(): 
-        # Create list for the current row 
-        my_list = []
-        for col in columnNames:
-            my_list.append(rows[col]) 
-        # append the list to the final list 
-        Row_list.append(my_list) 
-  
-    for row in Row_list:
-        for index in range(dataset.shape[1]):
-            print(index)
-            print("col name:", columnNames[index])
-            mutate(row, index)
-            print()
-        print("\n---New row---\n")
-        
-    
-        
-slightMutations()
-    
 def mutate(value, index):
-    print("before:",int(value[index]))
-    rangeMax = dataset[columnNames[index]].max()
-    rangeMin = dataset[columnNames[index]].min()
-    rangeTotal = rangeMax - rangeMin
-#    print("Max:", rangeMax)
-#    print("Min:", rangeMin)
-#    print("rangeTotal:", rangeTotal)
-    if rangeTotal == 1: # if binary outcome
-        #print("---BINARY")
-        if uniform(0,1) < 0.5:
-            #print("------CHANGED")
+    rangeMax = dataset[columnNames[index]].max() # find max value of column
+    rangeMin = dataset[columnNames[index]].min() # find min value of column
+    rangeTotal = rangeMax - rangeMin # find the range of values
+    if rangeTotal == 1: # if binary value
+        if random.uniform(0,1) < 0.5: # 50% chance of flipping bit
             value[index] = int(value[index]) ^ 1 # flip 1s to 0s and 0s to 1s
     else: # non-binary outcome
-        percentage = int((5 * rangeTotal) / 100.0)
-        randomNo = random.randint(-percentage, percentage)
-#        print("random:", randomNo)
-        value[index] = int(abs(value[index] + randomNo))
-    print("after:", int(value[index]))
-    #return 
-
-
-
-from random import randint, uniform;
-
-def mutateIndividual(ind):
-     mutationIndex = randint(0, len(ind)) # select one chromosome
-     ind[mutationIndex] = randint(0,3) # inclusive both
-     return ind;
-
-for i in range(0, len(population)): # outer loop on each individual
-     population[i] = mutateIndividual(population[i]);
+        percentage = int((5 * rangeTotal) / 100.0) # change value 5% of its range
+        randomNo = random.randint(-percentage, percentage) # create a random number in the 5% closest to that number
+        value[index] = int(abs(value[index] + randomNo)) # make the number always positive so it is valid (absolute value)
+    return value[index]
     
-  
+newDataset = [] # new created data will be added to this list
+
+def slightMutations():
+    # transform dataset dataframe to list to iterate through it
+    dataset_list = dataset.values.tolist()
+    for row in dataset_list:
+        newRow = [] # new observation created
+        for index in range(dataset.shape[1]):
+            newValue = mutate(row, index)
+            newRow.append(newValue)
+        newDataset.append(newRow)
+   
+for i in range(15): # run algorithm 5 times, creates 214 different rows each time
+    slightMutations()
+    
+newDataset = pd.DataFrame(newDataset) # convert to pandas dataframe
+newDataset.columns = columnNames # rename columns
+
+export_csv = newDataset.to_csv (r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\regSynthetic.csv',
+                             index = None, 
+                             header=True) 
+
+
+
+
