@@ -58,7 +58,7 @@ class randomForest:
     #                VISUALISATION                #
     ###############################################
     def plotRandomForest(output_test, predictions):
-       plt.scatter(output_test, predictions)
+       plt.scatter(output_test, predictions, c='#4FB5AE')
        plt.xlabel('True Values')
        plt.ylabel('Predictions')
        _ = plt.plot()
