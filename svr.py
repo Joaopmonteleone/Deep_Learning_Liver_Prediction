@@ -57,7 +57,7 @@ class svr:
     ###############################################
     
     def svr_graph(self):
-       plt.scatter(self.y_test, self.predictions, c='#4FB5AE')
+       plt.scatter(self.y_test, self.predictions, c='#FF7AA6')
        plt.xlabel('True Values [Days survived]')
        plt.ylabel('Predictions [Days survived]')
        plt.plot()

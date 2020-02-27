@@ -6,7 +6,6 @@ Created on Fri Feb 21 12:16:40 2020
 """
 import numpy as np
 import pandas as pd
-from sklearn.datasets import make_regression
 import random
 
 dataset = pd.read_csv('datasets/regNo365.csv')

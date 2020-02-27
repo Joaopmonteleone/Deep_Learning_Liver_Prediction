@@ -91,7 +91,7 @@ class sequentialNN:
         
     def visualizePredictionsVsActual(self):        
         plt.axes(aspect='equal')
-        plt.scatter(self.output_test, self.predictions, c='#4FB5AE')
+        plt.scatter(self.output_test, self.predictions, c='#FF7AA6')
         plt.xlabel('True Values [Days survived]')
         plt.ylabel('Predictions [Days survived]')
         plt.ylim([0,500])
