@@ -8,8 +8,9 @@ import numpy as np
 import pandas as pd
 import random
 
-dataset = pd.read_csv('datasets/regNo365.csv')
+dataset = pd.read_csv('datasets/regAll.csv')
 dataset2 = pd.read_csv('datasets/regSynthetic.csv')
+regNo365 = pd.read_csv('datasets/regOnly365.csv')
 
 # make a list of all column names    
 columnNames = []
@@ -39,8 +40,8 @@ def makeRandomData():
 #               Slight Mutations              #
 ###############################################
 def mutate(value, index):
-    rangeMax = dataset[columnNames[index]].max() # find max value of column
-    rangeMin = dataset[columnNames[index]].min() # find min value of column
+    rangeMax = regNo365[columnNames[index]].max() # find max value of column
+    rangeMin = regNo365[columnNames[index]].min() # find min value of column
     rangeTotal = rangeMax - rangeMin # find the range of values
     if rangeTotal == 1: # if binary value
         if random.uniform(0,1) < 0.5: # 50% chance of flipping bit
@@ -55,24 +56,26 @@ newDataset = [] # new created data will be added to this list
 
 def slightMutations():
     # transform dataset dataframe to list to iterate through it
-    dataset_list = dataset.values.tolist()
+    dataset_list = regNo365.values.tolist()
     for row in dataset_list:
         newRow = [] # new observation created
-        for index in range(dataset.shape[1]):
+        for index in range(regNo365.shape[1]):
             newValue = mutate(row, index)
             newRow.append(newValue)
         newDataset.append(newRow)
    
-for i in range(15): # run algorithm 5 times, creates 214 different rows each time
+for i in range(5): # run algorithm 5 times, creates 214 different rows each time
     slightMutations()
     
 newDataset = pd.DataFrame(newDataset) # convert to pandas dataframe
 newDataset.columns = columnNames # rename columns
 
-export_csv = newDataset.to_csv (r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\regSynthetic.csv',
+
+
+export_csv = together.to_csv (r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\regSyntheticWith365.csv',
                              index = None, 
                              header=True) 
 
-
+together = pd.concat([newDataset, regNo365]) # join lists
 
 

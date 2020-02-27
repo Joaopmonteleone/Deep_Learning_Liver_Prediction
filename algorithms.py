@@ -10,7 +10,7 @@ Created on Wed Feb  5 11:32:59 2020
 
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/regSynthetic.csv')
+dataset = pd.read_csv('datasets/regSyntheticWith365.csv')
 
 X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
 y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
@@ -49,36 +49,15 @@ scaler = MinMaxScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-#from sklearn.preprocessing import StandardScaler
-#scaler = StandardScaler()
-#X_train = scaler.fit_transform(X_train)
-#X_test = scaler.transform(X_test)
-
 
 ###############################################
-#          ANN for classification             #
+#               ANN Regression                #
 ###############################################
-from ANN import ANN
-
-activation_output = ['softmax', 'sigmoid'] #softmax for 4, sigmoid for binary
-optimizer = ['adagrad', 'adam', 'rmsprop', 'sgd'] # adagrad, adam, rmsprop, sgd
-loss = ['categorical_crossentropy', 'binary_crossentropy', # binary or categorical
-        'sparse_categorical_crossentropy']# use 5 output units
-
-classifier = ANN(X_train, y_train, 
-                 'relu', activation_output[1], 
-                 optimizer[1], loss[1], 
-                 10, 500, 1) # batch_size, epochs, output layer hidden units
-
-y_pred, y_bool, accuracy = classifier.predict_all(X_test, y_test)
-
-# Evaluate ANN - only with binary prediction
-accuracies, mean, variance = ANN.evaluate(X_train, y_train)
-
-# Grid Search
-best_parameters, best_accuracy = ANN.grid_search(X_train, y_train) 
-
-
+from regressionAnalysis import sequentialNN
+regressor = sequentialNN(X_train, y_train, X_test, y_test)
+regressor.visualizeMSEoverEPOCHS()
+regressor.visualizePredictionsVsActual()
+exp_variance_score, max_error, loss, mae, mse, mape = regressor.getEvaluationMetrics()
 
 
 ###############################################
@@ -95,15 +74,6 @@ randomForest.makeTree(rfModel)
     
 
 ###############################################
-#               ANN Regression                #
-###############################################
-from regressionAnalysis import sequentialNN
-regressor = sequentialNN(X_train, y_train, X_test, y_test)
-regressor.visualizeMSEoverEPOCHS()
-regressor.visualizePredictionsVsActual()
-
-
-###############################################
 #          Support Vector Regression          #
 ###############################################
 from svr import svr
@@ -112,6 +82,9 @@ predictions = svr.getPredictions()
 svr.svr_graph()
 mape = svr.getMAPE()
 best_params = svr.grid_search()
+
+
+
 
 
 ###############################################
@@ -137,14 +110,27 @@ print("Highest score:", res)
 
 
 ###############################################
-#                    READ                     #
+#          ANN for classification             #
 ###############################################
+from ANN import ANN
 
-#https://scikit-learn.org/stable/modules/multiclass.html
-#https://machinelearningmastery.com/tactics-to-combat-imbalanced-classes-in-your-machine-learning-dataset/
-#https://towardsdatascience.com/synthetic-data-generation-a-must-have-skill-for-new-data-scientists-915896c0c1ae
+activation_output = ['softmax', 'sigmoid'] #softmax for 4, sigmoid for binary
+optimizer = ['adagrad', 'adam', 'rmsprop', 'sgd'] # adagrad, adam, rmsprop, sgd
+loss = ['categorical_crossentropy', 'binary_crossentropy', # binary or categorical
+        'sparse_categorical_crossentropy']# use 5 output units
 
+classifier = ANN(X_train, y_train, 
+                 'relu', activation_output[1], 
+                 optimizer[1], loss[1], 
+                 10, 500, 1) # batch_size, epochs, output layer hidden units
 
+y_pred, y_bool, accuracy = classifier.predict_all(X_test, y_test)
+
+# Evaluate ANN - only with binary prediction
+accuracies, mean, variance = ANN.evaluate(X_train, y_train)
+
+# Grid Search
+best_parameters, best_accuracy = ANN.grid_search(X_train, y_train) 
 
 
 

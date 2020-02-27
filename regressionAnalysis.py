@@ -6,14 +6,17 @@ from keras.utils.vis_utils import plot_model
 import matplotlib.pyplot as plt
 import numpy as np
 from modeling import HistoryPlotter
+from sklearn.metrics import explained_variance_score
+from sklearn.metrics import max_error
 
 class sequentialNN:
-    def __init__(self, inputs_train, output_train, inputs_test, output_test):
-        self.inputs_test = inputs_test
-        self.output_test = output_test
+    def __init__(self, X_train, y_train, X_test, y_true):
+        
+        self.X_test = X_test
+        self.y_true = y_true
         
         model = keras.Sequential([
-          layers.Dense(30, activation='relu', input_shape=[len(inputs_train[0])]),
+          layers.Dense(30, activation='relu', input_shape=[len(X_train[0])]),
           layers.Dense(30, activation='relu'),
           layers.Dense(1)
         ])
@@ -36,7 +39,7 @@ class sequentialNN:
         # Insert the training data into the model. Validation_split is allocating 20%
         # of the data for the validation a.k.a not used for training.
         history = model.fit(
-          inputs_train, output_train,
+          X_train, y_train,
           epochs=EPOCHS, validation_split = 0.2, verbose=0,
 #          callbacks=[early_stop, EpochDots()]
           )
@@ -49,26 +52,13 @@ class sequentialNN:
         
         self.model = model
 
-        self.loss, self.mae, self.mse = model.evaluate(inputs_test, output_test, verbose=2)
+        self.loss, self.mae, self.mse = model.evaluate(X_test, y_true, verbose=2)
     
-        self.predictions = model.predict(inputs_test).flatten()
+        self.predictions = model.predict(X_test).flatten()
         
     def getPredictions(self):
        return self.predictions
         
-    def getLoss(self):
-        return self.loss
-    
-    def getMAE(self):
-        return self.mae
-    
-    def getMSE(self):
-        return self.mse
-    
-    def getMAPE(self):
-        errors = abs(self.predictions - self.output_test.values.flatten())  
-        return np.mean(100 * (errors / self.output_test.values.flatten()))
-    
     ###############################################
     #                VISUALISATION                #
     ###############################################
@@ -91,10 +81,25 @@ class sequentialNN:
         
     def visualizePredictionsVsActual(self):        
         plt.axes(aspect='equal')
-        plt.scatter(self.output_test, self.predictions, c='#FF7AA6')
+        plt.scatter(self.y_true, self.predictions, c='#FF7AA6')
         plt.xlabel('True Values [Days survived]')
         plt.ylabel('Predictions [Days survived]')
         plt.ylim([0,500])
         plt.xlim([0,500])
         plt.plot()
         plt.show()
+        
+    def getEvaluationMetrics(self):
+        evs = explained_variance_score(self.y_true, self.predictions)
+        me = max_error(self.y_true, self.predictions)
+        loss = self.loss
+        mae = self.mae
+        mse = self.mse
+        mape = np.mean(100 * (abs(self.predictions - self.y_true) / self.y_true))
+        print("explained variance score:", evs, "\nme:", 
+              me, "\nloss:",
+              loss, "\nmae:",
+              mae, "\nmse",
+              mse, "\nmape",
+              mape)
+        return evs, me, loss, mae, mse, mape
