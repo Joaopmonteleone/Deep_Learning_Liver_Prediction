@@ -4,6 +4,7 @@ from sklearn.tree import export_graphviz
 import numpy as np
 import pydot
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.model_selection import GridSearchCV
 
 
 ###############################################
@@ -86,4 +87,23 @@ class randomForest:
        (graph, ) = pydot.graph_from_dot_file('results/small_tree.dot')
        graph.write_png('results/small_tree.png')
        
-      
+       
+def gridSearch(X_train, y_train):
+   param_grid = {'n_estimators': [500, 1000], # , 2000
+#                 'criterion': ['mse', 'mae'],
+#                 'min_samples_split': [2, 10, 20],
+#                 'min_samples_leaf': [1, 10, 100],
+#                 'max_features': ['auto', 5, 'sqrt', 'log2', None],
+#                 'max_leaf_nodes': [None, 5, 10],
+#                 'bootstrap': [True, False],
+#                 'oob_score': [True, False],
+#                 'warm_start': [True, False]
+                 }  
+   grid = GridSearchCV(RandomForestRegressor(), param_grid, refit = True, cv = 3)
+   
+   # fitting the model for grid search 
+   grid.fit(X_train, y_train) 
+  
+   print("\nBest params:", grid.best_params_)
+   print("\nBest score:", grid.best_score_)
+   return grid.best_params_, grid.best_score_

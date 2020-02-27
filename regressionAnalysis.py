@@ -103,3 +103,56 @@ class sequentialNN:
               mse, "\nmape",
               mape)
         return evs, me, loss, mae, mse, mape
+    
+    
+    
+    
+def create_model(optimizer='adam',
+                 #learn_rate=0.01,
+                 #momentum=0,
+                 init_mode='uniform',
+                 activation='relu',
+                 dropout_rate=0.0,
+                 weight_constraint=0,
+                 neurons=1
+                 ):
+    model = Sequential()
+    model.add(Dense(neurons, 
+                    input_dim=21,
+                    kernel_initializer=init_mode,
+                    activation=activation,
+                    kernel_constraint=maxnorm(weight_constraint)))
+    model.add(Dropout(dropout_rate))
+    model.add(Dense(1))
+    #opimizer = SGD(lr=learn_rate, momentum=momentum)
+    model.compile(loss='mse', optimizer=optimizer, metrics=['mse', 'acc'])
+    return model
+    
+	
+def gridSearch(inputs_train, output_train):
+    model = KerasClassifier(build_fn=create_model, verbose=0)
+
+    # defining grid search parameters
+    param_grid = {'optimizer': ['SGD', 'RMSprop', 'Adagrad', 'Adadelta', 'Adam', 'Adamax', 'Nadam'], 
+                  'batch_size': [10, 100, 500, 1000, 2000], 
+                  'epochs': [10, 5, 1000], 
+#                  'learn_rate': [0.001, 0.01, 0.1, 0.2, 0.3],
+#                  'momentum': [0.0, 0.2, 0.4, 0.6, 0.8, 0.9],
+                  'init_mode': ['uniform', 'lecun_uniform', 'normal', 'zero', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+                  'activation': ['softmax', 'softplus', 'softsign', 'relu', 'tanh', 'sigmoid', 'hard_sigmoid', 'linear'],
+                  'weight_constraint': [1, 2, 3, 4, 5],
+                  'dropout_rate': [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                  'neurons': [1, 5, 10, 15, 20, 25, 30]
+                  }
+    grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3)
+    grid_result = grid.fit(inputs_train, output_train)
+
+    # summarize results
+    print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+    means = grid_result.cv_results_['mean_test_score']
+    stds = grid_result.cv_results_['std_test_score']
+    params = grid_result.cv_results_['params']
+    for mean, stdev, param in zip(means, stds, params):
+        print("%f (%f) with: %r" % (mean, stdev, param))
+
+    return grid.best_params_, grid.best_score_
