@@ -53,17 +53,18 @@ X_test = scaler.transform(X_test)
 ###############################################
 #               ANN Regression                #
 ###############################################
-from regressionAnalysis import sequentialNN
+from regressionAnalysis import sequentialNN, gridSearch
 regressor = sequentialNN(X_train, y_train, X_test, y_test)
 regressor.visualizeMSEoverEPOCHS()
 regressor.visualizePredictionsVsActual()
 exp_variance_score, max_error, loss, mae, mse, mape = regressor.getEvaluationMetrics()
+best_params, best_score = gridSearch(X_train, y_train)
 
 
 ###############################################
 #         Regression Random Forest            #
 ############################################### 
-from randomForest import randomForest, gridSearch
+from randomForest import randomForest
 # RandomForestRegressor
 rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
 # Get top 15 instances
@@ -71,7 +72,7 @@ importances = rfModel.getImportance()
 # Plot graph
 randomForest.plotRandomForest(y_test, rfModel.predictions)
 randomForest.makeTree(rfModel)
-gridSearch(X_train, y_train)
+rfModel.gridSearch()
     
 
 ###############################################
@@ -81,7 +82,6 @@ from svr import svr
 svr = svr(X_train, y_train, X_test, y_test)
 predictions = svr.getPredictions()
 svr.svr_graph()
-mape = svr.getMAPE()
 best_params = svr.grid_search()
 
 

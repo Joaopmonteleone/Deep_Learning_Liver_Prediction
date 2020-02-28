@@ -12,23 +12,23 @@ from sklearn.model_selection import GridSearchCV
 ###############################################
 
 class randomForest:
-    def __init__(self, inputs_train, output_train, inputs_test, output_test, X_before):
+    def __init__(self, X_train, y_train, X_test, y_true, X_before):
         rf = RandomForestRegressor(n_estimators = 1000, random_state = 42)
         
         print("Processing Random Forest algorithm...")
-        rf.fit(inputs_train, np.ravel(output_train))
+        rf.fit(X_train, np.ravel(y_train))
         
         self.rf = rf
         self.feature_list = list(X_before.columns)
-        self.inputs_train = inputs_train
-        self.output_train = output_train
-        self.output_test = output_test
+        self.X_train = X_train
+        self.y_train = y_train
+        self.y_true = y_true
         
         # Prediction and Error
-        self.predictions = rf.predict(inputs_test)
-        self.errors = abs(self.predictions - output_test.flatten()) 
-        self.mse = mean_squared_error(output_test.flatten(), self.predictions)
-        self.mae = mean_absolute_error(output_test.flatten(), self.predictions)
+        self.predictions = rf.predict(X_test)
+        self.errors = abs(self.predictions - y_true) 
+        self.mse = mean_squared_error(y_true.flatten(), self.predictions)
+        self.mae = mean_absolute_error(y_true.flatten(), self.predictions)
     
     def getPredictions(self):
        return self.predictions
@@ -41,7 +41,7 @@ class randomForest:
     
     def getMAPE(self):
         # return mean absolute percentage error (MAPE)
-        return np.mean(100 * (self.errors / self.output_test.values.flatten()))
+        return np.mean(100 * (self.errors / self.y_true))
     
     def getImportance(self):
        # Get numerical feature importances
@@ -58,8 +58,8 @@ class randomForest:
     ###############################################
     #                VISUALISATION                #
     ###############################################
-    def plotRandomForest(output_test, predictions):
-       plt.scatter(output_test, predictions, c='#FF7AA6')
+    def plotRandomForest(y_true, predictions):
+       plt.scatter(y_true, predictions, c='#FF7AA6')
        plt.xlabel('True Values')
        plt.ylabel('Predictions')
        _ = plt.plot()
@@ -79,7 +79,7 @@ class randomForest:
     
        # Limit depth of tree to 3 levels
        rf_small = RandomForestRegressor(n_estimators=10, max_depth = 3)
-       rf_small.fit(self.inputs_train, np.ravel(self.output_train))
+       rf_small.fit(self.X_train, np.ravel(self.y_train))
        # Extract the small tree
        tree_small = rf_small.estimators_[5]
        # Save the tree as a png image
@@ -87,23 +87,24 @@ class randomForest:
        (graph, ) = pydot.graph_from_dot_file('results/small_tree.dot')
        graph.write_png('results/small_tree.png')
        
+    def gridSearch(self):
+       param_grid = {'n_estimators': [500, 1000], # , 2000
+#                     'criterion': ['mse', 'mae'],
+#                     'min_samples_split': [2, 10, 20],
+#                     'min_samples_leaf': [1, 10, 100],
+#                     'max_features': ['auto', 5, 'sqrt', 'log2', None],
+#                     'max_leaf_nodes': [None, 5, 10],
+#                     'bootstrap': [True, False],
+#                     'oob_score': [True, False],
+#                     'warm_start': [True, False]
+                     }  
+       grid = GridSearchCV(RandomForestRegressor(), param_grid, refit = True, verbose = 3) 
+          
+       # fitting the model for grid search 
+       grid.fit(self.X_train, self.y_train) 
        
-def gridSearch(X_train, y_train):
-   param_grid = {'n_estimators': [500, 1000], # , 2000
-#                 'criterion': ['mse', 'mae'],
-#                 'min_samples_split': [2, 10, 20],
-#                 'min_samples_leaf': [1, 10, 100],
-#                 'max_features': ['auto', 5, 'sqrt', 'log2', None],
-#                 'max_leaf_nodes': [None, 5, 10],
-#                 'bootstrap': [True, False],
-#                 'oob_score': [True, False],
-#                 'warm_start': [True, False]
-                 }  
-   grid = GridSearchCV(RandomForestRegressor(), param_grid, refit = True, cv = 3)
-   
-   # fitting the model for grid search 
-   grid.fit(X_train, y_train) 
-  
-   print("\nBest params:", grid.best_params_)
-   print("\nBest score:", grid.best_score_)
-   return grid.best_params_, grid.best_score_
+       print("\nBest params:", grid.best_params_)
+       print("\nBest score:", grid.best_score_)
+       return grid.best_params_
+       
+       

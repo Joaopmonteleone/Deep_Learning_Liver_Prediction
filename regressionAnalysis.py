@@ -8,6 +8,12 @@ import numpy as np
 from modeling import HistoryPlotter
 from sklearn.metrics import explained_variance_score
 from sklearn.metrics import max_error
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
+from sklearn.model_selection import GridSearchCV
+from keras.constraints import maxnorm
+from tensorflow.keras.wrappers.scikit_learn import KerasClassifier 
 
 class sequentialNN:
     def __init__(self, X_train, y_train, X_test, y_true):
@@ -24,7 +30,7 @@ class sequentialNN:
         # The optimizer is responsible for manipulating the weights of the neural network
         # in order to achieve the desired output. The RMSprop algorithm is utilized
         optimizer = tf.keras.optimizers.RMSprop(0.001)
-        
+#        print("1")
         # Since we want to minimize the Mean squared error to as low as possible
         # we set it to be the loss value.
         model.compile(loss='mse',
@@ -32,7 +38,7 @@ class sequentialNN:
                       metrics=['mae', 'mse'])
         # How many generations do we run the algorithm
         EPOCHS = 1000
-        
+#        print("2")
         # Early stop stops the training if there is no improvement to avoid overfitting.
 #        early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
         
@@ -43,7 +49,7 @@ class sequentialNN:
           epochs=EPOCHS, validation_split = 0.2, verbose=0,
 #          callbacks=[early_stop, EpochDots()]
           )
-        
+#        print("3")
         self.history = history
         
         hist = pd.DataFrame(history.history)
@@ -51,10 +57,11 @@ class sequentialNN:
         hist.tail()
         
         self.model = model
-
+#        print("4")
         self.loss, self.mae, self.mse = model.evaluate(X_test, y_true, verbose=2)
     
-        self.predictions = model.predict(X_test).flatten()
+        print(model.predict(X_test))
+        self.predictions = model.predict(X_test)
         
     def getPredictions(self):
        return self.predictions
@@ -118,7 +125,7 @@ def create_model(optimizer='adam',
                  ):
     model = Sequential()
     model.add(Dense(neurons, 
-                    input_dim=21,
+                    input_dim=38,
                     kernel_initializer=init_mode,
                     activation=activation,
                     kernel_constraint=maxnorm(weight_constraint)))
@@ -133,18 +140,18 @@ def gridSearch(inputs_train, output_train):
     model = KerasClassifier(build_fn=create_model, verbose=0)
 
     # defining grid search parameters
-    param_grid = {'optimizer': ['SGD', 'RMSprop', 'Adagrad', 'Adadelta', 'Adam', 'Adamax', 'Nadam'], 
-                  'batch_size': [10, 100, 500, 1000, 2000], 
-                  'epochs': [10, 5, 1000], 
+    param_grid = {'optimizer': ['SGD', 'RMSprop', 'Adagrad', 'Adadelta', 'Adam', 'Adamax', 'Nadam' ], 
+                  'batch_size': [10, 100, 500], 
+                  'epochs': [100, 500, 1000], 
 #                  'learn_rate': [0.001, 0.01, 0.1, 0.2, 0.3],
 #                  'momentum': [0.0, 0.2, 0.4, 0.6, 0.8, 0.9],
                   'init_mode': ['uniform', 'lecun_uniform', 'normal', 'zero', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
                   'activation': ['softmax', 'softplus', 'softsign', 'relu', 'tanh', 'sigmoid', 'hard_sigmoid', 'linear'],
-                  'weight_constraint': [1, 2, 3, 4, 5],
-                  'dropout_rate': [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-                  'neurons': [1, 5, 10, 15, 20, 25, 30]
+                  'weight_constraint': [1, 3, 5],
+                  'dropout_rate': [0.0, 0.2, 0.4, 0.6,  0.8,],
+                  'neurons': [10, 25, 50]
                   }
-    grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3)
+    grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, verbose=10)
     grid_result = grid.fit(inputs_train, output_train)
 
     # summarize results

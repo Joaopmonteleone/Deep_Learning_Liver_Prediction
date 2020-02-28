@@ -65,10 +65,11 @@ class svr:
        
        
     def grid_search(self):
-       param_grid = {'kernel': ['rbf','poly','sigmoid'], # poly
+       param_grid = {'kernel': ['rbf','poly','sigmoid'], # rbf
                      'gamma': ['scale', 'auto'], # scale
                      'C': [0.1, 1, 10, 100], # 100
-                     'epsilon': [0.0001, 0.001, 0.01, 0.1, 1, 10] # 10
+                     'epsilon': [0.0001, 0.001, 0.01, 0.1, 1, 10], # 10
+                     'shrinking':[True, False] # True
                      }  
        grid = GridSearchCV(SVR(), param_grid, refit = True, verbose = 3) 
           
@@ -79,20 +80,3 @@ class svr:
        print("\nBest score:", grid.best_score_)
        return grid.best_params_
    
-def gridSearch(inputs_train, output_train):
-   param_grid = {#'epsilon': [0, 0.01, 0.1, 0.5, 1, 2, 4], # how much error you are willing to allow per training data instance
-#                 'tol': [1e-4, 1e-3, 1e-2, 1e-1], # tolerance for stopping criteria
-#                 'C': [0.1, 1, 2, 10, 100], # regularization parameter
-#                 'loss': ['epsilon_insensitive', 'squared_epsilon_insensitive'], # loss function
-                 'fit_intercept': [True, False] # Whether to calculate the intercept for this model
-#                 'intercept_scaling': [0.5, 1, 2],
-                 #'dual': [True, False], # solve the dual or primal optimization problem
-                 }  
-   grid = GridSearchCV(LinearSVR(), param_grid, refit = True, cv = 3)
-   
-   # fitting the model for grid search 
-   grid.fit(inputs_train, output_train) 
-  
-   print("\nBest params:", grid.best_params_)
-   print("\nBest score:", grid.best_score_)
-   return grid.best_params_, grid.best_score_
