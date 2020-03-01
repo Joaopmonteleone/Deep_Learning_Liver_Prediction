@@ -13,7 +13,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Dropout
 from sklearn.model_selection import GridSearchCV
 from keras.constraints import maxnorm
-from tensorflow.keras.wrappers.scikit_learn import KerasClassifier 
+from tensorflow.keras.wrappers.scikit_learn import KerasClassifier ;
 
 class sequentialNN:
     def __init__(self, X_train, y_train, X_test, y_true):
@@ -140,16 +140,16 @@ def gridSearch(inputs_train, output_train):
     model = KerasClassifier(build_fn=create_model, verbose=0)
 
     # defining grid search parameters
-    param_grid = {'optimizer': ['SGD', 'RMSprop', 'Adagrad', 'Adadelta', 'Adam', 'Adamax', 'Nadam' ], 
-                  'batch_size': [10, 100, 500], 
-                  'epochs': [100, 500, 1000], 
+    param_grid = {'optimizer': ['SGD', 'RMSprop', 'Adam' ], #best:SGD , 'Adagrad',, 'Adadelta', 'Adamax', 'Nadam'
+                  'batch_size': [10, 100, 500], #best:10
+                  'epochs': [100, 1000], #best:100
 #                  'learn_rate': [0.001, 0.01, 0.1, 0.2, 0.3],
 #                  'momentum': [0.0, 0.2, 0.4, 0.6, 0.8, 0.9],
-                  'init_mode': ['uniform', 'lecun_uniform', 'normal', 'zero', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
-                  'activation': ['softmax', 'softplus', 'softsign', 'relu', 'tanh', 'sigmoid', 'hard_sigmoid', 'linear'],
-                  'weight_constraint': [1, 3, 5],
-                  'dropout_rate': [0.0, 0.2, 0.4, 0.6,  0.8,],
-                  'neurons': [10, 25, 50]
+#                  'init_mode': ['uniform','normal'], #, 'zero', 'lecun_uniform',, 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'
+#                  'activation': ['softmax','relu','sigmoid'], #, 'softplus', 'softsign', , 'tanh', , 'hard_sigmoid', 'linear'
+#                 # 'weight_constraint': [1, 3, 5],
+#                  'dropout_rate': [0.0, 0.9], #, 0.5
+#                  'neurons': [25, 50] #10, 
                   }
     grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, verbose=10)
     grid_result = grid.fit(inputs_train, output_train)

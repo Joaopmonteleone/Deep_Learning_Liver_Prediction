@@ -8,90 +8,99 @@ Created on Wed Feb  5 11:32:59 2020
 #             Data Preprocessing              #
 ###############################################
 
+dataset = []
+X_before = []
+y_before = []
+
 # Importing the dataset
 import pandas as pd
-dataset = pd.read_csv('datasets/regSyntheticWith365.csv')
+def importDataset(dataset):
+    location = 'datasets/'+dataset
+    dataset = pd.read_csv(location)
+    
+    X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
+    y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
 
-X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
-y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
+    return X_before, y_before
 
-'''BELOW IS ONLY USED FOR CLASSIFICATION DATA'''
+
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
 def encode(dataframe, columns):
    onehotencoder = OneHotEncoder(categorical_features = columns)
    encoded = onehotencoder.fit_transform(dataframe.values).toarray()
    return encoded
-X_encoded = encode(X_before, [6, 7, 14, 21, 36]) # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
 
-# encoding the output FOR CLASSIFICATION
-y_encoded = encode(dataset, [38])
-y_encoded = y_encoded[:, 0:4]
-
-# Separating each column to predict separate classes
-y_1 = y_encoded[:, 0]
-y_2 = y_encoded[:, 1]
-y_3 = y_encoded[:, 2]
-y_4 = y_encoded[:, 3]
-
-
-selectedY = y_before
-# Splitting the dataset into the Training set and Test set
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X_before, 
-                                                    selectedY, 
-                                                    test_size = 0.2, 
-                                                    random_state = 0)
-
-# Feature Scaling
-from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+def encodeData(dataset):
+    X_encoded = encode(X_before, [6, 7, 14, 21, 36]) # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
+    # encoding the output FOR CLASSIFICATION
+    y_encoded = encode(dataset, [38])
+    y_encoded = y_encoded[:, 0:4]
+    # Separating each column to predict separate classes
+    y_1 = y_encoded[:, 0]
+    y_2 = y_encoded[:, 1]
+    y_3 = y_encoded[:, 2]
+    y_4 = y_encoded[:, 3]
+    return X_encoded, y_encoded, y_1, y_2, y_3, y_4
 
 
-###############################################
-#               ANN Regression                #
-###############################################
-from regressionAnalysis import sequentialNN, gridSearch
-regressor = sequentialNN(X_train, y_train, X_test, y_test)
-regressor.visualizeMSEoverEPOCHS()
-regressor.visualizePredictionsVsActual()
-exp_variance_score, max_error, loss, mae, mse, mape = regressor.getEvaluationMetrics()
-best_params, best_score = gridSearch(X_train, y_train)
+def splitAndScale(X_before, y_before):
+    selectedY = y_before
+    # Splitting the dataset into the Training set and Test set
+    from sklearn.model_selection import train_test_split
+    X_train, X_test, y_train, y_test = train_test_split(X_before, 
+                                                        selectedY, 
+                                                        test_size = 0.2, 
+                                                        random_state = 0)
+    
+    # Feature Scaling
+    from sklearn.preprocessing import MinMaxScaler
+    scaler = MinMaxScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+    
+    return X_train, X_test, y_train, y_test
 
 
 ###############################################
-#         Regression Random Forest            #
-############################################### 
-from randomForest import randomForest
-# RandomForestRegressor
-rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
-# Get top 15 instances
-importances = rfModel.getImportance()
-# Plot graph
-randomForest.plotRandomForest(y_test, rfModel.predictions)
-randomForest.makeTree(rfModel)
-rfModel.gridSearch()
+#               Regression                    #
+###############################################
+def ANNregression(X_train, y_train, X_test, y_test):
+    from regressionAnalysis import sequentialNN, gridSearch
+    regressor = sequentialNN(X_train, y_train, X_test, y_test)
+    regressor.visualizeMSEoverEPOCHS()
+    regressor.visualizePredictionsVsActual()
+    exp_variance_score, max_error, loss, mae, mse, mape = regressor.getEvaluationMetrics()
+    best_params, best_score = gridSearch(X_train, y_train)
     
 
-###############################################
-#          Support Vector Regression          #
-###############################################
-from svr import svr
-svr = svr(X_train, y_train, X_test, y_test)
-predictions = svr.getPredictions()
-svr.svr_graph()
-best_params = svr.grid_search()
+def randomForest(X_train, y_train, X_test, y_test):
+    from randomForest import randomForest
+    # RandomForestRegressor
+    rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
+    # Get top 15 instances
+    importances = rfModel.getImportance()
+    # Plot graph
+    randomForest.plotRandomForest(y_test, rfModel.predictions)
+    randomForest.makeTree(rfModel)
+    rfModel.gridSearch()
+    
+
+def svr(X_train, y_train, X_test, y_test):
+    from svr import svr
+    svr = svr(X_train, y_train, X_test, y_test)
+    predictions = svr.getPredictions()
+    svr.svr_graph()
+    best_params = svr.grid_search()
 
 
 
-
+'''
 
 ###############################################
 #           Support Vector Machine            #
 ###############################################
-''' claBalanced - y_before  '''
+ claBalanced - y_before  
 from svm import svm
 svm = svm(X_train, y_train, X_test, y_test)
 #predictions = svm.getPredictions()
@@ -134,7 +143,7 @@ accuracies, mean, variance = ANN.evaluate(X_train, y_train)
 best_parameters, best_accuracy = ANN.grid_search(X_train, y_train) 
 
 
-
+'''
 
 
 
