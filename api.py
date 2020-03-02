@@ -4,7 +4,7 @@ Created on Sun Mar  1 17:33:34 2020
 
 @author: Maria
 """
-from algorithms import importDataset, splitAndScale, ANNregression
+from algorithms import importDataset, splitAndScale, ANNregression, randomForest, svr
 
 ###############################################
 #              Choosing Dataset               #
@@ -67,9 +67,20 @@ choice = ""
 if number == 1: 
     regressor = ANNregression(X_train, y_train, X_test, y_test)
 if number == 2: 
-    choice = "regBalanced.csv"
+    rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
 if number == 3: 
-    choice = "regEncoded.csv"
+    svrModel = svr(X_train, y_train, X_test, y_test)
+
+print("What do you want to do now?")
+print("1 - Choose another dataset to train")
+print("2 - Choose another model to train")
+print("3 - Predict from manual input of donor and recipient variables")
+print("4 - exit")
+
+keepWorkin = input(">")
+
+
+
 
 
 
