@@ -9,18 +9,17 @@ Created on Wed Feb  5 11:32:59 2020
 ###############################################
 
 dataset = []
-X_before = []
-y_before = []
+
 
 # Importing the dataset
 import pandas as pd
 def importDataset(dataset):
+    X_before = []
+    y_before = []
     location = 'datasets/'+dataset
     dataset = pd.read_csv(location)
-    
     X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
     y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
-
     return X_before, y_before
 
 
@@ -31,7 +30,7 @@ def encode(dataframe, columns):
    encoded = onehotencoder.fit_transform(dataframe.values).toarray()
    return encoded
 
-def encodeData(dataset):
+def encodeData(dataset, X_before):
     X_encoded = encode(X_before, [6, 7, 14, 21, 36]) # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
     # encoding the output FOR CLASSIFICATION
     y_encoded = encode(dataset, [38])
@@ -66,13 +65,14 @@ def splitAndScale(X_before, y_before):
 #               Regression                    #
 ###############################################
 def ANNregression(X_train, y_train, X_test, y_test):
+    print("Training ANN on dataset...")
     from regressionAnalysis import sequentialNN, gridSearch
     regressor = sequentialNN(X_train, y_train, X_test, y_test)
     regressor.visualizeMSEoverEPOCHS()
     regressor.visualizePredictionsVsActual()
     exp_variance_score, max_error, loss, mae, mse, mape = regressor.getEvaluationMetrics()
     best_params, best_score = gridSearch(X_train, y_train)
-    
+    return regressor
 
 def randomForest(X_train, y_train, X_test, y_test):
     from randomForest import randomForest
