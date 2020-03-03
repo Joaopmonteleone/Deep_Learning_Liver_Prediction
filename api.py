@@ -9,8 +9,6 @@ from algorithms import importDataset, splitAndScale, ANNregression, randomForest
 ###############################################
 #              Choosing Dataset               #
 ###############################################
-X_before, y_before = [], []
-X_train, X_test, y_train, y_test = [], [], [], []
 def selectDataset():
     print("Select a file to use:")
     print("1 - Regression Original 1437 rows")
@@ -47,14 +45,13 @@ def selectDataset():
     # Split the dataset
     X_train, X_test, y_train, y_test = splitAndScale(X_before, y_before)
     
-    print("\nX_before\n",X_before)
-    print("\ny_train\n",y_train)
-
+    return X_before, y_before, X_train, X_test, y_train, y_test
+    
 
 ###############################################
 #            Choosing Algorithm               #
 ###############################################
-def chooseAlgorithm():
+def chooseAlgorithm(X_before, X_train, X_test, y_train, y_test):
     print("\n Choose an algorithm to run on the dataset:")
     print("1 - Artificial Neural Network")
     print("2 - Random Forest")
@@ -78,31 +75,41 @@ def chooseAlgorithm():
     if number == 3: 
         svrModel = svr(X_train, y_train, X_test, y_test)
         return svrModel
+    
+def ask():
+    print("\nWhat do you want to do now?")
+    print("1 - Choose another dataset to train or a different model")
+    print("2 - Predict from manual input of donor and recipient variables")
+    print("3 - exit")
+    keepWorkin = input("> ")
+    return keepWorkin
+    
+def nextSteps(choice):
+    
+    if int(choice) == 1: 
+        print("1")
+        X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
+        model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
+    if int(choice) == 2:
+        print("Implement smth to predict values")
+    if int(choice) == 3:
+        return True
+    return False
         
 def main():
     print("\n\tWELCOME TO THE LIVER TRANSPLANT DONOR-RECIPIENT MATCH PREDICTOR\n")
     
-    selectDataset()
-    model = chooseAlgorithm()
+    X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
+    model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
+    print(model)
 
-    print("\nWhat do you want to do now?")
-    print("1 - Choose another dataset to train")
-    print("2 - Choose another model to train")
-    print("3 - Predict from manual input of donor and recipient variables")
-    print("4 - exit")
-    
-    keepWorkin = input(">")
-    
-    while keepWorkin != 4:
-        if keepWorkin == 1: 
-            selectDataset()
-            chooseAlgorithm()
-        if keepWorkin == 2:
-            chooseAlgorithm()
-        if keepWorkin == 3:
-            print("Implement smth to predict values")
-            
-    if keepWorkin == 4: print ("4")
+    finished = False
+    while finished == False:
+        x = ask()
+        four = nextSteps(x)
+        if four == True:
+            print("THE END")
+            break
     
 
     

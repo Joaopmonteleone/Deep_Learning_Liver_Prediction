@@ -30,7 +30,7 @@ class sequentialNN:
         # The optimizer is responsible for manipulating the weights of the neural network
         # in order to achieve the desired output. The RMSprop algorithm is utilized
         optimizer = tf.keras.optimizers.RMSprop(0.001)
-#        print("1")
+
         # Since we want to minimize the Mean squared error to as low as possible
         # we set it to be the loss value.
         model.compile(loss='mse',
@@ -38,7 +38,7 @@ class sequentialNN:
                       metrics=['mae', 'mse'])
         # How many generations do we run the algorithm
         EPOCHS = 1000
-#        print("2")
+
         # Early stop stops the training if there is no improvement to avoid overfitting.
 #        early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
         
@@ -49,7 +49,6 @@ class sequentialNN:
           epochs=EPOCHS, validation_split = 0.2, verbose=0,
 #          callbacks=[early_stop, EpochDots()]
           )
-#        print("3")
         self.history = history
         
         hist = pd.DataFrame(history.history)
@@ -57,7 +56,6 @@ class sequentialNN:
         hist.tail()
         
         self.model = model
-#        print("4")
         self.loss, self.mae, self.mse = model.evaluate(X_test, y_true, verbose=2)
     
         print(model.predict(X_test))
