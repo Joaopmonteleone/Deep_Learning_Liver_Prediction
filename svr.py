@@ -13,6 +13,7 @@ np.seterr(divide='ignore', invalid='ignore')
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import GridSearchCV
+import joblib
 
 ###############################################
 #                    SVR                      #
@@ -38,6 +39,9 @@ class svr:
         self.errors = abs(self.predictions - y_test) 
         self.mse = mean_squared_error(y_test, self.predictions)
         self.mae = mean_absolute_error(y_test, self.predictions)
+        
+        filename = 'svr.sav'
+        joblib.dump(regr, filename)
         
     def getPredictions(self):
         print("\nPredictions:\n",self.predictions)

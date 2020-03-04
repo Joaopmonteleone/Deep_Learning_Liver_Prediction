@@ -5,7 +5,7 @@ import numpy as np
 import pydot
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import GridSearchCV
-
+import joblib
 
 ###############################################
 #               RANDOM FOREST                 #
@@ -29,6 +29,9 @@ class randomForest:
         self.errors = abs(self.predictions - y_true) 
         self.mse = mean_squared_error(y_true.flatten(), self.predictions)
         self.mae = mean_absolute_error(y_true.flatten(), self.predictions)
+        
+        filename = 'rf.sav'
+        joblib.dump(rf, filename)
     
     def getPredictions(self):
        return self.predictions

@@ -66,7 +66,7 @@ def splitAndScale(X_before, y_before):
 ###############################################
 def ANNregression(X_train, y_train, X_test, y_test):
     print("Training ANN on dataset...")
-    from regressionAnalysis import sequentialNN, gridSearch
+    from regressionAnalysis import sequentialNN
     regressor = sequentialNN(X_train, y_train, X_test, y_test)
     regressor.visualizeMSEoverEPOCHS()
     regressor.visualizePredictionsVsActual()
@@ -83,7 +83,6 @@ def randomForest(X_train, y_train, X_test, y_test, X_before):
     print(rfModel.getImportance())
     # Plot graph
     randomForest.plotRandomForest(y_test, rfModel.predictions)
-    print("from algorithms predict",rfModel.predict(X_test))
 #    randomForest.makeTree(rfModel)
     # Grid Search
 #    rfModel.gridSearch()

@@ -8,6 +8,7 @@ from algorithms import importDataset, splitAndScale, ANNregression, randomForest
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import tensorflow as tf 
+import joblib
 
 ###############################################
 #              Choosing Dataset               #
@@ -69,18 +70,17 @@ def chooseAlgorithm(X_before, X_train, X_test, y_train, y_test):
         else:
             print("Invalid number, select an algorithm by selecting its number (1 to 3)")
     if number == 1: 
-        regressor = ANNregression(X_train, y_train, X_test, y_test)
-        print("regressor:", regressor)
+        ANNregression(X_train, y_train, X_test, y_test)
         model = tf.keras.models.load_model('ann.h5')
         return model
     if number == 2: 
-        rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
-        print("rfModel:", rfModel)
-        return rfModel
+        randomForest(X_train, y_train, X_test, y_test, X_before)
+        model = joblib.load('rf.sav')
+        return model
     if number == 3: 
-        svrModel = svr(X_train, y_train, X_test, y_test)
-        print("svrModel",svrModel)
-        return svrModel
+        svr(X_train, y_train, X_test, y_test)
+        model = joblib.load('svr.sav')
+        return model
     
 def ask():
     print("\nWhat do you want to do now?")
