@@ -67,15 +67,18 @@ def chooseAlgorithm(X_before, X_train, X_test, y_train, y_test):
             acceptedAlgorithm = True
         else:
             print("Invalid number, select an algorithm by selecting its number (1 to 3)")
-            
+    scaler = MinMaxScaler()
     if number == 1: 
         regressor = ANNregression(X_train, y_train, X_test, y_test)
+        print(regressor.predict(scaler.transform(np.array([[60,0,22,1,0,0,1,0,946,10,10,0,0,0,0,1,40,1,22.0385674931129,0,0,4,2,0,1,1,152,13,17,1.2,0,0,0,1,0,0,0,1]]))))
         return regressor
     if number == 2: 
         rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
+        print(rfModel.predict(scaler.transform(np.array([[60,0,22,1,0,0,1,0,946,10,10,0,0,0,0,1,40,1,22.0385674931129,0,0,4,2,0,1,1,152,13,17,1.2,0,0,0,1,0,0,0,1]]))))
         return rfModel
     if number == 3: 
         svrModel = svr(X_train, y_train, X_test, y_test)
+        print(svrModel.predict(scaler.transform(np.array([[60,0,22,1,0,0,1,0,946,10,10,0,0,0,0,1,40,1,22.0385674931129,0,0,4,2,0,1,1,152,13,17,1.2,0,0,0,1,0,0,0,1]]))))
         return svrModel
     
 def ask():
@@ -86,8 +89,7 @@ def ask():
     keepWorkin = input("> ")
     return keepWorkin
     
-def nextSteps(choice):
-    
+def nextSteps(model, choice):
     if int(choice) == 1: 
         print("1")
         X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
@@ -97,7 +99,7 @@ def nextSteps(choice):
             print("Insert recipient's values: ")
             while True:
                 age = int(input("- Age: "))
-                if age > 10 and age < 80: break
+                if age > 9 and age < 81: break
                 else: print("Invalid value, must be between 10 and 80")
                 
             while True:
@@ -127,16 +129,16 @@ def nextSteps(choice):
             
             while True:
                 etiologiaprincipal = int(input("- Etiology justifying transplant need:\n\t\t0 - Virus C cirrhosis\n\t\t1- Alcohol cirrhosis\n\t\t2 - Virus B cirrhosis\n\t\t3 - Fulminant hepatic failure\n\t\t4 - Primary biliary cirrhosis\n\t\t5 - Primary sclerosing cholangitis\n\t\t6 - Others\n> "))
-                if etiologiaprincipal < 7: break
-                else: print("Invalid value, must be a number between 0 and 6")
+                if etiologiaprincipal == 0 or (etiologiaprincipal > 0 and etiologiaprincipal < 7): break
+                else: print("Invalid value, must be between 0 and 6")
             
             while True:
                 trombosisportal = int(input("- Portal thrombosis:\n\t\t0 - No portal thrombosis\n\t\t1 - Partial\n\t\t2 - Complete\n> "))
-                if trombosisportal < 3: break
-                else: print("Invalid value, must be a number between 0 and 2")
+                if trombosisportal == 0 or (trombosisportal > 0 and trombosisportal < 3): break
+                else: print("Invalid value, must be between 0 and 2")
             
             while True:
-                tiempolistaespera = int(input("Waiting list time (in days): "))
+                tiempolistaespera = int(input("- Waiting list time (in days): "))
                 if tiempolistaespera > 0 and tiempolistaespera < 2000: break
                 else: print("Invalid value, must be between 1 and 2000")
             
@@ -166,14 +168,14 @@ def nextSteps(choice):
                 else: print("Invalid value, must be 0 for no or 1 for yes")
             
             while True:
-                sfiptx = int(input("- Cytomegalovirus (1 - yes, 0 - no): "))
-                if sfiptx == 1 or sfiptx == 0: break
-                else: print("Invalid value, must be 0 for no or 1 for yes")
-            
+                sfiptx = int(input("- Pre-transplant status performance:\n\t\t0 - At home\n\t\t1 - Hospitalised\n\t\t2 - Hospitalised in ICU\n\t\t3 - Hospitalised in ICU with mechanical ventilation\n> "))
+                if sfiptx == 0 or (sfiptx > 0 and sfiptx < 3): break
+                else: print("Invalid value, must be between 0 and 2")
+                
             while True:
-                cmvbasal = int(input("- Pre-transplant status performance:\n\t\t0 - At home\n\t\t1 - Hospitalised\n\t\t2 - Hospitalised in ICU\n\t\t3 - Hospitalised in ICU with mechanical ventilation\n> "))
-                if cmvbasal < 4: break
-                else: print("Invalid value, must be a number between 0 and 3")
+                cmvbasal = int(input("- Cytomegalovirus (1 - yes, 0 - no): "))
+                if cmvbasal == 1 or cmvbasal == 0: break
+                else: print("Invalid value, must be 0 for no or 1 for yes")
                 
             
             print("\n Insert donor's values:")
@@ -204,11 +206,13 @@ def nextSteps(choice):
             
             while True:
                 causaexitus = int(input("- Cause of death:\n\t\t0 - Brain trauma\n\t\t1 - Cerebral vascular accident (CVA)\n\t\t2 - Anoxia\n\t\t3 - Deceased vascular after cardiac arrest\n\t\t4 - Others\n> "))
-            
+                if causaexitus == 0 or (causaexitus > 0 and causaexitus < 5): break
+                else: print("Invalid value, must be between 0 and 4")
+                
             while True:
                 diasuci = int(input("- Hospitalised length in ICU (days): "))
-                if meldinclusion > 0 and meldinclusion < 50: break
-                else: print("Invalid value, must be between 1 and 50")
+                if diasuci > 0 and diasuci < 61: break
+                else: print("Invalid value, must be between 1 and 60")
             
             while True:
                 hipotension = int(input("- Hypotension episodes (1 - yes, 0 - no): "))
@@ -222,28 +226,28 @@ def nextSteps(choice):
             
             while True:
                 creatinina = int(input("- Creatinine plasma level (in mg/dl): "))
-                if meldinclusion > 0 and meldinclusion < 50: break
-                else: print("Invalid value, must be between 1 and 50")
+                if creatinina > 0 and creatinina < 12: break
+                else: print("Invalid value, must be between 0 and 11")
             
             while True:
                 na = int(input("- Sodium plasma level (in mEq/l): "))
-                if meldinclusion > 0 and meldinclusion < 50: break
-                else: print("Invalid value, must be between 1 and 50")
+                if na > 89 and na < 201: break
+                else: print("Invalid value, must be between 90 and 200")
             
             while True:
                 ast = int(input("- Aspartate transaminase level: (in UI/l): "))
-                if meldinclusion > 0 and meldinclusion < 50: break
-                else: print("Invalid value, must be between 1 and 50")
+                if ast > 0 and ast < 1501: break
+                else: print("Invalid value, must be between 0 and 1500")
             
             while True:
                 alt = int(input("- Alanine aminotransferase plasma level (in UI/l): "))
-                if meldinclusion > 0 and meldinclusion < 50: break
-                else: print("Invalid value, must be between 1 and 50")
+                if alt > 0 and alt < 1501: break
+                else: print("Invalid value, must be between 0 and 1500")
             
             while True:
                 bit = int(input("- Total bilirubin (in mg/dl): "))
-                if meldinclusion > 0 and meldinclusion < 50: break
-                else: print("Invalid value, must be between 1 and 50")
+                if bit > 0 and bit < 7: break
+                else: print("Invalid value, must be between 0 and 6")
             
             while True:
                 antihbc = int(input("- Hepatitis B (1 - yes, 0 - no): "))
@@ -279,7 +283,9 @@ def nextSteps(choice):
             
             while True:
                 tiempoisquemiafria = int(input("- Cold ischemia time:\n\t\t0 - Less than 6 hours\n\t\t1 - Between 6 and 12 hours\n\t\t2 - More than 6 hours\n> "))
-            
+                if tiempoisquemiafria == 0 or (tiempoisquemiafria > 0 and tiempoisquemiafria < 3): break
+                else: print("Invalid value, must be between 0 and 2")
+                
             while True:
                 compatibilidadabo = int(input("- AB0 compatible transplant (1 - yes, 0 - no): "))
                 if compatibilidadabo == 1 or compatibilidadabo == 0: break
@@ -297,14 +303,15 @@ def nextSteps(choice):
                       tiempoisquemiafria, compatibilidadabo
                      ]
         
-            print(to_predict)
+            print("\n",to_predict)
+            
+            scaler = MinMaxScaler()
+            new_prediction = model.predict(scaler.transform(np.array([to_predict])))
+            
+            print("\nPredicted days: ", new_prediction)
+
         except ValueError: print("invalid input")
         
-        
-#        scaler = MinMaxScaler()
-#        
-#        new_prediction = model.predict(scaler.transform(np.array([[0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])))
-
     if int(choice) == 3:
         return True
     return False
@@ -315,11 +322,12 @@ def main():
     X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
     model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
     print(model)
+    print(model.predict([[60,0,22,1,0,0,1,0,946,10,10,0,0,0,0,1,40,1,22.0385674931129,0,0,4,2,0,1,1,152,13,17,1.2,0,0,0,1,0,0,0,1]]))
 
     finished = False
     while finished == False:
         x = ask()
-        four = nextSteps(x)
+        four = nextSteps(model, x)
         if four == True:
             print("\n\tBYE BYE")
             break
