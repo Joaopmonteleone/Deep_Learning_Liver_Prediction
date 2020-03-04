@@ -30,6 +30,7 @@ class randomForest:
         self.mse = mean_squared_error(y_true.flatten(), self.predictions)
         self.mae = mean_absolute_error(y_true.flatten(), self.predictions)
         
+        # save file
         filename = 'rf.sav'
         joblib.dump(rf, filename)
     
@@ -41,10 +42,6 @@ class randomForest:
     
     def getMSE(self):
         return self.mse
-    
-    def getMAPE(self):
-        # return mean absolute percentage error (MAPE)
-        return np.mean(100 * (self.errors / self.y_true))
     
     def getImportance(self):
        # Get numerical feature importances
@@ -65,7 +62,10 @@ class randomForest:
        plt.scatter(y_true, predictions, c='#FF7AA6')
        plt.xlabel('True Values')
        plt.ylabel('Predictions')
-       _ = plt.plot()
+       plt.title('Precision of predicted outcomes')
+       plt.plot(np.unique(y_true), np.poly1d(np.polyfit(y_true, predictions, 1))(np.unique(y_true)))
+#       yerr = np.linspace(0.05, 0.2, 10)
+#       plt.errorbar(y_true, predictions, yerr=yerr, label='error bar')
        plt.show()
     
     

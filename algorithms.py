@@ -79,10 +79,13 @@ def randomForest(X_train, y_train, X_test, y_test, X_before):
     from randomForest import randomForest
     # RandomForestRegressor
     rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
-    # Get top 15 instances
-    print(rfModel.getImportance())
-    # Plot graph
     randomForest.plotRandomForest(y_test, rfModel.predictions)
+    print("\nMean absolute error of predictions:", int(rfModel.getMAE()), " days")
+    # Get top 15 instances
+    print("\n-- Variable Importances --")
+    rfModel.getImportance()
+    # Plot graph
+    
 #    randomForest.makeTree(rfModel)
     # Grid Search
 #    rfModel.gridSearch()

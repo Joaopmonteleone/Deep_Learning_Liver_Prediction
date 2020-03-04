@@ -61,28 +61,12 @@ class sequentialNN:
 #        print(model.predict(X_test))
         self.predictions = model.predict(X_test)
         
-#        self.s = pickle.dumps(model)
-#        dump(model, 'regressionAnalysis.joblib')
-        
         model.save('ann.h5')
         print("ANN model saved to disk")
-        
-#    def getModel(self):
-#        model2 = pickle.loads(self.s)
-#        return model2
-    
-#    def getModelTry2(self):
-#        clf = load('regressionAnalysis.joblib')
-#        return clf
         
     def getPredictions(self):
        return self.predictions
    
-#    def getModel(self):
-#        model = load_model('ann.h5')
-#        model.summary()
-#        return model
-        
     ###############################################
     #                VISUALISATION                #
     ###############################################

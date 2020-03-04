@@ -56,7 +56,8 @@ def selectDataset():
 #            Choosing Algorithm               #
 ###############################################
 def chooseAlgorithm(X_before, X_train, X_test, y_train, y_test):
-    print("\n Choose an algorithm to run on the dataset:")
+    print()
+    print("\033[4mChoose an algorithm to run on the dataset:\033[0m")
     print("1 - Artificial Neural Network")
     print("2 - Random Forest")
     print("3 - Support Vector Regression")
@@ -96,7 +97,8 @@ def nextSteps(model, choice):
         model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
     if int(choice) == 2:
         try:
-            print("Insert recipient's values: ")
+            print()
+            print("\033[4mInsert recipient's values: \033[0m")
             while True:
                 age = int(input("- Age: "))
                 if age > 9 and age < 81: break
@@ -177,8 +179,8 @@ def nextSteps(model, choice):
                 if cmvbasal == 1 or cmvbasal == 0: break
                 else: print("Invalid value, must be 0 for no or 1 for yes")
                 
-            
-            print("\n Insert donor's values:")
+            print()
+            print("\033[4mInsert donor's values:\033[0m")
             while True:
                 edaddon = int(input("- Age: "))
                 if edaddon > 10 and edaddon < 80: break
@@ -264,8 +266,8 @@ def nextSteps(model, choice):
                 if cmvdon == 1 or cmvdon == 0: break
                 else: print("Invalid value, must be 0 for no or 1 for yes")
             
-            
-            print("\nInsert transplant info:")
+            print()
+            print("\033[4mInsert transplant info:\033[0m")
             while True:
                 multiorganico = int(input("- Multi-organ harvesting (1 - yes, 0 - no): "))
                 if multiorganico == 1 or multiorganico == 0: break
@@ -307,7 +309,7 @@ def nextSteps(model, choice):
             
             scaler = MinMaxScaler()
             new_prediction = model.predict(scaler.fit_transform(np.array([to_predict])))
-            print("\nPredicted days: ", new_prediction)
+            print("\nPredicted days: ", int(new_prediction))
 
         except ValueError: print("invalid input")
         
@@ -316,8 +318,10 @@ def nextSteps(model, choice):
     return False
         
 def main():
-    print("\n\n\n\n\n\n\n\n\n\n\n\n\n\tWELCOME TO THE LIVER TRANSPLANT DONOR-RECIPIENT MATCH PREDICTOR\n")
-    
+    from pyfiglet import Figlet
+    f = Figlet(font='slant')
+    print (f.renderText('LiverTransplant Survival Predictor'))
+    print("\033[4mStep 1:\033[0m Select dataset to be used to train the Machine Learning model\n\033[4mStep 2:\033[0m Select Machine Learning model to train\n")
     X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
     model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
 
