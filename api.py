@@ -7,6 +7,7 @@ Created on Sun Mar  1 17:33:34 2020
 from algorithms import importDataset, splitAndScale, ANNregression, randomForest, svr
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
+import tensorflow as tf 
 
 ###############################################
 #              Choosing Dataset               #
@@ -67,18 +68,18 @@ def chooseAlgorithm(X_before, X_train, X_test, y_train, y_test):
             acceptedAlgorithm = True
         else:
             print("Invalid number, select an algorithm by selecting its number (1 to 3)")
-    scaler = MinMaxScaler()
     if number == 1: 
         regressor = ANNregression(X_train, y_train, X_test, y_test)
-        print(regressor.predict(scaler.transform(np.array([[60,0,22,1,0,0,1,0,946,10,10,0,0,0,0,1,40,1,22.0385674931129,0,0,4,2,0,1,1,152,13,17,1.2,0,0,0,1,0,0,0,1]]))))
-        return regressor
+        print("regressor:", regressor)
+        model = tf.keras.models.load_model('ann.h5')
+        return model
     if number == 2: 
         rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
-        print(rfModel.predict(scaler.transform(np.array([[60,0,22,1,0,0,1,0,946,10,10,0,0,0,0,1,40,1,22.0385674931129,0,0,4,2,0,1,1,152,13,17,1.2,0,0,0,1,0,0,0,1]]))))
+        print("rfModel:", rfModel)
         return rfModel
     if number == 3: 
         svrModel = svr(X_train, y_train, X_test, y_test)
-        print(svrModel.predict(scaler.transform(np.array([[60,0,22,1,0,0,1,0,946,10,10,0,0,0,0,1,40,1,22.0385674931129,0,0,4,2,0,1,1,152,13,17,1.2,0,0,0,1,0,0,0,1]]))))
+        print("svrModel",svrModel)
         return svrModel
     
 def ask():
@@ -91,7 +92,6 @@ def ask():
     
 def nextSteps(model, choice):
     if int(choice) == 1: 
-        print("1")
         X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
         model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
     if int(choice) == 2:
@@ -211,7 +211,7 @@ def nextSteps(model, choice):
                 
             while True:
                 diasuci = int(input("- Hospitalised length in ICU (days): "))
-                if diasuci > 0 and diasuci < 61: break
+                if diasuci > -1 and diasuci < 61: break
                 else: print("Invalid value, must be between 1 and 60")
             
             while True:
@@ -246,7 +246,7 @@ def nextSteps(model, choice):
             
             while True:
                 bit = int(input("- Total bilirubin (in mg/dl): "))
-                if bit > 0 and bit < 7: break
+                if bit > -1 and bit < 7: break
                 else: print("Invalid value, must be between 0 and 6")
             
             while True:
@@ -306,8 +306,7 @@ def nextSteps(model, choice):
             print("\n",to_predict)
             
             scaler = MinMaxScaler()
-            new_prediction = model.predict(scaler.transform(np.array([to_predict])))
-            
+            new_prediction = model.predict(scaler.fit_transform(np.array([to_predict])))
             print("\nPredicted days: ", new_prediction)
 
         except ValueError: print("invalid input")
@@ -317,12 +316,10 @@ def nextSteps(model, choice):
     return False
         
 def main():
-    print("\n\tWELCOME TO THE LIVER TRANSPLANT DONOR-RECIPIENT MATCH PREDICTOR\n")
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n\tWELCOME TO THE LIVER TRANSPLANT DONOR-RECIPIENT MATCH PREDICTOR\n")
     
     X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
     model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
-    print(model)
-    print(model.predict([[60,0,22,1,0,0,1,0,946,10,10,0,0,0,0,1,40,1,22.0385674931129,0,0,4,2,0,1,1,152,13,17,1.2,0,0,0,1,0,0,0,1]]))
 
     finished = False
     while finished == False:

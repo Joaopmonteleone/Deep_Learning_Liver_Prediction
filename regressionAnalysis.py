@@ -4,7 +4,6 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from keras.utils.vis_utils import plot_model
 import matplotlib.pyplot as plt
-import numpy as np
 from modeling import HistoryPlotter
 from sklearn.metrics import explained_variance_score
 from sklearn.metrics import max_error
@@ -13,7 +12,8 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Dropout
 from sklearn.model_selection import GridSearchCV
 from keras.constraints import maxnorm
-from tensorflow.keras.wrappers.scikit_learn import KerasClassifier ;
+from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
+
 
 class sequentialNN:
     def __init__(self, X_train, y_train, X_test, y_true):
@@ -58,11 +58,30 @@ class sequentialNN:
         self.model = model
         self.loss, self.mae, self.mse = model.evaluate(X_test, y_true, verbose=2)
     
-        print(model.predict(X_test))
+#        print(model.predict(X_test))
         self.predictions = model.predict(X_test)
+        
+#        self.s = pickle.dumps(model)
+#        dump(model, 'regressionAnalysis.joblib')
+        
+        model.save('ann.h5')
+        print("ANN model saved to disk")
+        
+#    def getModel(self):
+#        model2 = pickle.loads(self.s)
+#        return model2
+    
+#    def getModelTry2(self):
+#        clf = load('regressionAnalysis.joblib')
+#        return clf
         
     def getPredictions(self):
        return self.predictions
+   
+#    def getModel(self):
+#        model = load_model('ann.h5')
+#        model.summary()
+#        return model
         
     ###############################################
     #                VISUALISATION                #
@@ -100,14 +119,12 @@ class sequentialNN:
         loss = self.loss
         mae = self.mae
         mse = self.mse
-        mape = np.mean(100 * (abs(self.predictions - self.y_true) / self.y_true))
         print("explained variance score:", evs, "\nme:", 
               me, "\nloss:",
               loss, "\nmae:",
               mae, "\nmse",
-              mse, "\nmape",
-              mape)
-        return evs, me, loss, mae, mse, mape
+              mse)
+        return evs, me, loss, mae, mse
     
     
     

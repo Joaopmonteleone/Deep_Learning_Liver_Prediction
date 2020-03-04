@@ -70,7 +70,7 @@ def ANNregression(X_train, y_train, X_test, y_test):
     regressor = sequentialNN(X_train, y_train, X_test, y_test)
     regressor.visualizeMSEoverEPOCHS()
     regressor.visualizePredictionsVsActual()
-    exp_variance_score, max_error, loss, mae, mse, mape = regressor.getEvaluationMetrics()
+    exp_variance_score, max_error, loss, mae, mse = regressor.getEvaluationMetrics()
     # Do Grid Search
 #    best_params, best_score = gridSearch(X_train, y_train)
     return regressor
@@ -83,7 +83,8 @@ def randomForest(X_train, y_train, X_test, y_test, X_before):
     print(rfModel.getImportance())
     # Plot graph
     randomForest.plotRandomForest(y_test, rfModel.predictions)
-    randomForest.makeTree(rfModel)
+    print("from algorithms predict",rfModel.predict(X_test))
+#    randomForest.makeTree(rfModel)
     # Grid Search
 #    rfModel.gridSearch()
     return rfModel
