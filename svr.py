@@ -44,15 +44,12 @@ class svr:
         joblib.dump(regr, filename)
         
     def getPredictions(self):
-        print("\nPredictions:\n",self.predictions)
         return self.predictions
     
     def getMAE(self):
-        print("\nMAE:",self.mae)
         return self.mae
     
     def getMSE(self):
-        print("\nMSE:",self.mse)
         return self.mse
 
 

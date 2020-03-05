@@ -71,16 +71,17 @@ def ANNregression(X_train, y_train, X_test, y_test):
     regressor.visualizeMSEoverEPOCHS()
     regressor.visualizePredictionsVsActual()
     exp_variance_score, max_error, loss, mae, mse = regressor.getEvaluationMetrics()
+    print("\nMean absolute error of predictions:", int(mae), "days")
     # Do Grid Search
 #    best_params, best_score = gridSearch(X_train, y_train)
-    return regressor
+    return mae
 
 def randomForest(X_train, y_train, X_test, y_test, X_before):
     from randomForest import randomForest
     # RandomForestRegressor
     rfModel = randomForest(X_train, y_train, X_test, y_test, X_before)
     randomForest.plotRandomForest(y_test, rfModel.predictions)
-    print("\nMean absolute error of predictions:", int(rfModel.getMAE()), " days")
+    print("\nMean absolute error of predictions:", int(rfModel.getMAE()), "days")
     # Get top 15 instances
     print("\n-- Variable Importances --")
     rfModel.getImportance()
@@ -89,15 +90,16 @@ def randomForest(X_train, y_train, X_test, y_test, X_before):
 #    randomForest.makeTree(rfModel)
     # Grid Search
 #    rfModel.gridSearch()
-    return rfModel
+    return rfModel.getMAE()
     
 
 def svr(X_train, y_train, X_test, y_test):
     from svr import svr
     svr = svr(X_train, y_train, X_test, y_test)
     svr.svr_graph()
+    print("\nMean absolute error of predictions:", int(svr.getMAE()),"days")
 #    best_params = svr.grid_search()
-    return svr
+    return svr.getMAE()
 
 
 

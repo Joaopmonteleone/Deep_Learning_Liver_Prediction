@@ -54,7 +54,7 @@ def selectDataset():
 
 ###############################################
 #            Choosing Algorithm               #
-###############################################
+###############################################  
 def chooseAlgorithm(X_before, X_train, X_test, y_train, y_test):
     print()
     print("\033[4mChoose an algorithm to run on the dataset:\033[0m")
@@ -71,17 +71,17 @@ def chooseAlgorithm(X_before, X_train, X_test, y_train, y_test):
         else:
             print("Invalid number, select an algorithm by selecting its number (1 to 3)")
     if number == 1: 
-        ANNregression(X_train, y_train, X_test, y_test)
+        mae = ANNregression(X_train, y_train, X_test, y_test)
         model = tf.keras.models.load_model('ann.h5')
-        return model
+        return model, int(mae)
     if number == 2: 
-        randomForest(X_train, y_train, X_test, y_test, X_before)
+        mae = randomForest(X_train, y_train, X_test, y_test, X_before)
         model = joblib.load('rf.sav')
-        return model
+        return model, int(mae)
     if number == 3: 
-        svr(X_train, y_train, X_test, y_test)
+        mae = svr(X_train, y_train, X_test, y_test)
         model = joblib.load('svr.sav')
-        return model
+        return model, int(mae)
     
 def ask():
     print("\nWhat do you want to do now?")
@@ -91,10 +91,10 @@ def ask():
     keepWorkin = input("> ")
     return keepWorkin
     
-def nextSteps(model, choice):
+def nextSteps(model, choice, mae):
     if int(choice) == 1: 
         X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
-        model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
+        model, mae = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
     if int(choice) == 2:
         try:
             print()
@@ -309,7 +309,7 @@ def nextSteps(model, choice):
             
             scaler = MinMaxScaler()
             new_prediction = model.predict(scaler.fit_transform(np.array([to_predict])))
-            print("\nPredicted days: ", int(new_prediction))
+            print("\nPredicted days: ", int(new_prediction), "+/-", mae, "days")
 
         except ValueError: print("invalid input")
         
@@ -323,12 +323,12 @@ def main():
     print (f.renderText('LiverTransplant Survival Predictor'))
     print("\033[4mStep 1:\033[0m Select dataset to be used to train the Machine Learning model\n\033[4mStep 2:\033[0m Select Machine Learning model to train\n")
     X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
-    model = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
+    model, mae = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
 
     finished = False
     while finished == False:
         x = ask()
-        four = nextSteps(model, x)
+        four = nextSteps(model, x, mae)
         if four == True:
             print("\n\tBYE BYE")
             break
