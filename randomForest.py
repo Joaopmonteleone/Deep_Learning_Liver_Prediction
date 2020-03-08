@@ -59,7 +59,7 @@ class randomForest:
     #                VISUALISATION                #
     ###############################################
     def plotRandomForest(y_true, predictions):
-       plt.scatter(y_true, predictions, c='#A06CD5')
+       plt.scatter(y_true, predictions, c='#FF7AA6') #FF7AA6 #A06CD5
        plt.xlabel('True Values')
        plt.ylabel('Predictions')
        plt.title('Precision of predicted outcomes')

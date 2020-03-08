@@ -61,7 +61,7 @@ def ANNregression(X_train, y_train, X_test, y_test):
     print("Training ANN on dataset...")
     from regressionAnalysis import sequentialNN
     regressor = sequentialNN(X_train, y_train, X_test, y_test)
-    regressor.visualizeMSEoverEPOCHS()
+    #regressor.visualizeMSEoverEPOCHS()
     regressor.visualizePredictionsVsActual()
     exp_variance_score, max_error, loss, mae, mse = regressor.getEvaluationMetrics()
     print("\nMean absolute error of predictions:", int(mae), "days")
@@ -97,6 +97,7 @@ def svr(X_train, y_train, X_test, y_test):
 
 
 
+
 '''
 ###############################################
 #           Support Vector Machine            #
@@ -118,7 +119,6 @@ maxval = max(scores.values())
 res = [(k, v) for k, v in scores.items() if v == maxval]
 print("Highest score:", res)
 
-'''
 
 ###############################################
 #          ANN for classification             #
@@ -146,7 +146,7 @@ accuracies, mean, variance = ANN.evaluate_model(X_train, y_train)
 # Grid Search
 best_parameters, best_accuracy = ANN.gridSearch(X_train, y_train) 
 
-
+'''
 
 
 

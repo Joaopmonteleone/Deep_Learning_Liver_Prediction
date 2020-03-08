@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -87,14 +88,11 @@ class sequentialNN:
         plt.ylim([0,100000])
         plt.ylabel('MSE [Total Mass]')
         
-    def visualizePredictionsVsActual(self):        
-        plt.axes(aspect='equal')
-        plt.scatter(self.y_true, self.predictions, c='#FF7AA6')
+    def visualizePredictionsVsActual(self):   
+        plt.scatter(self.y_true, self.predictions, c='#FF7AA6') #FF7AA6 #ECBEB4
         plt.xlabel('True Values [Days survived]')
         plt.ylabel('Predictions [Days survived]')
-        plt.ylim([0,500])
-        plt.xlim([0,500])
-        plt.plot()
+        plt.plot(np.unique(self.y_true), np.poly1d(np.polyfit(self.y_true, self.predictions, 1))(np.unique(self.y_true)))
         plt.show()
         
     def getEvaluationMetrics(self):

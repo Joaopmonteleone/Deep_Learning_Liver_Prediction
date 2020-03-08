@@ -58,10 +58,10 @@ class svr:
     ###############################################
     
     def svr_graph(self):
-       plt.scatter(self.y_test, self.predictions, c='#FF7AA6')
+       plt.scatter(self.y_test, self.predictions, c='#FF7AA6') #FF7AA6 #EA526F
        plt.xlabel('True Values [Days survived]')
        plt.ylabel('Predictions [Days survived]')
-       plt.plot()
+       plt.plot(np.unique(self.y_test), np.poly1d(np.polyfit(self.y_test, self.predictions, 1))(np.unique(self.y_test)))
        plt.show()
        
        

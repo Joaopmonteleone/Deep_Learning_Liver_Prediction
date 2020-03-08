@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, classification_report#, multilabel_confusion_matrix
 from sklearn.model_selection import GridSearchCV
+import numpy as np
 
 ###############################################
 #                    SVM                      #
@@ -25,8 +26,8 @@ class svm:
         
         #model = SVC(gamma='auto')
         model = LinearSVC(multi_class = 'crammer_singer', 
-                          loss = 'squared_hinge',
-                          C = 0.1,
+#                          loss = 'squared_hinge',
+#                          C = 0.1,
                           random_state = 42)
            
         model.fit(X_train, y_train)
@@ -64,10 +65,10 @@ class svm:
     ###############################################
     
     def svm_graph(self):
-       plt.scatter(self.y_true, self.predictions)
+       plt.scatter(self.y_true, self.predictions, c='#83A89A')
        plt.xlabel('True Values')
        plt.ylabel('Predictions')
-       plt.plot()
+       plt.plot(np.unique(self.y_true), np.poly1d(np.polyfit(self.y_true, self.predictions, 1))(np.unique(self.y_true)))
        plt.show()
 
 
