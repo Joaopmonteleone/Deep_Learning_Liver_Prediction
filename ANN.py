@@ -15,7 +15,6 @@ from sklearn.metrics import confusion_matrix
 # For evaluating
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier 
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import accuracy_score
 from sklearn.metrics import multilabel_confusion_matrix
 # For tuning
 from sklearn.model_selection import GridSearchCV
@@ -38,7 +37,7 @@ class ANN:
        self.model = classifier
     
       
-   def evaluate(X_train, y_train):
+   def evaluate_model(X_train, y_train):
        classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 500)
     
        accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = 1)
@@ -46,43 +45,50 @@ class ANN:
        variance = accuracies.std()
     
        return accuracies, mean, variance
-
-       # WITH BALANCED DATASET CATEGORICAL - IN EVALUATION
-       # mean 0.3441 - very very very low
-       # variance 0.08 is < 1% so good 
-       
-       # WITH BALANCED DATASET BINARY - 4
-       # mean 0.77%
-       # variance 0.07%
-    
-    
+   
+   def cross_validate(self, X_train, y_train, X_test, y_test):
+       from sklearn.model_selection import StratifiedKFold
+       seed = 7 # fix random seed for reproducibility
+       kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+       cvscores = []
+       for train, test in kfold.split(X_train, y_train):
+           # create model
+           model = Sequential()
+           model.add(Dense(30, input_dim=X_train.shape[1], activation='relu'))
+           model.add(Dense(30, activation='relu'))
+           model.add(Dense(1, activation='sigmoid'))
+           model.compile(loss='binary_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
+           model.fit(X_train, y_train, epochs=100, batch_size=10, verbose=0)
+           # evaluate the model
+           scores = model.evaluate(X_test, y_test, verbose=3)
+           print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+           cvscores.append(scores[1] * 100)
+       print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
+       return cvscores
+   
    def gridSearch(inputs_train, output_train):
-    model = KerasClassifier(build_fn=create_model, verbose=0)
+       model = KerasClassifier(build_fn=create_model, verbose=10)
 
-    # defining grid search parameters
-    param_grid = {'optimizer': ['SGD', 'RMSprop'],  #, 'Adagrad', 'Adadelta', 'Adam', 'Adamax', 'Nadam'
-#                  'batch_size': [10, 100, 500, 1000, 2000], 
-#                  'epochs': [10, 5, 1000], 
-##                  'learn_rate': [0.001, 0.01, 0.1, 0.2, 0.3],
-##                  'momentum': [0.0, 0.2, 0.4, 0.6, 0.8, 0.9],
-#                  'init_mode': ['uniform', 'lecun_uniform', 'normal', 'zero', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
-#                  'activation': ['softmax', 'softplus', 'softsign', 'relu', 'tanh', 'sigmoid', 'hard_sigmoid', 'linear'],
-#                  'weight_constraint': [1, 2, 3, 4, 5],
-#                  'dropout_rate': [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-#                  'neurons': [1, 5, 10, 15, 20, 25, 30]
-                  }
-    grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3)
-    grid_result = grid.fit(inputs_train, output_train)
-
-    # summarize results
-    print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
-    means = grid_result.cv_results_['mean_test_score']
-    stds = grid_result.cv_results_['std_test_score']
-    params = grid_result.cv_results_['params']
-    for mean, stdev, param in zip(means, stds, params):
-        print("%f (%f) with: %r" % (mean, stdev, param))
-
-    return grid.best_params_, grid.best_score_
+        # defining grid search parameters
+       param_grid = {'optimizer': ['RMSprop'],
+                      'batch_size': [10], 
+                      'epochs': [100], 
+    #                  'learn_rate': [0.001, 0.01, 0.1, 0.2, 0.3],
+    #                  'momentum': [0.0, 0.2, 0.4, 0.6, 0.8, 0.9],
+                      'init_mode': ['lecun_uniform'],  
+                      'activation': ['softmax'],
+                      'weight_constraint': [1], 
+                      'dropout_rate': [0.0,0.5,0.9],
+                      'neurons': [10, 30]
+                      }
+       grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, verbose=10)
+       grid_result = grid.fit(inputs_train, output_train)
+    
+        # summarize results
+       print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+       
+    
+       return grid.best_params_, grid.best_score_
 
 
     
@@ -120,11 +126,6 @@ def build_classifier():
      return classifier
   
 
-''' PARAMETER TUNING - THE GRID SEARCH TECHNIQUE
-    When tuning the optimizer, the parameters to study must be passed through the function 
-    Classification metrics can't handle a mix of multilabel-indicator and multiclass targets
-    ONLY USE WHEN PREDICTING BINARY OUTPUTS '''
-
 # Grid Search
 def create_model(optimizer='adam',
                  #learn_rate=0.01,
@@ -137,7 +138,7 @@ def create_model(optimizer='adam',
                  ):
     model = Sequential()
     model.add(Dense(neurons, 
-                    input_dim=21,
+                    input_dim=38,
                     kernel_initializer=init_mode,
                     activation=activation,
                     kernel_constraint=maxnorm(weight_constraint)))

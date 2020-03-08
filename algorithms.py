@@ -35,20 +35,13 @@ def encodeData(dataset, X_before):
     # encoding the output FOR CLASSIFICATION
     y_encoded = encode(dataset, [38])
     y_encoded = y_encoded[:, 0:4]
-    # Separating each column to predict separate classes
-    y_1 = y_encoded[:, 0]
-    y_2 = y_encoded[:, 1]
-    y_3 = y_encoded[:, 2]
-    y_4 = y_encoded[:, 3]
-    return X_encoded, y_encoded, y_1, y_2, y_3, y_4
-
+    return X_encoded, y_encoded
 
 def splitAndScale(X_before, y_before):
-    selectedY = y_before
     # Splitting the dataset into the Training set and Test set
     from sklearn.model_selection import train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X_before, 
-                                                        selectedY, 
+                                                        y_before, 
                                                         test_size = 0.2, 
                                                         random_state = 0)
     
@@ -103,12 +96,12 @@ def svr(X_train, y_train, X_test, y_test):
 
 
 
-'''
 
+'''
 ###############################################
 #           Support Vector Machine            #
 ###############################################
- claBalanced - y_before  
+# claBalanced - y_before  
 from svm import svm
 svm = svm(X_train, y_train, X_test, y_test)
 #predictions = svm.getPredictions()
@@ -125,7 +118,7 @@ maxval = max(scores.values())
 res = [(k, v) for k, v in scores.items() if v == maxval]
 print("Highest score:", res)
 
-
+'''
 
 ###############################################
 #          ANN for classification             #
@@ -139,19 +132,22 @@ loss = ['categorical_crossentropy', 'binary_crossentropy', # binary or categoric
 
 classifier = ANN(X_train, y_train, 
                  'relu', activation_output[1], 
-                 optimizer[1], loss[1], 
+                 optimizer[3], loss[1], 
                  10, 500, 1) # batch_size, epochs, output layer hidden units
+
+cvscores = classifier.cross_validate(X_train, y_train, X_test, y_test)
+
 
 y_pred, y_bool, accuracy = classifier.predict_all(X_test, y_test)
 
 # Evaluate ANN - only with binary prediction
-accuracies, mean, variance = ANN.evaluate(X_train, y_train)
+accuracies, mean, variance = ANN.evaluate_model(X_train, y_train)
 
 # Grid Search
-best_parameters, best_accuracy = ANN.grid_search(X_train, y_train) 
+best_parameters, best_accuracy = ANN.gridSearch(X_train, y_train) 
 
 
-'''
+
 
 
 
