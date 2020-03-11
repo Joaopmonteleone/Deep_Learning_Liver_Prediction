@@ -320,18 +320,18 @@ def nextSteps(model, choice, mae):
         print("Predicting from file") 
 #        while True:
         try:
-            readDataset = input("Full name of dataset to import: ")
-            dataset = pd.read_csv('datasets/' + readDataset)
-            to_predict = dataset.iloc[:, :-1].values.tolist() # get all columns except last one (actual value)
-
+#            readDataset = input("Full name of dataset to import: ")
+#            dataset = pd.read_csv('datasets/' + readDataset)
+            dataset = pd.read_csv('datasets/toPredict.csv')
+            to_predict = dataset.iloc[5, :-1].values # get all columns except last one (actual value)
+            
             scaler = MinMaxScaler()
             predictions = []
             
             for row in to_predict:
-                print(row)
-                new_pred = abs(model.predict(scaler.fit_transform(np.array([row]))))
-                print(new_pred[0][0])
-                predictions.append(new_pred)
+                new_pred = model.predict(scaler.fit_transform(np.array([row.tolist()])))
+                print("new_pred",new_pred[0])
+                predictions.append(new_pred[0])
             print("\nPredictions: +/-", mae, "days:\n", predictions)
             
 #            break
