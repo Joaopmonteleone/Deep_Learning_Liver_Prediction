@@ -9,6 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import tensorflow as tf 
 import joblib
+import pandas as pd
 
 ###############################################
 #              Choosing Dataset               #
@@ -87,7 +88,8 @@ def ask():
     print("\nWhat do you want to do now?")
     print("1 - Choose another dataset to train or a different model")
     print("2 - Predict from manual input of donor and recipient variables")
-    print("3 - exit")
+    print("3 - Predict from file")
+    print("4 - exit")
     keepWorkin = input("> ")
     return keepWorkin
     
@@ -309,18 +311,46 @@ def nextSteps(model, choice, mae):
             
             scaler = MinMaxScaler()
             new_prediction = model.predict(scaler.fit_transform(np.array([to_predict])))
-            print("\nPredicted days: ", int(new_prediction), "+/-", mae, "days")
+            print("\nPredicted days: ", abs(int(new_prediction)), "+/-", mae, "days")
 
-        except ValueError: print("invalid input")
+        except Exception as e: 
+            print(e)
         
     if int(choice) == 3:
+        print("Predicting from file") 
+#        while True:
+        try:
+            readDataset = input("Full name of dataset to import: ")
+            dataset = pd.read_csv('datasets/' + readDataset)
+            to_predict = dataset.iloc[:, :-1].values.tolist() # get all columns except last one (actual value)
+
+            scaler = MinMaxScaler()
+            predictions = []
+            
+            for row in to_predict:
+                print(row)
+                new_pred = abs(model.predict(scaler.fit_transform(np.array([row]))))
+                print(new_pred[0][0])
+                predictions.append(new_pred)
+            print("\nPredictions: +/-", mae, "days:\n", predictions)
+            
+#            break
+        except Exception as e: 
+            print(e)
+                
+        print("\nwe escaped!")
+        
+    if int(choice) == 4:
         return True
     return False
         
 def main():
+    # Print initial title of program
     from pyfiglet import Figlet
     f = Figlet(font='slant')
     print (f.renderText('LiverTransplant Survival Predictor'))
+    
+    # Select dataset and ML algorithm
     print("\033[4mStep 1:\033[0m Select dataset to be used to train the Machine Learning model\n\033[4mStep 2:\033[0m Select Machine Learning model to train\n")
     X_before, y_before, X_train, X_test, y_train, y_test = selectDataset()
     model, mae = chooseAlgorithm(X_before, X_train, X_test, y_train, y_test)
