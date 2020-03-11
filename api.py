@@ -317,29 +317,25 @@ def nextSteps(model, choice, mae):
             print(e)
         
     if int(choice) == 3:
-        print("Predicting from file") 
-#        while True:
-        try:
-#            readDataset = input("Full name of dataset to import: ")
-#            dataset = pd.read_csv('datasets/' + readDataset)
-            dataset = pd.read_csv('datasets/toPredict.csv')
-            to_predict = dataset.iloc[5, :-1].values # get all columns except last one (actual value)
-            
-            scaler = MinMaxScaler()
-            predictions = []
-            
-            for row in to_predict:
-                new_pred = model.predict(scaler.fit_transform(np.array([row.tolist()])))
-                print("new_pred",new_pred[0])
-                predictions.append(new_pred[0])
-            print("\nPredictions: +/-", mae, "days:\n", predictions)
-            
-#            break
-        except Exception as e: 
-            print(e)
+        print("Predicting from file...") 
+        while True:
+            try:
+                readDataset = input("Full name of dataset to import: ")
+                dataset = pd.read_csv('datasets/' + readDataset)
+                to_predict = dataset.iloc[:, :-1].values # get all columns except last one (actual value)
+    
+                scaler = MinMaxScaler()
+                predictions = []
+                for row in to_predict:
+                    transform = scaler.fit_transform(row.reshape(-1, 1))
+                    new_pred = model.predict(transform.reshape(1, -1))
+                    predictions.append(new_pred[0])
+                print("\nPredictions: +/-", mae, "days:\n", predictions)
                 
-        print("\nwe escaped!")
-        
+                break
+            except Exception as e: 
+                print(e)
+                
     if int(choice) == 4:
         return True
     return False
