@@ -59,7 +59,6 @@ class sequentialNN:
         self.model = model
         self.loss, self.mae, self.mse = model.evaluate(X_test, y_true, verbose=2)
     
-#        print(model.predict(X_test))
         self.predictions = model.predict(X_test)
         
         model.save('ann.h5')
@@ -88,11 +87,14 @@ class sequentialNN:
         plt.ylim([0,100000])
         plt.ylabel('MSE [Total Mass]')
         
-    def visualizePredictionsVsActual(self):   
-        plt.scatter(self.y_true, self.predictions, c='#FF7AA6') #FF7AA6 #ECBEB4
-        plt.xlabel('True Values [Days survived]')
-        plt.ylabel('Predictions [Days survived]')
-        plt.plot(np.unique(self.y_true), np.poly1d(np.polyfit(self.y_true, self.predictions, 1))(np.unique(self.y_true)))
+    def visualizePredictionsVsActual(self):  
+#        plt.scatter(self.y_true, self.predictions, c='#FF7AA6') #FF7AA6 #ECBEB4
+        plt.xlabel('True Values')
+        plt.ylabel('Predictions')
+        plt.title('Precision of predicted outcomes')
+        m, b = np.polyfit(self.y_true, abs(self.predictions.flatten()), 1)
+        plt.plot(self.y_true, abs(self.predictions), 'o', c='#FF7AA6')
+        plt.plot(self.y_true, m*self.y_true + b) #lobf
         plt.show()
         
     def getEvaluationMetrics(self):
