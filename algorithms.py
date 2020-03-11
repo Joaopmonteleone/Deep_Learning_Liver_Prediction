@@ -77,13 +77,13 @@ def randomForest(X_train, y_train, X_test, y_test, X_before):
     print("\nMean absolute error of predictions:", int(rfModel.getMAE()), "days")
     # Get top 15 instances
     print("\n-- Variable Importances --")
-    rfModel.getImportance()
+    importances = rfModel.getImportance()
     # Plot graph
     
 #    randomForest.makeTree(rfModel)
     # Grid Search
 #    rfModel.gridSearch()
-    return rfModel.getMAE()
+    return rfModel.getMAE(), importances
     
 
 def svr(X_train, y_train, X_test, y_test):
