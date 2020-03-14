@@ -61,7 +61,8 @@ def ANNregression(X_train, y_train, X_test, y_test):
     print("Training ANN on dataset...")
     from regressionAnalysis import sequentialNN
     regressor = sequentialNN(X_train, y_train, X_test, y_test)
-    #regressor.visualizeMSEoverEPOCHS()
+#    regressor.visualizeNeuralNetwork()
+#    regressor.visualizeMSEoverEPOCHS()
     regressor.visualizePredictionsVsActual()
     exp_variance_score, max_error, loss, mae, mse = regressor.getEvaluationMetrics()
     print("\nMean absolute error of predictions:", int(mae), "days")

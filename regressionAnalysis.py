@@ -83,9 +83,9 @@ class sequentialNN:
     def visualizeMSEoverEPOCHS(self):
         #Visualize Mean squared error over epochs
         plotter = HistoryPlotter()
-        plotter.plot({'Basic': self.history}, metric = "mse")
+        plotter.plot({'Basic': self.history}, metric = "mse", c='#62C370')
         plt.ylim([0,100000])
-        plt.ylabel('MSE [Total Mass]')
+        plt.ylabel('MSE [Days]')
         
     def visualizePredictionsVsActual(self):  
 #        plt.scatter(self.y_true, self.predictions, c='#FF7AA6') #FF7AA6 #ECBEB4
@@ -93,7 +93,7 @@ class sequentialNN:
         plt.ylabel('Predictions')
         plt.title('Precision of predicted outcomes')
         m, b = np.polyfit(self.y_true, abs(self.predictions.flatten()), 1)
-        plt.plot(self.y_true, abs(self.predictions), 'o', c='#FF7AA6')
+        plt.plot(self.y_true, abs(self.predictions), 'o', c='#62C370')
         plt.plot(self.y_true, m*self.y_true + b) #lobf
         plt.show()
         

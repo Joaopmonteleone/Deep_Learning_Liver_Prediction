@@ -96,7 +96,6 @@ class randomForest:
 #                     'min_samples_split': [2, 10, 20],
 #                     'min_samples_leaf': [1, 10, 100],
 #                     'max_features': ['auto', 5, 'sqrt', 'log2', None],
-#                     'max_leaf_nodes': [None, 5, 10],
 #                     'bootstrap': [True, False],
 #                     'oob_score': [True, False],
 #                     'warm_start': [True, False]
