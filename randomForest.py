@@ -13,9 +13,9 @@ import joblib
 
 class randomForest:
     def __init__(self, X_train, y_train, X_test, y_true, X_before):
-        rf = RandomForestRegressor(n_estimators = 1000, random_state = 42)
+        rf = RandomForestRegressor(n_estimators = 1000)
         
-        print("Processing Random Forest algorithm...")
+#        print("Processing Random Forest algorithm...")
         rf.fit(X_train, np.ravel(y_train))
         
         self.rf = rf

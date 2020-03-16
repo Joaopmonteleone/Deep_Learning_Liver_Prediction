@@ -6,11 +6,9 @@ from tensorflow.keras import layers
 from keras.utils.vis_utils import plot_model
 import matplotlib.pyplot as plt
 from modeling import HistoryPlotter
-from sklearn.metrics import explained_variance_score
-from sklearn.metrics import max_error
+from sklearn.metrics import explained_variance_score, max_error
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import Dense, Dropout
 from sklearn.model_selection import GridSearchCV
 from keras.constraints import maxnorm
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
@@ -62,7 +60,7 @@ class sequentialNN:
         self.predictions = model.predict(X_test)
         
         model.save('ann.h5')
-        print("ANN model saved to disk")
+#        print("ANN model saved to disk")
         
     def getPredictions(self):
        return self.predictions
@@ -103,11 +101,11 @@ class sequentialNN:
         loss = self.loss
         mae = self.mae
         mse = self.mse
-        print("explained variance score:", evs, "\nme:", 
-              me, "\nloss:",
-              loss, "\nmae:",
-              mae, "\nmse",
-              mse)
+#        print("explained variance score:", evs, "\nme:", 
+#              me, "\nloss:",
+#              loss, "\nmae:",
+#              mae, "\nmse",
+#              mse)
         return evs, me, loss, mae, mse
     
     
