@@ -7,6 +7,12 @@ Created on Sat Mar 14 16:04:53 2020
 from algorithms import importDataset
 from sklearn.metrics import r2_score, explained_variance_score, max_error, mean_absolute_error, mean_squared_error
 import csv
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import KFold
+
+
+kfold = KFold(n_splits=10, shuffle=True)
+scaler = MinMaxScaler()
 
 results = [['', 'dataset', 'variance score', 'max error', 'mae', 'mse', 'r2 score']]
 
@@ -29,18 +35,12 @@ def evaluateANN():
         avg_mse = 0
         avg_r2_score = 0
        
-        # prepare cross validation
-        from sklearn.model_selection import KFold
-        kfold = KFold(n_splits=3, shuffle=True)
-        
         for train, test in kfold.split(X_before):
             print("Test:", count+1, " for", data_to_test)
             X_train, X_test = X_before.iloc[train], X_before.iloc[test]
             y_train, y_true = y_before[train], y_before[test]
             
             #feature scaling
-            from sklearn.preprocessing import MinMaxScaler
-            scaler = MinMaxScaler()
             X_train = scaler.fit_transform(X_train)
             X_test = scaler.transform(X_test)
             
@@ -93,18 +93,12 @@ def evaluateRandomForest():
         avg_mse = 0
         avg_r2_score = 0
        
-        # prepare cross validation
-        from sklearn.model_selection import KFold
-        kfold = KFold(n_splits=3, shuffle=True)
-        
         for train, test in kfold.split(X_before):
             print("Test:", count+1, "for", data_to_test)
             X_train, X_test = X_before.iloc[train], X_before.iloc[test]
             y_train, y_true = y_before[train], y_before[test]
             
             #feature scaling
-            from sklearn.preprocessing import MinMaxScaler
-            scaler = MinMaxScaler()
             X_train = scaler.fit_transform(X_train)
             X_test = scaler.transform(X_test)
             
@@ -155,10 +149,6 @@ def evaluateSVR():
         avg_mae = 0
         avg_mse = 0
         avg_r2_score = 0
-       
-        # prepare cross validation
-        from sklearn.model_selection import KFold
-        kfold = KFold(n_splits=3, shuffle=True)
         
         for train, test in kfold.split(X_before):
             print("Test:", count+1, "for", data_to_test)
@@ -166,8 +156,6 @@ def evaluateSVR():
             y_train, y_true = y_before[train], y_before[test]
             
             #feature scaling
-            from sklearn.preprocessing import MinMaxScaler
-            scaler = MinMaxScaler()
             X_train = scaler.fit_transform(X_train)
             X_test = scaler.transform(X_test)
             
