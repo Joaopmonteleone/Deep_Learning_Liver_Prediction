@@ -29,7 +29,7 @@ class sequentialNN:
         ])
         
         # The optimizer is responsible for manipulating the weights of the neural network
-        # in order to achieve the desired output. The RMSprop algorithm is utilized
+        # in order to achieve the desired output. The RMSprop algorithm is used
         optimizer = tf.keras.optimizers.RMSprop(0.001)
 
         # Since we want to minimize the Mean squared error to as low as possible
@@ -47,7 +47,7 @@ class sequentialNN:
         # of the data for the validation a.k.a not used for training.
         history = model.fit(
           X_train, y_train,
-          epochs=EPOCHS, validation_split = 0.2, verbose=0,
+          epochs=EPOCHS, validation_split = 0.2, verbose=10,
 #          callbacks=[early_stop, EpochDots()]
           )
         self.history = history
