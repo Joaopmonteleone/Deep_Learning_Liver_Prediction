@@ -12,14 +12,6 @@ COLOR_CYCLE = prop_cycle.by_key()['color']
 
 
 def _smooth(values, std):
-  """Smooths a list of values by convolving with a gussian.
-  Assumes equal spacing.
-  Args:
-    values: A 1D array of values to smooth.
-    std: The standard devistion of the gussian. The units are array elements.
-  Returns:
-    The smoothed array.
-  """
   width = std * 4
   x = np.linspace(-width, width, 2 * width + 1)
   kernel = np.exp(-(x / 5)**2)
@@ -34,9 +26,6 @@ def _smooth(values, std):
 
 
 class HistoryPlotter(object):
-  """A class for plotting named set of keras-histories.
-  The class maintains colors for each key from plot to plot.
-  """
 
   def __init__(self, metric=None, smoothing_std=None):
     self.color_table = {}
@@ -44,15 +33,6 @@ class HistoryPlotter(object):
     self.smoothing_std = smoothing_std
 
   def plot(self, histories, metric=None, smoothing_std=None):
-    """Plots a {name: history} dictionary of keras histories.
-    Colors are assigned to the name-key, and maintained from call to call.
-    Training metrics are shown as a solid line, validation metrics dashed.
-    Args:
-      histories: {name: history} dictionary of keras histories.
-      metric: which metric to plot from all the histories.
-      smoothing_std: the standard-deviaation of the smoothing kernel applied
-        before plotting. The units are in array-indices.
-    """
     if metric is None:
       metric = self.metric
     if smoothing_std is None:
