@@ -47,7 +47,7 @@ class sequentialNN:
         # of the data for the validation a.k.a not used for training.
         history = model.fit(
           X_train, y_train,
-          epochs=EPOCHS, validation_split = 0.2, verbose=10,
+          epochs=EPOCHS, validation_split = 0.2, verbose=0,
 #          callbacks=[early_stop, EpochDots()]
           )
         self.history = history
@@ -57,7 +57,7 @@ class sequentialNN:
         hist.tail()
         
         self.model = model
-        self.loss, self.mae, self.mse = model.evaluate(X_test, y_true, verbose=2)
+        self.loss, self.mae, self.mse = model.evaluate(X_test, y_true, verbose=0)
     
         self.predictions = model.predict(X_test)
         
