@@ -35,6 +35,7 @@ class ANN:
        classifier.fit(X_train, y_train, batch_size = batch_size, epochs = epochs) 
        
        self.model = classifier
+       
     
       
    def evaluate_model(X_train, y_train):
@@ -91,14 +92,12 @@ class ANN:
        return grid.best_params_, grid.best_score_
 
 
-    
-      
    def predict_all(self, X_pred, y_true):
        y_pred = self.model.predict(X_pred)
        y_bool = []   
        accuracy = 0
        if np.size(y_pred,1) == 1: # binary prediction (1s or 0s) predicting1 category
-          print("Predicting 1 category")
+#          print("Predicting 1 category")
           for n in y_pred:
              if n > 0.75:
                 n = 1
@@ -107,11 +106,11 @@ class ANN:
              y_bool.append(n)
           # Making the Confusion Matrix
           accuracy = confusion_matrix(y_true, y_bool)
-          print(accuracy)
+#          print(accuracy)
        else: # Predicting 4 categories
-          print("Predicting 4 categories")
+#          print("Predicting 4 categories")
           accuracy = multilabel_confusion_matrix(y_true, y_pred.round())
-          print(accuracy)
+#          print(accuracy)
        return y_pred, y_bool, accuracy
 
 

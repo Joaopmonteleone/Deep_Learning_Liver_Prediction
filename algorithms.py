@@ -30,12 +30,12 @@ def encode(dataframe, columns):
    encoded = onehotencoder.fit_transform(dataframe.values).toarray()
    return encoded
 
-def encodeData(dataset, X_before):
-    X_encoded = encode(X_before, [6, 7, 14, 21, 36]) # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
-    # encoding the output FOR CLASSIFICATION
+def encodeData(dataset):
+    X_encoded = encode(dataset, [6, 7, 14, 21, 36]) 
+    # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
     y_encoded = encode(dataset, [38])
     y_encoded = y_encoded[:, 0:4]
-    return X_encoded, y_encoded
+    return X_encoded[:, :-1], y_encoded
 
 def splitAndScale(X_before, y_before):
     # Splitting the dataset into the Training set and Test set
@@ -99,7 +99,7 @@ def svr(X_train, y_train, X_test, y_test):
 
 
 
-
+'''
 ###############################################
 #           Support Vector Machine            #
 ###############################################
@@ -146,7 +146,7 @@ accuracies, mean, variance = ANN.evaluate_model(X_train, y_train)
 # Grid Search
 best_parameters, best_accuracy = ANN.gridSearch(X_train, y_train) 
 
-
+'''
 
 
 

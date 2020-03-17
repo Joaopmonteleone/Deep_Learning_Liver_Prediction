@@ -8,9 +8,8 @@ import numpy as np
 import pandas as pd
 import random
 
-dataset = pd.read_csv('datasets/claAll.csv')
-dataset2 = pd.read_csv('datasets/regSynthetic.csv')
-dataset = pd.read_csv('datasets/regNo365.csv')
+dataset = pd.read_csv('datasets/claNo4.csv') # No rows with class 4
+dataset2 = pd.read_csv('datasets/claOnly4.csv') # Only rows with class 4
 
 # make a list of all column names    
 columnNames = []
@@ -58,24 +57,26 @@ def slightMutations():
     # transform dataset dataframe to list to iterate through it
     dataset_list = dataset.values.tolist()
     for row in dataset_list:
+        finalclass = row.pop() # ONLY FOR CLASSIFICATION 
         newRow = [] # new observation created
-        for index in range(dataset.shape[1]):
+        for index in range(dataset.shape[1]-1): # -1 ONLY FOR CLASSIFICATION 
             newValue = mutate(row, index)
             newRow.append(newValue)
+        newRow.append(finalclass) # ONLY FOR CLASSIFICATION 
         newDataset.append(newRow)
    
-for i in range(1): # run algorithm 5 times, creates 214 different rows each time
+for i in range(5): # run algorithm 5 times, creates 214 different rows each time
     slightMutations()
     
 newDataset = pd.DataFrame(newDataset) # convert to pandas dataframe
 newDataset.columns = columnNames # rename columns
 
+together = pd.concat([newDataset, dataset2]) # join lists
 
-
-export_csv = newDataset.to_csv (r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\toPredict.csv',
+export_csv = together.to_csv(r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\claSyntheticWith4.csv',
                              index = None, 
                              header=True) 
 
-together = pd.concat([newDataset, regNo365]) # join lists
+
 
 
