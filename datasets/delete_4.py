@@ -8,13 +8,13 @@ Created on Thu Jan 30 18:49:26 2020
 import pandas as pd
 
 # Importing the dataset
-dataset = pd.read_csv('regAll.csv')
+dataset = pd.read_csv('claAll.csv')
 
 hello = []
 
 count = 0
 for index, row in dataset.iterrows():
-   if row[38] >= 360:
+   if row[38] == 4:
       hello.append(count)
    count += 1
    
@@ -25,6 +25,6 @@ for i in hello:
    #print(i)
    dataset = dataset.drop([i])
    
-export_csv = dataset.to_csv (r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\regNo365.csv',
+export_csv = dataset.to_csv(r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\claNo4.csv',
                              index = None, 
                              header=True) 

@@ -99,7 +99,7 @@ def svr(X_train, y_train, X_test, y_test):
 
 
 
-'''
+
 ###############################################
 #           Support Vector Machine            #
 ###############################################
@@ -138,7 +138,6 @@ classifier = ANN(X_train, y_train,
 
 cvscores = classifier.cross_validate(X_train, y_train, X_test, y_test)
 
-
 y_pred, y_bool, accuracy = classifier.predict_all(X_test, y_test)
 
 # Evaluate ANN - only with binary prediction
@@ -147,7 +146,7 @@ accuracies, mean, variance = ANN.evaluate_model(X_train, y_train)
 # Grid Search
 best_parameters, best_accuracy = ANN.gridSearch(X_train, y_train) 
 
-'''
+
 
 
 

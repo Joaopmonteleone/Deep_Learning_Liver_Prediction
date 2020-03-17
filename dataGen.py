@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import random
 
-dataset = pd.read_csv('datasets/regAll.csv')
+dataset = pd.read_csv('datasets/claAll.csv')
 dataset2 = pd.read_csv('datasets/regSynthetic.csv')
 dataset = pd.read_csv('datasets/regNo365.csv')
 
