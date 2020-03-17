@@ -224,11 +224,10 @@ def evaluateClassificationANN():
         X_before, y_before = importDataset(data_to_test)
         
         count = 0
-        avg_explained_variance_score = 0
-        avg_max_error = 0
-        avg_mae = 0
-        avg_mse = 0
-        avg_r2_score = 0
+        avg_roc = 0
+        avg_roc_auc = 0
+        avg_accuracy = 0
+        avg_cm = 0
        
         for train, test in kfold.split(X_before):
             print("Test:", count+1, " for", data_to_test)
