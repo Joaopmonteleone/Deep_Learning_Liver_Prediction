@@ -23,20 +23,6 @@ def importDataset(dataset):
     return X_before, y_before
 
 
-# Encoding categorical data
-from sklearn.preprocessing import OneHotEncoder
-def encode(dataframe, columns):
-   onehotencoder = OneHotEncoder(categorical_features = columns)
-   encoded = onehotencoder.fit_transform(dataframe.values).toarray()
-   return encoded
-
-def encodeData(dataset):
-    X_encoded = encode(dataset, [6, 7, 14, 21, 36]) 
-    # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
-    y_encoded = encode(dataset, [38])
-    y_encoded = y_encoded[:, 0:4]
-    return X_encoded[:, :-1], y_encoded
-
 def splitAndScale(X_before, y_before):
     # Splitting the dataset into the Training set and Test set
     from sklearn.model_selection import train_test_split
