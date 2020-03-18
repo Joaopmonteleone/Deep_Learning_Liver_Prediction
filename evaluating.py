@@ -31,7 +31,7 @@ def evaluateANN():
     regResults.append(["Results for ANN"])
     for data in regDatasets:
         #Import the Dataset and separate X and y
-        data_to_test = data + '.csv'
+        data_to_test = "regression/" + data + '.csv'
         X_before, y_before = importDataset(data_to_test)
         
         count = 0
@@ -89,7 +89,7 @@ def evaluateRandomForest():
     regResults.append(["Results for Random Forest"])
     for data in regDatasets:
         #Import the Dataset and separate X and y
-        data_to_test = data + '.csv'
+        data_to_test = "regression/" + data + '.csv'
         X_before, y_before = importDataset(data_to_test)
         
         count = 0
@@ -146,7 +146,7 @@ def evaluateSVR():
     regResults.append(["Results for SVR"])
     for data in regDatasets:
         #Import the Dataset and separate X and y
-        data_to_test = data + '.csv'
+        data_to_test = "regression/" + data + '.csv'
         X_before, y_before = importDataset(data_to_test)
         
         count = 0
@@ -215,10 +215,9 @@ def runRegressionEvaluation():
 ###############################################
 #           Classification Models             #
 ###############################################
-claResults = [['', 'dataset', 'roc', 'auc roc', 'accuracy', 'confusion matrix']]
+claResults = [['', 'dataset','roc auc', 'accuracy', 'precision', 'recall', 'f1score']]
 
-claDatasets = ['claAll', 'claBalanced', 'claSyntheticWith4', 'claNo4', 'claOnly4', 'claSynthetic'
-               ]
+claDatasets = ['cla3monthSurvival', 'claSyntheticBalanced']
 
 # Encoding categorical data
 from sklearn.preprocessing import OneHotEncoder
@@ -230,27 +229,17 @@ def encode(dataframe, columns):
 def encodeData(dataset):
     X_encoded = encode(dataset, [6, 7, 14, 21, 36]) 
     # etiology, portal thrombosis, pretransplant status performance, cause of death, cold ischemia time 
-    y_encoded = encode(dataset, [38])
-    y_encoded = y_encoded[:, 0:4]
+    y_encoded = dataset.iloc[:, 38]
     return X_encoded[:, :-1], y_encoded
+
 
 def evaluateClassificationANN():
     claResults.append(["Results for ANN"])
     for data in claDatasets:
         #Import the Dataset and separate X and y
-        data_to_test = 'datasets/' + data + '.csv'
+        data_to_test = 'datasets/classification/' + data + '.csv'
         dataset = pd.read_csv(data_to_test)
         X_before, y_before = encodeData(dataset)
-        
-        print("\n\n\ny_before[0, 3]", y_before[0, 3])
-        
-        if y_before[0,3] == 1 or y_before[0,3] == 0:
-            y_4 = y_before[:, 3]
-            print("\n\nTesting for 1 year survival\n\n")
-        else:
-            y_4 = y_before[:, 1]
-            print(y_before)
-            print("\n\nTesting for 3 months survival\n\n")
         
         count = 0
         avg_roc_auc = 0
@@ -260,14 +249,9 @@ def evaluateClassificationANN():
         avg_f1score = 0
        
         for train, test in kfold.split(X_before):
-            print("Test:", count+1, " for", data_to_test)
+            print("\nTest:", count+1, " for", data_to_test, "\n")
             X_train, X_test = X_before[train], X_before[test]
-            y_train, y_true = y_4[train], y_4[test]
-            
-            # change y to test different outputs?
-                # predicting 1-2-3-4
-                # predicting 0-0-0-1
-                # predicting just one binary column
+            y_train, y_true = y_before[train], y_before[test]
             
             #feature scaling
             X_train = scaler.fit_transform(X_train)
@@ -275,14 +259,10 @@ def evaluateClassificationANN():
             
             # run ANN
             from ANN import ANN
-            activation_output = ['softmax', 'sigmoid'] # softmax for 4, sigmoid for binary
-            loss = ['categorical_crossentropy', 'binary_crossentropy'] 
-            classifier = ANN(X_train,y_train,'relu',activation_output[1],'rmsprop',loss[1],
-                             10, 1, 1) # batch_size, epochs, output layer hidden units
+            classifier = ANN(X_train,y_train,10,500,1) # batch_size, epochs, output layer hidden units
 
             y_prob, y_pred, accuracy = classifier.predict_all(X_test, y_true)
             
-            print(metrics.roc_curve(y_true, y_pred))
             fpr, tpr, threshold = metrics.roc_curve(y_true, y_pred)
             roc_auc = metrics.auc(fpr, tpr)
             

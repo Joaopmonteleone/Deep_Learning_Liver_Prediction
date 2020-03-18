@@ -22,17 +22,17 @@ from keras.constraints import maxnorm
 
 
 class ANN:
-   def __init__(self, X_train, y_train, activation_hidden, activation_output, optimizer, loss, batch_size, epochs, output_units):
+   def __init__(self, X_train, y_train, batch_size, epochs, output_units):
 
        classifier = Sequential()
-       classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden, input_dim = X_train.shape[1]))
+       classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu', input_dim = X_train.shape[1]))
        #classifier.add(Dropout(rate=0.1)) #EXPERIMENT WITH AND WITHOUT THIS
-       classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = activation_hidden)) #relu
+       classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu')) #relu
        #classifier.add(Dropout(rate=0.1))
-       classifier.add(Dense(units = output_units, kernel_initializer = 'uniform', activation = activation_output))
+       classifier.add(Dense(units = output_units, kernel_initializer = 'uniform', activation = 'sigmoid'))
        
-       classifier.compile(optimizer = optimizer, loss = loss, metrics = ['accuracy'])
-       classifier.fit(X_train, y_train, batch_size = batch_size, epochs = epochs, verbose=0) 
+       classifier.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
+       classifier.fit(X_train, y_train, batch_size = batch_size, epochs = epochs) 
        
        self.model = classifier
        

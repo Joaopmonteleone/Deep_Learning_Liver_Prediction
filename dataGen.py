@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 import random
 
-dataset = pd.read_csv('datasets/claNo4.csv') # No rows with class 4
-dataset2 = pd.read_csv('datasets/claOnly4.csv') # Only rows with class 4
+dataset = pd.read_csv('datasets/classification/claNo1.csv') # No rows with class 1
+dataset2 = pd.read_csv('datasets/classification/claOnly1.csv') # Only rows with class 4
 
 # make a list of all column names    
 columnNames = []
@@ -43,7 +43,7 @@ def mutate(value, index):
     rangeMin = dataset[columnNames[index]].min() # find min value of column
     rangeTotal = rangeMax - rangeMin # find the range of values
     if rangeTotal == 1: # if binary value
-        if random.uniform(0,1) < 0.5: # 50% chance of flipping bit
+        if random.uniform(0,1) < 0.3: # 50% chance of flipping bit
             value[index] = int(value[index]) ^ 1 # flip 1s to 0s and 0s to 1s
     else: # non-binary outcome
         percentage = int((5 * rangeTotal) / 100.0) # change value 5% of its range
@@ -65,7 +65,7 @@ def slightMutations():
         newRow.append(finalclass) # ONLY FOR CLASSIFICATION 
         newDataset.append(newRow)
    
-for i in range(5): # run algorithm 5 times, creates 214 different rows each time
+for i in range(15): # run algorithm 5 times, creates 214 different rows each time
     slightMutations()
     
 newDataset = pd.DataFrame(newDataset) # convert to pandas dataframe
@@ -73,7 +73,7 @@ newDataset.columns = columnNames # rename columns
 
 together = pd.concat([newDataset, dataset2]) # join lists
 
-export_csv = together.to_csv(r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\claSyntheticWith4.csv',
+export_csv = together.to_csv(r'C:\Users\Maria\Desktop\Deep_Learning_Liver_Prediction\datasets\claSyntheticBalanced.csv',
                              index = None, 
                              header=True) 
 

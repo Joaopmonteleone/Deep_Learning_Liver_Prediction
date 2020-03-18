@@ -10,7 +10,7 @@ Script to only have 1 class, survived or not after 3 months
 import pandas as pd
 
 # Importing the dataset
-dataset = pd.read_csv('claAll.csv')
+dataset = pd.read_csv('claSyntheticWith4.csv')
 
 ones = []
 twos = []
