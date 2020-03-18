@@ -11,9 +11,9 @@ import csv
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import KFold
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
-kfold = KFold(n_splits=3, shuffle=True)
+kfold = KFold(n_splits=7, shuffle=True)
 scaler = MinMaxScaler()
 
 
@@ -234,12 +234,15 @@ def encodeData(dataset):
 
 
 def evaluateClassificationANN():
-    claResults.append(["Results for ANN"])
+    claResults.append(["ANN"])
     for data in claDatasets:
         #Import the Dataset and separate X and y
         data_to_test = 'datasets/classification/' + data + '.csv'
         dataset = pd.read_csv(data_to_test)
         X_before, y_before = encodeData(dataset)
+        # TRY WITH AND WITHOUT THIS
+#        X_before = dataset.iloc[:, :-1].values
+#        y_before = dataset.iloc[:, 38]
         
         count = 0
         avg_roc_auc = 0
@@ -247,9 +250,13 @@ def evaluateClassificationANN():
         avg_precision = 0
         avg_recall = 0
         avg_f1score = 0
+        
+        fpr = 0
+        tpr = 0
+        threshold = 0
        
         for train, test in kfold.split(X_before):
-            print("\nTest:", count+1, " for", data_to_test, "\n")
+            print("\nTest:", count+1, "for", data, "\n")
             X_train, X_test = X_before[train], X_before[test]
             y_train, y_true = y_before[train], y_before[test]
             
@@ -265,16 +272,6 @@ def evaluateClassificationANN():
             
             fpr, tpr, threshold = metrics.roc_curve(y_true, y_pred)
             roc_auc = metrics.auc(fpr, tpr)
-            
-#            plt.title('Receiver Operating Characteristic')
-#            plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
-#            plt.legend(loc = 'lower right')
-#            plt.plot([0, 1], [0, 1],'r--')
-#            plt.xlim([0, 1])
-#            plt.ylim([0, 1])
-#            plt.ylabel('True Positive Rate')
-#            plt.xlabel('False Positive Rate')
-#            plt.show()
             
             # get metrics
             avg_roc_auc += roc_auc
@@ -295,7 +292,6 @@ def evaluateClassificationANN():
                         float(avg_precision), float(avg_recall), float(avg_f1score)
                         ])
         
-        
     print("\nANN evaluation results")
     print("Average ROC AUC:", avg_roc_auc)
     print("Average accuracy:", avg_accuracy)
@@ -303,11 +299,91 @@ def evaluateClassificationANN():
     print("Average recall:", avg_recall)
     print("Average f1 score:", avg_f1score)
     
+    plt.title('Receiver Operating Characteristic')
+    plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % avg_roc_auc)
+    plt.legend(loc = 'lower right')
+    plt.plot([0, 1], [0, 1],'r--')
+    plt.xlim([0, 1])
+    plt.ylim([0, 1])
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')
+    plt.show()
+    name = data + 'roc.png'
+    plt.savefig(name)
+    
+    
+def evaluateSVM():
+    claResults.append(["SVM"])
+    for data in claDatasets:
+        #Import the Dataset and separate X and y
+        data_to_test = 'datasets/classification/' + data + '.csv'
+        dataset = pd.read_csv(data_to_test)
+        X_before, y_before = encodeData(dataset)
+#        X_before = dataset.iloc[:, :-1].values
+#        y_before = dataset.iloc[:, 38]
+        
+        count = 0
+        avg_roc_auc = 0
+        avg_accuracy = 0
+        avg_precision = 0
+        avg_recall = 0
+        avg_f1score = 0
+        
+        fpr = 0
+        tpr = 0
+        threshold = 0
+       
+        for train, test in kfold.split(X_before):
+            print("Test:", count+1, " for", data)
+            X_train, X_test = X_before[train], X_before[test]
+            y_train, y_true = y_before[train], y_before[test]
+            
+            #feature scaling
+            X_train = scaler.fit_transform(X_train)
+            X_test = scaler.transform(X_test)
+            
+            # run SVM
+            from svm import svm
+            svm = svm(X_train, y_train, X_test, y_true)
+            y_pred = svm.getPredictions()
+            
+            fpr, tpr, threshold = metrics.roc_curve(y_true, y_pred)
+            roc_auc = metrics.auc(fpr, tpr)
+            
+            # get metrics
+            avg_roc_auc += roc_auc
+            avg_accuracy += svm.getAccuracy()
+            avg_precision += metrics.precision_score(y_true, y_pred)
+            avg_recall += metrics.recall_score(y_true, y_pred)
+            avg_f1score += metrics.f1_score(y_true, y_pred)
+            
+            count += 1
+
+        avg_roc_auc = avg_roc_auc / count
+        avg_accuracy = avg_accuracy / count
+        avg_precision = avg_precision / count
+        avg_recall = avg_recall / count
+        avg_f1score = avg_f1score / count
+        
+        claResults.append(['', data_to_test, float(avg_roc_auc), float(avg_accuracy),
+                        float(avg_precision), float(avg_recall), float(avg_f1score)
+                        ])
+        
+    print("\nSVM evaluation results")
+    print("Average ROC AUC:", avg_roc_auc)
+    print("Average accuracy:", avg_accuracy)
+    print("Average precision:", avg_precision)
+    print("Average recall:", avg_recall)
+    print("Average f1 score:", avg_f1score)
+    
+    
+    
 def saveToFileCla():
     with open('ClaEvaluation.csv', 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(claResults)
     
 evaluateClassificationANN()
+evaluateSVM()
 saveToFileCla()
 

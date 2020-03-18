@@ -1,0 +1,21 @@
+,dataset,roc auc,accuracy,precision,recall,f1score,
+ANN,cla3monthSurvival.csv,0.514657924,0.884445416,0.945503644,0.931855531,0.937615823,
+,claSyntheticBalanced.csv,0.966174175,0.966340427,0.967582966,0.96818572,0.967790618,
+SVM,cla3monthSurvival.csv,0.5,0.942909868,0.942909868,1,0.970481823,
+,claSyntheticBalanced.csv,0.924802398,0.925707102,0.918142168,0.942814919,0.930136988,
+,,,,,,,
+,auroc,ANN,SVM,,accuracy,ANN,SVM
+,claAllWOencoding.csv,0.514657924,0.5,,claAllWOencoding.csv,0.884445416,0.942909868
+,claSyntheticWOencoding.csv,0.966174175,0.924802398,,claSyntheticWOencoding.csv,0.966340427,0.925707102
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,precision,ANN,SVM,,recall,ANN,SVM
+,claAllWOencoding.csv,0.945503644,0.942909868,,claAllWOencoding.csv,0.931855531,1
+,claSyntheticWOencoding.csv,0.967582966,0.918142168,,claSyntheticWOencoding.csv,0.96818572,0.942814919
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,f1score,ANN,SVM,,,,
+,claAllWOencoding.csv,0.937615823,0.970481823,,,,
+,claSyntheticWOencoding.csv,0.967790618,0.930136988,,,,

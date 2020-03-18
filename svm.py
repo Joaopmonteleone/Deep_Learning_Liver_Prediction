@@ -24,36 +24,36 @@ class svm:
         self.y_train = y_train
         self.y_true = y_true
         
-        #model = SVC(gamma='auto')
         model = LinearSVC(multi_class = 'crammer_singer', 
-#                          loss = 'squared_hinge',
-#                          C = 0.1,
-                          random_state = 42)
+                          loss = 'squared_hinge',
+                          C = 0.1,
+                          max_iter = 12000
+                          )
            
         model.fit(X_train, y_train)
         
         # Prediction and Error
         self.predictions = model.predict(X_test)
         self.accuracy_score = accuracy_score(y_true, self.predictions) 
-        self.classification_report = classification_report(y_true, self.predictions, 
-                                                           output_dict = True)
+#        self.classification_report = classification_report(y_true, self.predictions, 
+#                                                           output_dict = True)
         #self.multilabel_confusion_matrix = multilabel_confusion_matrix(y_true, self.predictions)
         
     def getPredictions(self):
-        print("\n Predictions:", self.predictions)
+#        print("\n Predictions:", self.predictions)
         return self.predictions
     
     def getAccuracy(self):
-        print("\n Accuracy Score:", self.accuracy_score)
+#        print("\n Accuracy Score:", self.accuracy_score)
         return self.accuracy_score
     
-    def getClassificationReport(self):
-        print("\n Classification report")
-        for x,y in self.classification_report.items():
-            print(x)
-            for a, b in y.items():
-                print("\t", a, " - ", b)
-        return self.classification_report
+#    def getClassificationReport(self):
+#        print("\n Classification report")
+#        for x,y in self.classification_report.items():
+#            print(x)
+#            for a, b in y.items():
+#                print("\t", a, " - ", b)
+#        return self.classification_report
     
 #    def getMultilabelCM(self):
 #        print(self.multilabel_confusion_matrix)

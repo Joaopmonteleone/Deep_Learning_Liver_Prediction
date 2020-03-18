@@ -32,7 +32,7 @@ class ANN:
        classifier.add(Dense(units = output_units, kernel_initializer = 'uniform', activation = 'sigmoid'))
        
        classifier.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
-       classifier.fit(X_train, y_train, batch_size = batch_size, epochs = epochs) 
+       classifier.fit(X_train, y_train, batch_size = batch_size, epochs = epochs, verbose=0) 
        
        self.model = classifier
        
