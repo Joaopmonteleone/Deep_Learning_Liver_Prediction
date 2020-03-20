@@ -16,7 +16,7 @@ import pandas as pd
 def importDataset(dataset):
     X_before = []
     y_before = []
-    location = 'datasets/'+dataset
+    location = 'datasets/regression/'+dataset
     dataset = pd.read_csv(location)
     X_before = dataset.iloc[:, :-1] # all rows, all columns except last result and 3 months answer - (1198, 39)
     y_before = dataset.iloc[:, (dataset.values.shape[1]-1)].values # all rows, last column (result) keep a record to compare later
