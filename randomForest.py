@@ -31,7 +31,7 @@ class randomForest:
         self.mae = mean_absolute_error(y_true.flatten(), self.predictions)
         
         # save file
-        filename = 'rf.sav'
+        filename = 'models/rf.sav'
         joblib.dump(rf, filename)
     
     def getPredictions(self):

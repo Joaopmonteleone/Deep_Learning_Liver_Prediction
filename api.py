@@ -7,9 +7,10 @@ Created on Sun Mar  1 17:33:34 2020
 from algorithms import importDataset, splitAndScale, ANNregression, randomForest, svr
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import joblib
-import pandas as pd
+
 
 ###############################################
 #              Choosing Dataset               #
@@ -24,25 +25,27 @@ def selectDataset():
     print("6 - Regression only 365 days")
     print("7 - Regression only synthetic 3211 rows")
     print("8 - Regression synthetic plus 365 days")
+    print("9 - Another dataset")
 
     number = 0
     acceptedDataset = False
     while acceptedDataset is False:
         number = int(input("Select number to import dataset: "))
-        if number > 0 and number < 9:
+        if number > 0 and number < 10:
             acceptedDataset = True
         else:
-            print("Invalid number, select a dataset by selecting its number (1 to 8)")
+            print("Invalid number, select a dataset by selecting its number (1 to 9)")
 
     choice = ""
-    if number == 1: choice = "regAll.csv"
-    if number == 2: choice = "regBalanced.csv"
-    if number == 3: choice = "regEncoded.csv"
-    if number == 4: choice = "regEncodedBalanced.csv"
-    if number == 5: choice = "regNo365.csv"
-    if number == 6: choice = "regOnly365.csv"
-    if number == 7: choice = "regSynthetic.csv"
-    if number == 8: choice = "regSyntheticWith365.csv"
+    if number == 1: choice = "regression/regAll.csv"
+    if number == 2: choice = "regression/regBalanced.csv"
+    if number == 3: choice = "regression/regEncoded.csv"
+    if number == 4: choice = "regression/regEncodedBalanced.csv"
+    if number == 5: choice = "regression/regNo365.csv"
+    if number == 6: choice = "regression/regOnly365.csv"
+    if number == 7: choice = "regression/regSynthetic.csv"
+    if number == 8: choice = "regression/regSyntheticWith365.csv"
+    if number == 9: choice = input("input full path of dataset: ")
 
     print("dataset chosen:", choice)
     # Import the Dataset and separate X and y
@@ -68,7 +71,7 @@ def newRFdataset(importances, dataset):
     file_path = os.path.join(file_dir, csv_folder, 'newRFdata.csv')
     dataset[new_variables].to_csv(file_path, header=True, index=None)
     
-    print("\nNEW CSV SAVED as datasets/newRFdata.csv")
+    print("\n\tNEW CSV SAVED as datasets/newRFdata.csv")
     
     
 

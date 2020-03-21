@@ -59,7 +59,7 @@ class sequentialNN:
     
         self.predictions = model.predict(X_test)
         
-        model.save('ann.h5')
+        model.save('models/ann.h5')
 #        print("ANN model saved to disk")
         
     def getPredictions(self):

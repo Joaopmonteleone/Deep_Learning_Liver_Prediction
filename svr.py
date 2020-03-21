@@ -40,7 +40,7 @@ class svr:
         self.mse = mean_squared_error(y_test, self.predictions)
         self.mae = mean_absolute_error(y_test, self.predictions)
         
-        filename = 'svr.sav'
+        filename = 'models/svr.sav'
         joblib.dump(regr, filename)
         
     def getPredictions(self):

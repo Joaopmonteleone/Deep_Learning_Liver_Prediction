@@ -383,7 +383,27 @@ def saveToFileCla():
             writer = csv.writer(file)
             writer.writerows(claResults)
     
-evaluateClassificationANN()
-evaluateSVM()
-saveToFileCla()
+#evaluateClassificationANN()
+#evaluateSVM()
+#saveToFileCla()
+
+
+
+###############################################
+#  Evaluation with previous d-r algorithms    #
+###############################################
+
+def findBestMatch():
+    
+
+
+
+
+
+
+
+
+
+
+
 
