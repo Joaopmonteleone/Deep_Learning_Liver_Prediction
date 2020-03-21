@@ -4,7 +4,7 @@ Created on Sat Mar 14 16:04:53 2020
 
 @author: Maria
 """
-from algorithms import importDataset
+from algorithms import importDataset, splitAndScale
 from sklearn import metrics
 from sklearn.metrics import r2_score, explained_variance_score, max_error, mean_absolute_error, mean_squared_error
 import csv
@@ -12,6 +12,8 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
+import joblib
+import tensorflow as tf
 
 kfold = KFold(n_splits=7, shuffle=True)
 scaler = MinMaxScaler()
@@ -392,11 +394,54 @@ def saveToFileCla():
 ###############################################
 #  Evaluation with previous d-r algorithms    #
 ###############################################
+recipientDatasets = ['rec1', 'rec2', 'rec3', 'rec4', 'rec5']
+predict_results = [['','ANN','RF', 'SVR']]
 
 def findBestMatch():
+    print("\nEvaluating different recipients")
     
-
-
+    X_before, y_before = importDataset('regression/regSyntheticWith365.csv')
+    X_train, X_test, y_train, y_true = splitAndScale(X_before, y_before)
+    
+    # Train models with synthetic dataset
+    from regressionAnalysis import sequentialNN
+#    sequentialNN(X_train, y_train, X_test, y_true)
+    ann = tf.keras.models.load_model('models/ann.h5')
+    from randomForest import randomForest
+#    randomForest(X_train, y_train, X_test, y_true, X_before)
+    rf = joblib.load('models/rf.sav')
+    from svr import svr
+#    svr(X_train, y_train, X_test, y_true)
+    svr = joblib.load('models/svr.sav')
+    
+    MLmodels = [ann, rf, svr]
+    
+    for data in recipientDatasets:
+        predict_results.append([data])
+        print("Predicting for",data)
+        dataset = pd.read_csv('datasets/' + data + '.csv')
+        to_predict = dataset.iloc[:, :-1].values # get all columns except last one (actual value)
+  
+        for row in to_predict:
+            transform = scaler.fit_transform(row.reshape(-1, 1))
+            prediction = ['']
+            for model in MLmodels:
+                new_pred = model.predict(transform.reshape(1, -1))
+                if 'Sequential' in str(type(model)):
+                    prediction.append(new_pred[0][0])
+                else:
+                    prediction.append(new_pred[0])
+                
+        predict_results.append(prediction)
+    print('Predictions saved to file RecipientsPredictions.csv')
+                
+def saveToFilePredictions():
+    with open('datasets/evaluation/RecipientsPredictions.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(predict_results)
+    
+findBestMatch()
+saveToFilePredictions()
 
 
 

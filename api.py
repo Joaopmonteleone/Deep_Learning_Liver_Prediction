@@ -95,18 +95,18 @@ def chooseAlgorithm(X_before, X_train, X_test, y_train, y_test, dataset):
             print("Invalid number, select an algorithm by selecting its number (1 to 3)")
     if number == 1:
         mae = ANNregression(X_train, y_train, X_test, y_test)
-        model = tf.keras.models.load_model('ann.h5')
+        model = tf.keras.models.load_model('models/ann.h5')
         return model, int(mae)
     if number == 2:
         mae, importances = randomForest(X_train, y_train, X_test, y_test, X_before)
-        model = joblib.load('rf.sav')
+        model = joblib.load('models/rf.sav')
         newData = input("Would you like to export a new dataset with only the variables that have a higher importance than 0? [y/n] > ")
         if newData == "y":
             newRFdataset(importances, dataset)
         return model, int(mae)
     if number == 3:
         mae = svr(X_train, y_train, X_test, y_test)
-        model = joblib.load('svr.sav')
+        model = joblib.load('models/svr.sav')
         return model, int(mae)
 
 def ask():

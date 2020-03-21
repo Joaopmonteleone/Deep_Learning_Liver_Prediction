@@ -51,6 +51,9 @@ class svr:
     
     def getMSE(self):
         return self.mse
+    
+    def getName(self):
+        return "SVR"
 
 
     ###############################################
