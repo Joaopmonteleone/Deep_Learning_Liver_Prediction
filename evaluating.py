@@ -386,7 +386,7 @@ def saveToFileCla():
 #  Evaluation with previous d-r algorithms    #
 ###############################################
 recipientDatasets = ['rec1', 'rec2', 'rec3', 'rec4', 'rec5']
-predict_results = [['','ANN','RF', 'SVR']]
+predict_results = [['','','ANN','RF', 'SVR']]
 
 def findBestMatch():
     print("\nEvaluating different recipients")
@@ -411,23 +411,23 @@ def findBestMatch():
         predict_results.append([data])
         print("Predicting for",data)
         dataset = pd.read_csv('datasets/' + data + '.csv')
-        to_predict = dataset.iloc[:, :-1].values # get all columns except last one (actual value)
-  
+        to_predict = dataset.iloc[:, :-1].values 
+        count = 1
         for row in to_predict:
             transform = scaler.fit_transform(row.reshape(-1, 1))
-            prediction = ['']
+            prediction = ['','donor'+ str(count)]
             for model in MLmodels:
                 new_pred = model.predict(transform.reshape(1, -1))
                 if 'Sequential' in str(type(model)):
                     prediction.append(new_pred[0][0])
                 else:
                     prediction.append(new_pred[0])
-                
-        predict_results.append(prediction)
+            predict_results.append(prediction)
+            count += 1
     print('Predictions saved to file RecipientsPredictions.csv')
                 
 def saveToFilePredictions():
-    with open('datasets/evaluation/RecipientsPredictions.csv', 'w', newline='') as file:
+    with open('datasets/evaluation/RecipientsPredictions2.csv', 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(predict_results)
     
