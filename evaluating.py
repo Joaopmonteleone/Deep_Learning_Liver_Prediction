@@ -203,15 +203,7 @@ def saveToFile():
     with open('RegEvaluation.csv', 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(regResults)
-        
-def runRegressionEvaluation():
-    evaluateANN() 
-    evaluateRandomForest()
-    evaluateSVR()
-    saveToFile()
-    
 
-#runRegressionEvaluation()
 
 
 ###############################################
@@ -385,9 +377,8 @@ def saveToFileCla():
             writer = csv.writer(file)
             writer.writerows(claResults)
     
-#evaluateClassificationANN()
-#evaluateSVM()
-#saveToFileCla()
+
+
 
 
 
@@ -405,13 +396,13 @@ def findBestMatch():
     
     # Train models with synthetic dataset
     from regressionAnalysis import sequentialNN
-#    sequentialNN(X_train, y_train, X_test, y_true)
+    sequentialNN(X_train, y_train, X_test, y_true)
     ann = tf.keras.models.load_model('models/ann.h5')
     from randomForest import randomForest
-#    randomForest(X_train, y_train, X_test, y_true, X_before)
+    randomForest(X_train, y_train, X_test, y_true, X_before)
     rf = joblib.load('models/rf.sav')
     from svr import svr
-#    svr(X_train, y_train, X_test, y_true)
+    svr(X_train, y_train, X_test, y_true)
     svr = joblib.load('models/svr.sav')
     
     MLmodels = [ann, rf, svr]
@@ -440,8 +431,29 @@ def saveToFilePredictions():
             writer = csv.writer(file)
             writer.writerows(predict_results)
     
-findBestMatch()
-saveToFilePredictions()
+
+    
+    
+def main():
+    
+    # Regression Evaluation
+    evaluateANN() 
+    evaluateRandomForest()
+    evaluateSVR()
+    saveToFile()
+    
+    # Classification Evaluation
+    evaluateClassificationANN()
+    evaluateSVM()
+    saveToFileCla()
+    
+    # Recipient Predictins
+    findBestMatch()
+    saveToFilePredictions()
+
+
+if __name__ == "__main__":
+    main()
 
 
 
