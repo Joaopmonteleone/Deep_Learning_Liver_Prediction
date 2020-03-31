@@ -9,13 +9,14 @@ from sklearn import metrics
 from sklearn.metrics import r2_score, explained_variance_score, max_error, mean_absolute_error, mean_squared_error
 import csv
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 import joblib
 import tensorflow as tf
 
-kfold = KFold(n_splits=7, shuffle=True)
+kfold = KFold(n_splits=3, shuffle=True)
 scaler = MinMaxScaler()
 
 
@@ -234,7 +235,8 @@ def evaluateClassificationANN():
         data_to_test = 'datasets/classification/' + data + '.csv'
         dataset = pd.read_csv(data_to_test)
         X_before, y_before = encodeData(dataset)
-        # TRY WITH AND WITHOUT THIS
+        
+        # without encoded data
 #        X_before = dataset.iloc[:, :-1].values
 #        y_before = dataset.iloc[:, 38]
         
@@ -245,14 +247,15 @@ def evaluateClassificationANN():
         avg_recall = 0
         avg_f1score = 0
         
-        fpr = 0
-        tpr = 0
-        threshold = 0
+        fpr = []
+        tpr = []
+        threshold = []
        
         for train, test in kfold.split(X_before):
             print("\nTest:", count+1, "for", data, "\n")
             X_train, X_test = X_before[train], X_before[test]
             y_train, y_true = y_before[train], y_before[test]
+           
             
             #feature scaling
             X_train = scaler.fit_transform(X_train)
@@ -285,6 +288,20 @@ def evaluateClassificationANN():
         claResults.append(['', data_to_test, float(avg_roc_auc), float(avg_accuracy),
                         float(avg_precision), float(avg_recall), float(avg_f1score)
                         ])
+    
+        plt.figure()
+        lw = 2
+        plt.plot(fpr, tpr, color='darkorange',
+                 lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+        plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver operating characteristic')
+        plt.legend(loc="lower right")
+        plt.show()
+        
         
     print("\nANN evaluation results")
     print("Average ROC AUC:", avg_roc_auc)
@@ -292,18 +309,12 @@ def evaluateClassificationANN():
     print("Average precision:", avg_precision)
     print("Average recall:", avg_recall)
     print("Average f1 score:", avg_f1score)
+
     
-    plt.title('Receiver Operating Characteristic')
-    plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % avg_roc_auc)
-    plt.legend(loc = 'lower right')
-    plt.plot([0, 1], [0, 1],'r--')
-    plt.xlim([0, 1])
-    plt.ylim([0, 1])
-    plt.ylabel('True Positive Rate')
-    plt.xlabel('False Positive Rate')
-    plt.show()
-    name = data + 'roc.png'
-    plt.savefig(name)
+    
+    
+    
+    
     
     
 def evaluateSVM():
@@ -362,13 +373,26 @@ def evaluateSVM():
         claResults.append(['', data_to_test, float(avg_roc_auc), float(avg_accuracy),
                         float(avg_precision), float(avg_recall), float(avg_f1score)
                         ])
-        
+    '''
+    plt.title('Receiver Operating Characteristic')
+    plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+    plt.legend(loc = 'lower right')
+    plt.plot([0, 1], [0, 1],'r--')
+    plt.xlim([0, 1])
+    plt.ylim([0, 1])
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')
+    plt.show()
+    '''
+    
     print("\nSVM evaluation results")
     print("Average ROC AUC:", avg_roc_auc)
     print("Average accuracy:", avg_accuracy)
     print("Average precision:", avg_precision)
     print("Average recall:", avg_recall)
     print("Average f1 score:", avg_f1score)
+    
+    
     
     
     
@@ -437,19 +461,19 @@ def saveToFilePredictions():
 def main():
     
     # Regression Evaluation
-    evaluateANN() 
-    evaluateRandomForest()
-    evaluateSVR()
-    saveToFile()
+#    evaluateANN() 
+#    evaluateRandomForest()
+#    evaluateSVR()
+#    saveToFile()
     
     # Classification Evaluation
     evaluateClassificationANN()
-    evaluateSVM()
-    saveToFileCla()
+#    evaluateSVM()
+#    saveToFileCla()
     
     # Recipient Predictins
-    findBestMatch()
-    saveToFilePredictions()
+#    findBestMatch()
+#    saveToFilePredictions()
 
 
 if __name__ == "__main__":

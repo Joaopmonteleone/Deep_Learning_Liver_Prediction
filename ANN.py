@@ -18,7 +18,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import multilabel_confusion_matrix
 # For tuning
 from sklearn.model_selection import GridSearchCV
-from keras.constraints import maxnorm
+#from keras.constraints import maxnorm
 
 
 class ANN:
@@ -126,6 +126,7 @@ def build_classifier():
   
 
 # Grid Search
+     '''
 def create_model(optimizer='adam',
                  #learn_rate=0.01,
                  #momentum=0,
@@ -146,7 +147,7 @@ def create_model(optimizer='adam',
     #opimizer = SGD(lr=learn_rate, momentum=momentum)
     model.compile(loss='mse', optimizer=optimizer, metrics=['mse', 'acc'])
     return model
-    
+    '''
 	
 
 
