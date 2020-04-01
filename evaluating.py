@@ -6,10 +6,8 @@ Created on Sat Mar 14 16:04:53 2020
 """
 from algorithms import importDataset, splitAndScale
 from sklearn import metrics
-from sklearn.metrics import r2_score, explained_variance_score, max_error, mean_absolute_error, mean_squared_error
 import csv
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
@@ -63,7 +61,7 @@ def evaluateANN():
             avg_max_error += max_error
             avg_mae += mae
             avg_mse += mse
-            avg_r2_score += r2_score(y_true, regressor.getPredictions())
+            avg_r2_score += metrics.r2_score(y_true, regressor.getPredictions())
             
             count += 1
             
@@ -117,11 +115,11 @@ def evaluateRandomForest():
             predictions = rfModel.getPredictions()
             
             # get metrics
-            avg_explained_variance_score += explained_variance_score(y_true, predictions)
-            avg_max_error += max_error(y_true, predictions)
-            avg_mae += mean_absolute_error(y_true, predictions)
-            avg_mse += mean_squared_error(y_true, predictions)
-            avg_r2_score += r2_score(y_true, predictions)
+            avg_explained_variance_score += metrics.explained_variance_score(y_true, predictions)
+            avg_max_error += metrics.max_error(y_true, predictions)
+            avg_mae += metrics.mean_absolute_error(y_true, predictions)
+            avg_mse += metrics.mean_squared_error(y_true, predictions)
+            avg_r2_score += metrics.r2_score(y_true, predictions)
             
             count += 1
             
@@ -174,11 +172,11 @@ def evaluateSVR():
             predictions = svr.getPredictions()
             
             # get metrics
-            avg_explained_variance_score += explained_variance_score(y_true, predictions)
-            avg_max_error += max_error(y_true, predictions)
-            avg_mae += mean_absolute_error(y_true, predictions)
-            avg_mse += mean_squared_error(y_true, predictions)
-            avg_r2_score += r2_score(y_true, predictions)
+            avg_explained_variance_score += metrics.explained_variance_score(y_true, predictions)
+            avg_max_error += metrics.max_error(y_true, predictions)
+            avg_mae += metrics.mean_absolute_error(y_true, predictions)
+            avg_mse += metrics.mean_squared_error(y_true, predictions)
+            avg_r2_score += metrics.r2_score(y_true, predictions)
             
             count += 1
             
@@ -461,19 +459,19 @@ def saveToFilePredictions():
 def main():
     
     # Regression Evaluation
-#    evaluateANN() 
-#    evaluateRandomForest()
-#    evaluateSVR()
-#    saveToFile()
+    evaluateANN() 
+    evaluateRandomForest()
+    evaluateSVR()
+    saveToFile()
     
     # Classification Evaluation
     evaluateClassificationANN()
-#    evaluateSVM()
-#    saveToFileCla()
+    evaluateSVM()
+    saveToFileCla()
     
     # Recipient Predictins
-#    findBestMatch()
-#    saveToFilePredictions()
+    findBestMatch()
+    saveToFilePredictions()
 
 
 if __name__ == "__main__":

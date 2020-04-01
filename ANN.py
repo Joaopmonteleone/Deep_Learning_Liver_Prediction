@@ -18,7 +18,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import multilabel_confusion_matrix
 # For tuning
 from sklearn.model_selection import GridSearchCV
-#from keras.constraints import maxnorm
+from keras.constraints import maxnorm
 
 
 class ANN:
@@ -26,9 +26,9 @@ class ANN:
 
        classifier = Sequential()
        classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu', input_dim = X_train.shape[1]))
-       #classifier.add(Dropout(rate=0.1)) #EXPERIMENT WITH AND WITHOUT THIS
+       classifier.add(Dropout(rate=0.3))
        classifier.add(Dense(units = 30, kernel_initializer = 'uniform', activation = 'relu')) #relu
-       #classifier.add(Dropout(rate=0.1))
+       classifier.add(Dropout(rate=0.3))
        classifier.add(Dense(units = output_units, kernel_initializer = 'uniform', activation = 'sigmoid'))
        
        classifier.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
@@ -126,7 +126,7 @@ def build_classifier():
   
 
 # Grid Search
-     '''
+    
 def create_model(optimizer='adam',
                  #learn_rate=0.01,
                  #momentum=0,
@@ -147,7 +147,6 @@ def create_model(optimizer='adam',
     #opimizer = SGD(lr=learn_rate, momentum=momentum)
     model.compile(loss='mse', optimizer=optimizer, metrics=['mse', 'acc'])
     return model
-    '''
 	
 
 
