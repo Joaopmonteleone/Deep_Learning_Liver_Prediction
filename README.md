@@ -1,23 +1,6 @@
-# Deep_Learning_Liver_Prediction
-Deep Learning to predict donor-recipient matching for liver transplant
+# Using Deep Neural Networks to predict survival rates of hepatic transplant recipients for each donor-recipient match
 
-
-First try results for ann.py:
-![Screenshot](./results/results.png)
-
-Results for grid search:
-![Screenshot](./results/grid_search.png)
-
-Inbalanced dataset:
-- Survival 3 months post transplant: 1287
-- Non-survival 3 months post transplant: 150
-Total: 1437
-
-TO DO:
-- [] Random Forest variable importance
-- [] Evaluation - compare datasets 
-- [] Print the error of the predictions
-- [] Make a line of best fit on the graphs 
+Environment: Anaconda - Spyder
 
 ```shell
 
@@ -36,5 +19,16 @@ $ conda install pydot
 $ conda install pyplot
 ```
 
-https://github.com/tensorflow/tensorflow/issues/27935
+![Screenshot](img/api1.PNG)
 
+![Screenshot](img/api2.PNG)
+
+![Screenshot](img/api4.PNG)
+
+![Screenshot](img/api6.PNG)
+
+![Screenshot](img/api7.PNG)
+
+![Screenshot](img/predictFromFile.PNG)
+
+![Screenshot](img/rfNewDataset.PNG)
