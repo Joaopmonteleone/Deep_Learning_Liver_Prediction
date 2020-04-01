@@ -2,6 +2,8 @@
 
 Environment: Anaconda - Spyder
 
+
+
 ```shell
 
 $ conda install git
@@ -17,7 +19,11 @@ $ conda install graphviz
 $ conda install pydot
 
 $ conda install pyplot
+
+% python api.py
 ```
+
+In Anaconda - run file api.py
 
 ![Screenshot](img/api1.PNG)
 
