@@ -15,7 +15,7 @@ class randomForest:
     def __init__(self, X_train, y_train, X_test, y_true, X_before):
         rf = RandomForestRegressor(n_estimators = 1000)
         
-#        print("Processing Random Forest algorithm...")
+        print("Processing Random Forest algorithm...")
         rf.fit(X_train, np.ravel(y_train))
         
         self.rf = rf
@@ -91,14 +91,14 @@ class randomForest:
        graph.write_png('results/small_tree.png')
        
     def gridSearch(self):
-       param_grid = {'n_estimators': [500, 1000], # , 2000
-#                     'criterion': ['mse', 'mae'],
-#                     'min_samples_split': [2, 10, 20],
-#                     'min_samples_leaf': [1, 10, 100],
-#                     'max_features': ['auto', 5, 'sqrt', 'log2', None],
-#                     'bootstrap': [True, False],
-#                     'oob_score': [True, False],
-#                     'warm_start': [True, False]
+       param_grid = {'n_estimators': [500, 1000, 2000],
+                     'criterion': ['mse', 'mae'],
+                     'min_samples_split': [2, 10, 20],
+                     'min_samples_leaf': [1, 10, 100],
+                     'max_features': ['auto', 5, 'sqrt', 'log2', None],
+                     'bootstrap': [True, False],
+                     'oob_score': [True, False],
+                     'warm_start': [True, False]
                      }  
        grid = GridSearchCV(RandomForestRegressor(), param_grid, refit = True, verbose = 3) 
           

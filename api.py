@@ -124,198 +124,199 @@ def inputManual():
         print()
         print("\033[4mInsert recipient's values: \033[0m")
         while True:
-            age = int(input("- Age: "))
+            age = float(input("- Age: "))
             if age > 9 and age < 81: break
             else: print("Invalid value, must be between 10 and 80")
 
         while True:
-            gender = int(input("- Gender (1 - Male, 0 - Female): "))
+            gender = float(input("- Gender (1 - Male, 0 - Female): "))
             if gender == 1 or gender == 0: break
             else: print("Invalid value, must be 1 for male or 0 for female")
 
         while True:
-            bmibasal = int(input("- Body-Mass Index (in kg/m2): "))
+            bmibasal = float(input("- Body-Mass Index (in kg/m2): "))
             if bmibasal > 12 and bmibasal < 76: break
             else: print("Invalid value, must be between 13 and 75")
 
         while True:
-            diabetesPreTx = int(input("- diabetes (1 - yes, 0 - no): "))
+            diabetesPreTx = float(input("- diabetes (1 - yes, 0 - no): "))
             if diabetesPreTx == 1 or diabetesPreTx == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            htabasal = int(input("- Arterial hypertension (1 - yes, 0 - no): "))
+            htabasal = float(input("- Arterial hypertension (1 - yes, 0 - no): "))
             if htabasal == 1 or htabasal == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            dialisis = int(input("- Dialysis requirement pre-transplant (1 - yes, 0 - no): "))
+            dialisis = float(input("- Dialysis requirement pre-transplant (1 - yes, 0 - no): "))
             if dialisis == 1 or dialisis == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            etiologiaprincipal = int(input("- Etiology justifying transplant need:\n\t\t0 - Virus C cirrhosis\n\t\t1- Alcohol cirrhosis\n\t\t2 - Virus B cirrhosis\n\t\t3 - Fulminant hepatic failure\n\t\t4 - Primary biliary cirrhosis\n\t\t5 - Primary sclerosing cholangitis\n\t\t6 - Others\n> "))
+            etiologiaprincipal = float(input("- Etiology justifying transplant need:\n\t\t0 - Virus C cirrhosis\n\t\t1- Alcohol cirrhosis\n\t\t2 - Virus B cirrhosis\n\t\t3 - Fulminant hepatic failure\n\t\t4 - Primary biliary cirrhosis\n\t\t5 - Primary sclerosing cholangitis\n\t\t6 - Others\n> "))
             if etiologiaprincipal == 0 or (etiologiaprincipal > 0 and etiologiaprincipal < 7): break
             else: print("Invalid value, must be between 0 and 6")
 
         while True:
-            trombosisportal = int(input("- Portal thrombosis:\n\t\t0 - No portal thrombosis\n\t\t1 - Partial\n\t\t2 - Complete\n> "))
+            trombosisportal = float(input("- Portal thrombosis:\n\t\t0 - No portal thrombosis\n\t\t1 - Partial\n\t\t2 - Complete\n> "))
             if trombosisportal == 0 or (trombosisportal > 0 and trombosisportal < 3): break
             else: print("Invalid value, must be between 0 and 2")
 
         while True:
-            tiempolistaespera = int(input("- Waiting list time (in days): "))
+            tiempolistaespera = float(input("- Waiting list time (in days): "))
             if tiempolistaespera > 0 and tiempolistaespera < 2000: break
             else: print("Invalid value, must be between 1 and 2000")
 
         while True:
-            meldinclusion = int(input("- MELD score at waiting list inclusion: "))
+            meldinclusion = float(input("- MELD score at waiting list inclusion: "))
             if meldinclusion > 0 and meldinclusion < 50: break
             else: print("Invalid value, must be between 1 and 50")
 
         while True:
-            meldtx = int(input("- MELD at transplant time: "))
+            meldtx = float(input("- MELD at transplant time: "))
             if meldinclusion > 0 and meldinclusion < 50: break
             else: print("Invalid value, must be between 1 and 60")
 
         while True:
-            tips = int(input("- TIPS at transplant (1 - yes, 0 - no): "))
+            tips = float(input("- TIPS at transplant (1 - yes, 0 - no): "))
             if tips == 1 or tips == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            sindromehepatorrenal = int(input("- Hepatorrenal syndrome (1 - yes, 0 - no): "))
+            sindromehepatorrenal = float(input("- Hepatorrenal syndrome (1 - yes, 0 - no): "))
             if sindromehepatorrenal == 1 or sindromehepatorrenal == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            apcirugiaabdosuperior = int(input("- History of previous upper abdominal surgery (1 - yes, 0 - no): "))
+            apcirugiaabdosuperior = float(input("- History of previous upper abdominal surgery (1 - yes, 0 - no): "))
             if apcirugiaabdosuperior == 1 or apcirugiaabdosuperior == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            sfiptx = int(input("- Pre-transplant status performance:\n\t\t0 - At home\n\t\t1 - Hospitalised\n\t\t2 - Hospitalised in ICU\n\t\t3 - Hospitalised in ICU with mechanical ventilation\n> "))
+            sfiptx = float(input("- Pre-transplant status performance:\n\t\t0 - At home\n\t\t1 - Hospitalised\n\t\t2 - Hospitalised in ICU\n\t\t3 - Hospitalised in ICU with mechanical ventilation\n> "))
             if sfiptx == 0 or (sfiptx > 0 and sfiptx < 3): break
             else: print("Invalid value, must be between 0 and 2")
 
         while True:
-            cmvbasal = int(input("- Cytomegalovirus (1 - yes, 0 - no): "))
+            cmvbasal = float(input("- Cytomegalovirus (1 - yes, 0 - no): "))
             if cmvbasal == 1 or cmvbasal == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         print()
         print("\033[4mInsert donor's values:\033[0m")
         while True:
-            edaddon = int(input("- Age: "))
+            edaddon = float(input("- Age: "))
             if edaddon > 10 and edaddon < 80: break
             else: print("Invalid value, must be between 10 and 80")
 
         while True:
-            sexodon = int(input("- Gender (1 - Male, 0 - Female): "))
+            sexodon = float(input("- Gender (1 - Male, 0 - Female): "))
             if sexodon == 1 or sexodon == 0: break
             else: print("Invalid value, must be 1 for male or 0 for female")
 
         while True:
-            bmiestdon = int(input("- Body-Mass Index (in kg/m2): "))
+            bmiestdon = float(input("- Body-Mass Index (in kg/m2): "))
             if bmiestdon > 12 and bmiestdon < 76: break
             else: print("Invalid value, must be between 13 and 75")
 
         while True:
-            diabetesmelitusdon = int(input("- diabetes (1 - yes, 0 - no): "))
+            diabetesmelitusdon = float(input("- Diabetes (1 - yes, 0 - no): "))
             if diabetesmelitusdon == 1 or diabetesmelitusdon == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            htadon = int(input("- Arterial hypertension (1 - yes, 0 - no): "))
+            htadon = float(input("- Arterial hypertension (1 - yes, 0 - no): "))
             if htadon == 1 or htadon == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            causaexitus = int(input("- Cause of death:\n\t\t0 - Brain trauma\n\t\t1 - Cerebral vascular accident (CVA)\n\t\t2 - Anoxia\n\t\t3 - Deceased vascular after cardiac arrest\n\t\t4 - Others\n> "))
+            causaexitus = float(input("- Cause of death:\n\t\t0 - Brain trauma\n\t\t1 - Cerebral vascular accident (CVA)\n\t\t2 - Anoxia\n\t\t3 - Deceased vascular after cardiac arrest\n\t\t4 - Others\n> "))
             if causaexitus == 0 or (causaexitus > 0 and causaexitus < 5): break
             else: print("Invalid value, must be between 0 and 4")
 
         while True:
-            diasuci = int(input("- Hospitalised length in ICU (days): "))
+            diasuci = float(input("- Hospitalised length in ICU (days): "))
             if diasuci > -1 and diasuci < 61: break
             else: print("Invalid value, must be between 1 and 60")
 
         while True:
-            hipotension = int(input("- Hypotension episodes (1 - yes, 0 - no): "))
+            hipotension = float(input("- Hypotension episodes (1 - yes, 0 - no): "))
             if hipotension == 1 or hipotension == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            inotropos = int(input("- High inotropic drug use (1 - yes, 0 - no): "))
+            inotropos = float(input("- High inotropic drug use (1 - yes, 0 - no): "))
             if inotropos == 1 or inotropos == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            creatinina = int(input("- Creatinine plasma level (in mg/dl): "))
-            if creatinina > 0 and creatinina < 12: break
+            creatinina = float(input("- Creatinine plasma level (in mg/dl): "))
+            if (creatinina == 0) or (creatinina > 0 and creatinina < 12): break
             else: print("Invalid value, must be between 0 and 11")
 
         while True:
-            na = int(input("- Sodium plasma level (in mEq/l): "))
+            na = float(input("- Sodium plasma level (in mEq/l): "))
             if na > 89 and na < 201: break
             else: print("Invalid value, must be between 90 and 200")
 
         while True:
-            ast = int(input("- Aspartate transaminase level: (in UI/l): "))
+            ast = float(input("- Aspartate transaminase level: (in UI/l): "))
             if ast > 0 and ast < 1501: break
             else: print("Invalid value, must be between 0 and 1500")
 
         while True:
-            alt = int(input("- Alanine aminotransferase plasma level (in UI/l): "))
+            alt = float(input("- Alanine aminotransferase plasma level (in UI/l): "))
             if alt > 0 and alt < 1501: break
             else: print("Invalid value, must be between 0 and 1500")
 
         while True:
-            bit = int(input("- Total bilirubin (in mg/dl): "))
+            bit = float(input("- Total bilirubin (in mg/dl): "))
             if bit > -1 and bit < 7: break
             else: print("Invalid value, must be between 0 and 6")
 
         while True:
-            antihbc = int(input("- Hepatitis B (1 - yes, 0 - no): "))
+            antihbc = float(input("- Hepatitis B (1 - yes, 0 - no): "))
             if antihbc == 1 or antihbc == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            vhc = int(input("- Hepatitis C (1 - yes, 0 - no): "))
+            vhc = float(input("- Hepatitis C (1 - yes, 0 - no): "))
             if vhc == 1 or vhc == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            cmvdon = int(input("- Cytomegalovirus (1 - yes, 0 - no): "))
+            cmvdon = float(input("- Cytomegalovirus (1 - yes, 0 - no): "))
             if cmvdon == 1 or cmvdon == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         print()
         print("\033[4mInsert transplant info:\033[0m")
         while True:
-            multiorganico = int(input("- Multi-organ harvesting (1 - yes, 0 - no): "))
+            multiorganico = float(input("- Multi-organ harvesting (1 - yes, 0 - no): "))
             if multiorganico == 1 or multiorganico == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            txcombinado = int(input("- Combined transplant (1 - yes, 0 - no): "))
+            txcombinado = float(input("- Combined transplant (1 - yes, 0 - no): "))
             if txcombinado == 1 or txcombinado == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
 
         while True:
-            injertocompletoparcial = int(input("- Complete or partial graft (1 - complete, 0 - partial): "))
+            injertocompletoparcial = float(input("- Complete or partial graft (1 - complete, 0 - partial): "))
             if injertocompletoparcial == 1 or injertocompletoparcial == 0: break
             else: print("Invalid value, must be 0 for partial or 1 for complete")
 
         while True:
-            tiempoisquemiafria = int(input("- Cold ischemia time:\n\t\t0 - Less than 6 hours\n\t\t1 - Between 6 and 12 hours\n\t\t2 - More than 6 hours\n> "))
+            tiempoisquemiafria = float(input("- Cold ischemia time:\n\t\t0 - Less than 6 hours\n\t\t1 - Between 6 and 12 hours\n\t\t2 - More than 6 hours\n> "))
             if tiempoisquemiafria == 0 or (tiempoisquemiafria > 0 and tiempoisquemiafria < 3): break
             else: print("Invalid value, must be between 0 and 2")
 
         while True:
-            compatibilidadabo = int(input("- AB0 compatible transplant (1 - yes, 0 - no): "))
+            compatibilidadabo = float(input("- AB0 compatible transplant (1 - yes, 0 - no): "))
             if compatibilidadabo == 1 or compatibilidadabo == 0: break
             else: print("Invalid value, must be 0 for no or 1 for yes")
+
 
 
         to_predict = [age, gender, bmibasal, diabetesPreTx, htabasal, dialisis,
